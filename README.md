@@ -1,0 +1,14 @@
+# PokePartyTool
+Welcome! This is a tool for creating optimal 6-man parties in the mainline Pokemon series, based on offensive and defensive coverage, your "must-have" Pokemon (such as a starter or personal favorite), stats and overall power level of each 'mon, and the predicted opponent pool. It is a work in progress, but here is a rough outline of the goals for the project:
+
+# 1. Data Migration and Processing
+This project necessitates a TON of data. Not only do we a comprehensive collection of each Pokemon in each game, but their statistics and hypothetical movepools at each level, the interactions of their typings and their moves, and so on. This part of the project is very tedious and is a majority of the development bottleneck.
+
+# 2. Battle Simulation and Analysis
+Once we have enough data about the variety of Pokemon in a given game, we then have to simulate thousands of 1v1 matchups to evaluate their overall strength level and which matchups they excel at or falter in. This is done by a simple matchup system that mirrors the internal logic of the specific game's battle mechanics, including status effects and other combat systems. This tournament comprises of not only each Pokemon, but each possible 4-move variant of each Pokemon, so the optimal moveset is also applied to the calculations (note: when we get to Gens 5 and onward, this will also include EVs, which are basically allocated stat points). By the end of this step, we have a rough estimation of the most successful and powerful Pokemon in the game, and what matchups they excel against.
+
+# 3. Optimizing the Party
+Now that we know which Pokemon are good, we can now assemble the most optimal, most badass sextet you can assemble in the game. I am aiming for this part of the project to be highly customizable because of certain playstyles that are otherwise immutable to some players - as an example, most people prefer to incorporate their starter, and some avoid the use of legendaries altogether. I also hope to add functionality to optimize the party for the content present in the game itself, as the default party assembler will be going off of data that implies one battle exactly with every variant of every Pokemon, something that just simply isn't the case in the actual games themselves. The proposed modes for this are default (full pool), all trainers, gym trainers, gym leaders, and competitive meta.
+
+# 4. Hosting the Web Tool
+The final product will be an interactive webtool hosted on my personal site, haydenbrown.dev, for all to freely use and tinker with. As each game is completely calculated and the tools are properly working, they will be added to the tool, one by one. As such, the tool will not launch until the Generation 1 games (Red, Blue, and Yellow) are fully functional and operational.
