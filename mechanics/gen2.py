@@ -14,12 +14,20 @@ moveDex = pd.read_csv('../data/gsc/gsc_movedex.csv')
 learnDex = pd.read_csv('../data/gsc/gsc_move_access.csv')
 types = pd.read_csv('../data/gen2types_expanded.csv')
 
+# Critical chances have been severely nerfed in Generation 2. They are no
+#   longer calculated using the base speed stat of the Pokemon like in
+#   Generation 1. Now there is a flat crit chance of 1/16, or 1/4 if the 
+#   move has a higher critical hit chance.
 def calculateCritChance(moveName):
     if moveDex[moveName]['extra_crit']:
         return 0.25
     else:
         return 0.0625
 
+# Physical and special types still exist in Generation 2.
+# However, Special has been split into "Special Attack" and "Special Defense."
+
+# When attacking with a special move, the calculation uses "Special Attack."
 def getAttackStat(moveName, monName):
     moveType = moveDex[moveName]['type']
     if moveType in PHYSTYPES:
@@ -27,6 +35,7 @@ def getAttackStat(moveName, monName):
     elif moveType in SPECTYPES:
         return pokeDex[monName]['lvl50_sp_attack']
 
+# When defending from a special move, the calculation uses "Special Defense."
 def getDefenseStat(moveName, monName):
     moveType = moveDex[moveName]['type']
     if moveType in PHYSTYPES:
@@ -34,7 +43,10 @@ def getDefenseStat(moveName, monName):
     elif moveType in SPECTYPES:
         return pokeDex[monName]['lvl50_sp_defense']
 
+# Damage calculation is still largely the same as in Generation 1.
 def calculateDamage(monName, moveName, oppName, level):
+    # Although critical chances are lowered, crit damage is still applied by
+    #   doubling the level of the attacking Pokemon.
     if np.random.binomial(1,calculateCritChance(monName,moveName)):
         L = level * 2
     else:
