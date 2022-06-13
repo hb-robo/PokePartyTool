@@ -142,6 +142,7 @@ def pickMove(monName, oppName):
             #   event of a double knockout, these moves will always be skipped.
             if moveDex[move]['subcat'] in ('suicide', 'counter', 'seed', 'rage', 'ko', 'random', 'status_dep'):
                 continue
+
             # First, the move's damage against the opponent is calculated.
             #   To account for randomness associated with the calculation, we
             #   use the average of 100 calculations.
@@ -159,25 +160,36 @@ def pickMove(monName, oppName):
                 accuracy = min(0.996, moveDex[move]['accuracy']/100) 
             adj_damage = damage * accuracy * moveDex[move]['avg_hits']
             score = adj_damage
+
+            # At this stage we have an emergency exit clause. If the currently selected
+            #   move is Quick Attack, and using it would kill the opponent, the Pokemon
+            #   will always use it, because it has increased priority even if the opponent's
+            #   speed is higher.
+            if (adj_damage >= opponent.currentHP) and moveDex[move]['subcat'] == 'quick':
+                optimalMove = 'quick attack'
+                maxMoveScore = score
+                break
+            
             # We also want to account for how many turns the move takes to charge up.
             #    Moves like Fly and Dig aren't checked here because the charge is done 
             #    in a way that protects the user.
             if moveDex[move]['subcat'] == 'charge':
                 score /= moveDex[move]['avg_turns']
+            
             # There is a single move (Hyper Beam) that does not charge up but instead
             #   shoots first with a turn of rest afterwards required. If the move is
             #   expected to kill the next turn, this rest turn is ignored. If the move
             #   will not kill, this rest turn must be accounted for.
-            if (moveDex[move]['subcat'] == 'burst') and (adj_damage < opponent.health):
+            if (moveDex[move]['subcat'] == 'burst') and (adj_damage < opponent.currentHP):
                 score /= moveDex[move]['avg_turns']
-
+            
             # Next, we account for status conditions by multiplying the score by a
             #    factor of 1 + its affliction chance.
             #    e.g., a 100-score move with 20% chance to poison now has a score of 120.
             if (moveDex[move]['opp_status']):
                 status_chance = float(moveDex[move]['opp_status_chance'].strip('%'))/100
                 score += math.floor(score * status_chance)
-
+            
             # Similarly, we account for flinch, but only if the user outspeeds its opponent.
             #    If it doesn't, the opponent will never flinch anyway. If the speed is
             #    equal, moving first is a coin flip, so the flinch chance is halved.
@@ -186,7 +198,7 @@ def pickMove(monName, oppName):
                 if mon.speed == opp.speed:
                     flinch_chance /= 2
                 score += math.floor(score * flinch_chance)
-
+            
             # Finally, we account for ways in which the move can affect the user's HP.
             #   "Absorb" type moves heal the user for a percentage of the damage dealt,
             #   so we add the HP the user would heal to the score.
@@ -206,12 +218,12 @@ def pickMove(monName, oppName):
                     score = 0
                 else:
                     score -= recoil
-
+            
             #   This is kind of petty, but we also have to be wary of crash damage, which
             #   in Gen 1 is always 1 HP, lol.
             if (moveDex[move]['crash']):
                 score -= 1
-
+            
             # If this move amounts to be optimal, we update the optimal move.
             if score > maxMoveScore:
                 optimalMove = move.index
