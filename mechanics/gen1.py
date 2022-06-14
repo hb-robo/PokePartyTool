@@ -9,24 +9,24 @@ SPECTYPES = ['fire', 'water', 'grass', 'electric', 'ice', 'psychic', 'dragon']
 PHYSTYPES = ['normal', 'fighting', 'flying', 'poison', 'rock', 'ground', 'bug', 'ghost']
 
 # import data relevant to the generation
-pokeDex = pd.read_csv('data/rby/rby_mons.csv')
-moveDex = pd.read_csv('../data/rby/rby_movedex.csv')
-learnDex = pd.read_csv('../data/rby/rby_move_access.csv')
-types = pd.read_csv('../data/gen1types_expanded.csv')
+pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
+moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
+learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
+types = pd.read_csv('data/gen1types_expanded.csv', index_col='off_type')
 
 # There is a chance for all moves to do a bonus amount of damage, called a
 #   critical hit. The chance is based on the user's base speed.
 def calculateCritChance(monName, moveName):
     # Critical hits only apply to attacking moves.
-    if moveDex[moveName]['category'] != 'attack':
-        print("Status moves do not have critical chances.")
+    if moveDex.at[moveName, 'category'] != 'attack':
+        # print("Status moves do not have critical chances.")
         return -1
-    baseSpeed = pokeDex[monName][baseSpeed]
+    baseSpeed = pokeDex.at[monName, 'base_speed']
     # Some moves have a massively improved critical chance. In combination with some
     #   very fast Pokemon, this can create a maxed out critical chance where it is
     #   almost guaranteed to do critical damage.
     #  However, crit chances can't exceed 255/256 due to programming error.
-    if moveDex[moveName]['extra_crit']:
+    if pd.notna(moveDex.at[moveName,'crit']):
         critChance = (baseSpeed * 100 / 64) / 100
         return min(0.996, critChance)
     else:
@@ -37,44 +37,46 @@ def calculateCritChance(monName, moveName):
 #   damage is boosted by Same Type Attack Bonus (STAB). Pokemon with more
 #   than one type get STAB bonuses for both of its types.
 def calculateSTAB(monName, moveName,pokeDex=pokeDex,moveDex=moveDex):
-    if moveDex[moveName]['type'] in (pokeDex[monName]['first_type'], pokeDex[monName]['second_type']):
+    if moveDex.at[moveName,'type'] in (pokeDex.at[monName, 'first_type'], pokeDex.at[monName, 'second_type']):
         return 1.5
     else:
         return 1
 
 # Certain types of Pokemon are weak or resistant to certain types of attacks.
 #    In some cases, typed Pokemon can even be immune to an attack type.
-def calculateTypeBonus(moveName, oppName,pokeDex=pokeDex,moveDex=moveDex):
-    moveType = moveDex[moveName]['type']
-    oppType = pokeDex[oppName]['type']
-    if len(oppType) == 1:
-        return types[moveType]['vs_%s' % oppType]
-    else: # opponent has two types
-        return types[moveType]['vs_%s_%s' % (oppType[0], oppType[1])]
+def calculateTypeBonus(moveName, oppName, pokeDex=pokeDex,moveDex=moveDex):
+    moveType = moveDex.at[moveName, 'type']
+    oppTypes = [pokeDex.at[oppName, 'first_type']]
+    if pd.notna(pokeDex.at[oppName, 'second_type']):
+        oppTypes.append(pokeDex.at[oppName, 'second_type'])
+        return types.at[moveType,'vs_%s_%s' % (oppTypes[0], oppTypes[1])]
+    else:
+        return types.at[moveType,'vs_%s' % oppTypes[0]]
+
 
 def getAttackStat(moveName, monName):
-    moveType = moveDex[moveName]['type']
+    moveType = moveDex.at[moveName,'type']
     if moveType in PHYSTYPES:
-        return pokeDex[monName]['lvl50_attack']
+        return int(pokeDex.at[monName,'attack'])
     elif moveType in SPECTYPES:
-        return pokeDex[monName]['lvl50_special']
+        return int(pokeDex.at[monName,'special'])
 
 def getDefenseStat(moveName, monName):
-    moveType = moveDex[moveName]['type']
+    moveType = moveDex.at[moveName,'type']
     if moveType in PHYSTYPES:
-        return pokeDex[monName]['lvl50_defense']
+        return int(pokeDex.at[monName,'defense'])
     elif moveType in SPECTYPES:
-        return pokeDex[monName]['lvl50_special']
+        return int(pokeDex.at[monName,'special'])
 
 def getMovePower(moveName, moveDex=moveDex):
-    return moveDex[moveName]['power']
+    return int(moveDex.at[moveName,'power'])
 
-def calculateDamage(monName, moveName, oppName, level):
+def calculateDamage(mon, moveName, opp, level=50):
     # Some moves do a damage amount relative to the user's level. These moves
     #    ignore STAB and type bonuses, BUT they do 0 damage to Pokemon who are
     #    immune to the move's type.
-    if moveDex[moveName]['subcat'] == 'level_dep':
-        if calculateTypeBonus(moveName,oppName) == 0:
+    if moveDex.at[moveName,'subcat'] == 'level_dep':
+        if calculateTypeBonus(moveName,opp.name) == 0:
             return 0
         else:
             # Psywave does between 1 and 1.5x the user's level in damage.
@@ -85,36 +87,41 @@ def calculateDamage(monName, moveName, oppName, level):
                 return level
 
     # Some moves do a fixed amount of damage, ignoring types and STAB.
-    elif moveDex[moveName]['subcat'] == 'fixed':
+    elif moveDex.at[moveName,'subcat'] == 'fixed':
         # Super Fang does half the opponent's health, rounded down.
         if moveName == 'super fang':
-            return math.floor(opponent.hp / 2)
+            return max(1, math.floor(opp.hp / 2))
         # Supersonic and Dragon Rage do a fixed damage amount.
         else:
-            return moveDex[moveName]['power']   
+            return moveDex.at[moveName,'power']   
 
     # The flying move Mirror Move copies the opponent's last-used attack.
-    elif moveDex[moveName]['subcat'] == 'reflect':
-        chosenMove = opponent.last_move
-        return calculateDamage(mon,chosenMove,opponent,level)
+    elif moveDex.at[moveName,'subcat'] == 'reflect':
+        chosenMove = opp.lastUsedMove
+        if chosenMove is None:
+            return 0
+        else:
+            return calculateDamage(mon,chosenMove,opp,level)
 
     # Finally, the rest of the moves are calculated in a normal way.
     else:
         # If the opponent is in the air or underground, AKA charging Fly or Dig,
         #    only certain moves will hit it.
-        if (opponent.isUnderground or opponent.isAirborne) and not (moveDex[moveName]['hit_fly'] or moveDex[moveName]['hit_dig']):
+        if (opp.isUnderground) and not (moveDex.at[moveName, 'hit_dig']):
+            return 0
+        elif (opp.isAirborne) and not (moveDex.at[moveName,'hit_fly']):
             return 0
         # And here we have the calculation for every other move.
         else:
-            if np.random.binomial(1,calculateCritChance(monName,moveName)):
+            if np.random.binomial(1,calculateCritChance(mon.name,moveName)):
                 L = level * 2
             else:
                 L = level
-            AS = getAttackStat(moveName, monName)
+            AS = getAttackStat(moveName, mon.name)
             P = getMovePower(moveName)
-            DS = getDefenseStat(moveName, monName)
-            STAB = calculateSTAB(monName, moveName)
-            TB = calculateTypeBonus(moveName, oppName)
+            DS = getDefenseStat(moveName, opp.name)
+            STAB = calculateSTAB(mon.name, moveName)
+            TB = calculateTypeBonus(moveName, opp.name)
 
             base_dmg = min(((((2*L/5)+2)*(AS/DS)*P)/50),997)+2
             mod_dmg = math.floor(math.floor(base_dmg*STAB)*(TB*10/10))
@@ -122,7 +129,7 @@ def calculateDamage(monName, moveName, oppName, level):
             if mod_dmg == 0 or mod_dmg == 1:
                 return mod_dmg
             else:
-                R = random.randRange(217,256)
+                R = random.randrange(217,256)
                 return math.floor(mod_dmg*(R/255))
 
 # For each move the Pokemon can use, we calculate a heuristic score
@@ -154,7 +161,7 @@ def pickMove(monName, oppName):
             #    the move hits. Even "max" accuracy is not 100% unless the move is 
             #    Swift. Otherwise, it's equal to 255/256, or 0.996.
             accuracy = 0
-            if move.index is 'swift':
+            if move.index == 'swift':
                 accuracy = 1
             else:
                 accuracy = min(0.996, moveDex[move]['accuracy']/100) 
