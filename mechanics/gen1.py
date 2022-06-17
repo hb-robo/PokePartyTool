@@ -269,7 +269,7 @@ def monMovesFirst(mon, monMove, opp, oppMove):
     elif opp.speed > mon.speed:
         return False
     else:
-        return np.random.randint(low=0,high=1,size=1)
+        return np.random.choice(range(2),size=1,replace=False)[0]
 
 
 def battle(mon, opp, level=50, log=False) -> int:

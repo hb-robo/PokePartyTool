@@ -4,7 +4,7 @@ from numpy import record
 import gen1
 import pandas as pd
 import classes
-import string
+import numpy as np
 
 mon = 'bulbasaur'
 
@@ -69,6 +69,7 @@ print("==============TESTING MOVE PICKER=================")
 print("==============BATTLE SIMULATOR=================")
 
 df = pd.DataFrame(columns=list(gen1.pokeDex.index.values))
+print(df.shape)
 
 for mon1 in list(gen1.pokeDex.index.values):
     recordLog = []
@@ -77,9 +78,17 @@ for mon1 in list(gen1.pokeDex.index.values):
     totFights = 0
 
     for mon2 in list(gen1.pokeDex.index.values):
+        
         wins = 0
-        fights = 1
-
+        fights = 10
+        
+        if mon1 == mon2:
+            totFights += fights
+            totFights += fights/2
+            recordLog.append(float(1/2))
+            print('%s wins %s/%s times vs. %s' % (mon1, fights/2, fights, mon2))
+            continue
+        
         for i in range(fights):
             pokemon = classes.Mon(mon1, gen1.pokeDex)
             opponent = classes.Mon(mon2, gen1.pokeDex)
@@ -93,9 +102,9 @@ for mon1 in list(gen1.pokeDex.index.values):
             totFights += 1
 
         recordLog.append(wins/float(fights))
-        # print('%s wins %s/%s times vs. %s' % (mon1, wins, fights, mon2))
+        print('%s wins %s/%s times vs. %s' % (mon1, wins, fights, mon2))
 
-    print('%s total win/loss ratio: %s' % (mon1, (float(totWins)/totFights)))
+    # print('%s total win/loss ratio: %s' % (mon1, (float(totWins)/totFights)))
     df.loc[mon1] = recordLog
 
 df.index = list(gen1.pokeDex.index.values)
