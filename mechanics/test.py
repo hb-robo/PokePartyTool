@@ -68,16 +68,17 @@ print("==============TESTING MOVE PICKER=================")
 
 print("==============BATTLE SIMULATOR=================")
 
-df = pd.DataFrame(columns=list(gen1.pokeDex.index))
+df = pd.DataFrame(columns=list(gen1.pokeDex.index.values))
 
-for mon1 in list(gen1.pokeDex.index):
+for mon1 in list(gen1.pokeDex.index.values):
     recordLog = []
 
     totWins = 0
+    totFights = 0
 
-    for mon2 in list(gen1.pokeDex.index):
+    for mon2 in list(gen1.pokeDex.index.values):
         wins = 0
-        fights = 100
+        fights = 1
 
         for i in range(fights):
             pokemon = classes.Mon(mon1, gen1.pokeDex)
@@ -89,10 +90,14 @@ for mon1 in list(gen1.pokeDex.index):
                 wins += 1
                 totWins += 1
 
-        recordLog.append(wins/float(fights))
-        print('%s wins %s/%s times vs. %s' % (mon1, wins, fights, mon2))
+            totFights += 1
 
-    print('%s total win/loss ratio: %s' % (mon1, (float(totWins)/15100)))
-    df[mon1] = recordLog
+        recordLog.append(wins/float(fights))
+        # print('%s wins %s/%s times vs. %s' % (mon1, wins, fights, mon2))
+
+    print('%s total win/loss ratio: %s' % (mon1, (float(totWins)/totFights)))
+    df.loc[mon1] = recordLog
+
+df.index = list(gen1.pokeDex.index.values)
 
 df.to_csv('results.csv')
