@@ -1,14 +1,12 @@
 # This file contains all of the classes that govern pokemon and battle functions, variables, and logic.
-from concurrent.futures import process
 import math
-from unittest import expectedFailure
 import pandas as pd
 import numpy as np
 import random
 
 class Gen1Mon:
 
-    dex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
+    dex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
 
     statStages = {
         6: 4.00,
@@ -173,10 +171,10 @@ class Gen1Battle:
     PHYSTYPES = ['normal', 'fighting', 'flying', 'poison', 'rock', 'ground', 'bug', 'ghost']
 
     # import data relevant to the generation
-    pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
-    moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
-    learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
-    types = pd.read_csv('data/gen1types_expanded.csv', index_col='off_type')
+    pokeDex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
+    moveDex = pd.read_csv('../data/rby/rby_movedex.csv', index_col='move')
+    learnDex = pd.read_csv('../data/rby/rby_move_access.csv', index_col='mon_name')
+    types = pd.read_csv('../data/gen1types_expanded.csv', index_col='off_type')
 
     # status condition heuristics:
     statusScores = {
