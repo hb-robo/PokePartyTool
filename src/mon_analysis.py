@@ -11,7 +11,7 @@ new_path = os.path.relpath('..\\data\\')
 pokeDex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
 moveDex = pd.read_csv('../data/rby/rby_movedex.csv', index_col='move')
 learnDex = pd.read_csv('../data/rby/rby_move_access.csv', index_col='mon_name')
-types = pd.read_csv('../data/gen1types_expanded.csv', index_col='off_type')
+types = pd.read_csv('../data/types/gen1types_expanded.csv', index_col='off_type')
 
 LEVEL = 50
 MOVELIST = 'full'
@@ -36,54 +36,15 @@ for pokemon, row in pokeDex.iterrows():
         opp = g1.Gen1Mon(opponent, 50)
         b = g1.Gen1Battle(mon, opp)
 
-        physOffMax = 0
-        specOffMax = 0
-        offMax = 0
-        physDefMax = 0
-        specDefMax = 0
-        defMax = 0
+        # OFFENSIVE ANALYSIS
+        physOffTotal += b.pickMove( mon, opp, damageOnly=True, validTypes=b.PHYSTYPES, ret='dmg') / opp.stats['hp']
+        specOffTotal += b.pickMove( mon, opp, damageOnly=True, validTypes=b.SPECTYPES, ret='dmg') / opp.stats['hp']
+        offTotal += b.pickMove( mon, opp, damageOnly=True, ret='dmg') / opp.stats['hp']
 
-        for move in list(moveDex.index.values):
-            # OFFENSIVE ANALYSIS
-            if moveDex.at[move,'category'] == 'attack' and moveDex.at[move,'subcat'] not in NOTIMPLEMENTED and pd.notna(learnDex.at[pokemon,move]):
-                # PHYSICAL OFFENSE
-                if moveDex.at[move,'type'] in b.PHYSTYPES:
-                    dmg = b.processMove(mon, move, opp, expected=True)
-                    if dmg > physOffMax:
-                        physOffMax = dmg
-                    if dmg > offMax:
-                        offMax = dmg
-                # SPECIAL OFFENSE
-                elif moveDex.at[move,'type'] in b.SPECTYPES:
-                    dmg = b.processMove(mon, move, opp, expected=True)
-                    if dmg > specOffMax:
-                        specOffMax = dmg
-                    if dmg > offMax:
-                        offMax = dmg
-            # DEFENSIVE ANALYSIS
-            if moveDex.at[move,'category'] == 'attack' and moveDex.at[move,'subcat'] not in NOTIMPLEMENTED  and pd.notna(learnDex.at[opponent,move]):
-                # PHYSICAL DEFENSE
-                if moveDex.at[move,'type'] in b.PHYSTYPES:
-                    dmg = b.processMove(opp, move, mon, expected=True)
-                    if dmg > physDefMax:
-                        physDefMax = dmg
-                    if dmg > defMax:
-                        defMax = dmg
-                # SPECIAL DEFENSE
-                elif moveDex.at[move,'type'] in b.SPECTYPES:
-                    dmg = b.processMove(opp, move, mon, expected=True)
-                    if dmg > specDefMax:
-                        specDefMax = dmg
-                    if dmg > defMax:
-                        defMax = dmg
-
-        physOffTotal += (physOffMax / opp.stats['hp'])
-        specOffTotal += (specOffMax / opp.stats['hp'])
-        offTotal += (offMax / opp.stats['hp'])
-        physDefTotal += (physDefMax / mon.stats['hp'])
-        specDefTotal += (specDefMax / mon.stats['hp'])
-        defTotal += (defMax / opp.stats['hp'])
-
+        # DEFENSIVE ANALYSIS
+        physDefTotal += b.pickMove( opp, mon, damageOnly=True, validTypes=b.PHYSTYPES, ret='dmg') / mon.stats['hp']
+        specDefTotal += b.pickMove( opp, mon, damageOnly=True, validTypes=b.SPECTYPES, ret='dmg') / mon.stats['hp']
+        defTotal += b.pickMove( opp, mon, damageOnly=True, ret='dmg') / mon.stats['hp']
 
     physOffAvg = physOffTotal / 151
     specOffAvg = specOffTotal / 151
@@ -96,4 +57,4 @@ for pokemon, row in pokeDex.iterrows():
     print('finished processing %s' % pokemon)
 
 
-results.to_csv('../data/results/Mon Analysis - LVL%s, %s Moveset.csv' % (LEVEL, MOVELIST))
+results.to_csv('../results/Mon Analysis - LVL%s, %s Moveset.csv' % (LEVEL, MOVELIST))

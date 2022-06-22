@@ -174,7 +174,7 @@ class Gen1Battle:
     pokeDex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
     moveDex = pd.read_csv('../data/rby/rby_movedex.csv', index_col='move')
     learnDex = pd.read_csv('../data/rby/rby_move_access.csv', index_col='mon_name')
-    types = pd.read_csv('../data/gen1types_expanded.csv', index_col='off_type')
+    types = pd.read_csv('../data/types/gen1types_expanded.csv', index_col='off_type')
 
     # status condition heuristics:
     statusScores = {
@@ -457,7 +457,7 @@ class Gen1Battle:
         #   value of these moves, we will return the opponent's max HP, which will then
         #   be multiplied by the accuracy in the pickMove function.
         elif self.moveDex.at[move,'subcat'] == 'ko':
-            return self.pokeDex.at[opp.name, 'lvl50_hp']
+            return self.pokeDex.at[opp.name, 'hp']
 
         # Finally, the rest of the moves are calculated in a normal way.
         else:
@@ -476,17 +476,22 @@ class Gen1Battle:
 
     # For each move the Pokemon can use, we calculate a heuristic score for the overall value 
     #   of using the move versus a given opponent. We select the move with the highest score.
-    def pickMove( self, mon, opp, simplify=False ):
+    def pickMove( self, mon, opp, damageOnly=False, validTypes='', ret='move' ):
+
+        if validTypes == '':
+            validTypes = self.SPECTYPES + self.PHYSTYPES
+
         optimalMove = ""
         maxMoveScore = -1
-        for move in self.learnDex.columns:        
-            if pd.notna(self.learnDex.at[mon.name, move]) and move != 'index':
+        for move in self.learnDex.columns:
+
+            if pd.notna(self.learnDex.at[mon.name, move]) and move != 'index' and self.moveDex.at[move,'type'] in validTypes:
                 # We're only considering attacking moves here, so status moves are skipped.
-                if self.moveDex.at[move,'category'] == 'status':
+                if damageOnly and self.moveDex.at[move,'category'] == 'status':
                     continue
 
                 # These are the attacking moves I haven't implemented yet.
-                if self.moveDex.at[move,'subcat'] in ['suicide', 'reflect','counter', 'seed', 'rage', 'random', 'status_dep']:
+                if self.moveDex.at[move,'subcat'] in ['suicide', 'reflect','counter', 'rage', 'random', 'status_dep']:
                     continue
 
                 # First, the move's expected damage against the opponent is calculated.
@@ -525,7 +530,7 @@ class Gen1Battle:
                 
                 #   Moves with recoil inflict damage on the user as a percentage of the damage
                 #   inflicted, so we have to account for those.
-                if pd.notna(self.moveDex.at[move,'recoil']):
+                if pd.notna(self.moveDex.at[move,'recoil']) and not damageOnly:
                     recoil = math.floor(exp_dmg * self.moveDex.at[move,'recoil'])
                     
                     # If the recoil would kill the user, its score is made to be zero to ensure 
@@ -540,13 +545,13 @@ class Gen1Battle:
                 
                 #   This is kind of petty, but we also have to be wary of crash damage, which
                 #   in Gen 1 is always 1 HP, lol.
-                if pd.notna(self.moveDex.at[move,'crash']):
+                if pd.notna(self.moveDex.at[move,'crash']) and not damageOnly:
                     score -= 1
 
                 # Next, we account for ways in which the move can affect the user's HP.
                 #   "Absorb" type moves heal the user for a percentage of the damage dealt,
                 #   so we add the HP the user would heal to the score.
-                if (self.moveDex.at[move,'subcat'] == 'absorb'):
+                if (self.moveDex.at[move,'subcat'] == 'absorb') and not damageOnly:
                     heal_amt = math.floor(exp_dmg * self.moveDex.at[move,'heal'])
                     health_diff = self.pokeDex.at[mon.name,'hp'] - mon.stats['hp']
                     if health_diff > heal_amt:
@@ -557,16 +562,19 @@ class Gen1Battle:
                 # Next, we account for status conditions by multiplying the score by a
                 #    factor of 1 + its affliction chance.
                 #    e.g., a 100-score move with 20% chance to freeze now has a score of 120.
-                if pd.notna(self.moveDex.at[move,'opp_status']) and simplify==False:
+                if pd.notna(self.moveDex.at[move,'opp_status']) and not damageOnly:
                     score += self.calculateStatusValue(mon, move, opp)
                 
                 # If this move amounts to be optimal, we update the optimal move.
                 if score > maxMoveScore:
                     optimalMove = move
                     maxMoveScore = score
-        
-        # Finally, we return the optimal move, or return struggle if nothing is picked.
-        if optimalMove == "":
-            return 'struggle'
-        else:
-            return optimalMove
+
+        if ret == 'move': 
+            # Finally, we return the optimal move, or return struggle if nothing is picked.
+            if optimalMove == "":
+                return 'struggle'
+            else:
+                return optimalMove
+        elif ret == 'dmg':
+            return maxMoveScore
