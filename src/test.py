@@ -1,12 +1,11 @@
-import gen1
 import pandas as pd
-import classes
+import utils.classes as g
 
-mon1 = classes.Gen1Mon('bulbasaur', 50)
-mon2 = classes.Gen1Mon('charmander', 50)
-mon3 = classes.Gen1Mon('charmander', 50)
+mon1 = g.Gen1Mon('tauros', 50)
+mon2 = g.Gen1Mon('chansey', 50)
+mon3 = g.Gen1Mon('charmander', 50)
 
-arena = classes.Gen1Battle(mon1, mon2)
+arena = g.Gen1Battle(mon1, mon2)
 
 testingCrit = 0
 if testingCrit:
@@ -150,7 +149,7 @@ if testingExpectedDamage:
             and pd.notna(arena.moveDex.at[col,'power']):
             print("A burned %s uses %s vs %s for an expected %s/%s HP" % (mon2.name, col, mon1.name, arena.getExpectedDamage(mon2, col, mon1, mod='burn'), arena.pokeDex.at[mon1.name,'hp']))
 
-testingConfusionDamage = 1
+testingConfusionDamage = 0
 if testingConfusionDamage:
     print("==============TESTING CONFUSION DAMAGE=================") 
     print('%s took %s damage in its confusion.' % (mon1.name, arena.hurtItselfInConfusion(mon1)))
@@ -158,7 +157,7 @@ if testingConfusionDamage:
     print('%s would take %s damage on average if it hurt itself in confusion.' % (mon1.name, arena.hurtItselfInConfusion(mon1, expected=True)))
     print('%s would take %s damage on average if it hurt itself in confusion.' % (mon2.name, arena.hurtItselfInConfusion(mon2, expected=True)))
 
-testingStatusValue = 1
+testingStatusValue = 0
 if testingStatusValue:
     print("==============TESTING STATUS VALUE=================") 
     for move in arena.learnDex.columns:
@@ -167,6 +166,29 @@ if testingStatusValue:
     for move in arena.learnDex.columns:
         if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]) and pd.notna(arena.moveDex.at[move,'opp_status']):
             print("The estimated status value of %s using %s vs. %s is %s" % (mon2.name, move, mon1.name, arena.calculateStatusValue(mon2, move, mon1)))
+
+testingProcessMove = 1
+if testingProcessMove:
+    print("==============TESTING PROCESS MOVE=================") 
+    moveDict = {}
+    for move in arena.learnDex.columns:
+        if move != 'index' and pd.notna(arena.learnDex.at[mon1.name, move]) and (arena.moveDex.at[move,'category'] == 'attack' or arena.moveDex.at[move, 'subcat'] == 'status'):
+            moveDict[move] = int(arena.processMove(mon1, move, mon2, expected=True))
+
+    for tuple in sorted( ((v,k) for k,v in moveDict.items()), reverse=True):
+        print("Move value of %s using %s vs. %s is %s" % (mon1.name, tuple[1], mon2.name, tuple[0]))
+
+    print("==============TESTING PROCESS MOVE=================") 
+
+    moveDict = {}
+    for move in arena.learnDex.columns:
+        if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]) and (arena.moveDex.at[move,'category'] == 'attack' or arena.moveDex.at[move, 'subcat'] == 'status'):
+            moveDict[move] = int(arena.processMove(mon2, move, mon1, expected=True))
+
+    for tuple in sorted( ((v,k) for k,v in moveDict.items()), reverse=True):
+        print("Move value of %s using %s vs. %s is %s" % (mon2.name, tuple[1], mon1.name, tuple[0]))
+
+
 
 
 

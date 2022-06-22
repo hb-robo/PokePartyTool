@@ -3,10 +3,11 @@ import math
 import pandas as pd
 import numpy as np
 import random
+import copy
 
 class Gen1Mon:
 
-    dex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
+    dex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
 
     statStages = {
         6: 4.00,
@@ -171,10 +172,10 @@ class Gen1Battle:
     PHYSTYPES = ['normal', 'fighting', 'flying', 'poison', 'rock', 'ground', 'bug', 'ghost']
 
     # import data relevant to the generation
-    pokeDex = pd.read_csv('../data/rby/rby_pokedex.csv', index_col='mon_name')
-    moveDex = pd.read_csv('../data/rby/rby_movedex.csv', index_col='move')
-    learnDex = pd.read_csv('../data/rby/rby_move_access.csv', index_col='mon_name')
-    types = pd.read_csv('../data/types/gen1types_expanded.csv', index_col='off_type')
+    pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
+    moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
+    learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
+    types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
 
     # status condition heuristics:
     statusScores = {
@@ -275,62 +276,166 @@ class Gen1Battle:
         else:
             return np.random.choice(range(2),size=1,replace=False)[0]
 
-
-    # This is the default damage calculation for most moves in the game.
-    def getDamage( self, mon, move, opp, mod='' ):
-        if np.random.binomial(1,self.calculateCritChance(mon,move)):
-            L = mon.level * 2
+    # Used to calculate damage for Psywave, Night Shade, and Seismic Toss.
+    def levelDepAttack( self, mon, move, opp, expected=False ):
+        if self.calculateTypeBonus(move,opp) == 0:
+            return 0
         else:
-            L = mon.level
-        L = float(L)
-        AS = float(self.getAttackStat(move, mon))
-        if mod == 'burn':
-            AS = math.floor(AS/2)
-        P = float(self.getMovePower(move))
-        DS = float(self.getDefenseStat(move, opp))
-        STAB = float(self.calculateSTAB(mon, move))
-        TB = float(self.calculateTypeBonus(move, opp))
+            # Psywave does between 1 and 1.5x the user's level in damage.
+            if move == 'psywave':
+                return math.floor(mon.level*0.75) if expected else (random.randrange(1, math.floor(mon.level*1.5)))
+            # Night Shade and Seismic Toss do damage equal to the user's level.
+            else:
+                return mon.level
 
-        base_dmg = (((2*L/5)+2)*(AS/DS)*P) / 50
-        base_dmg = min(base_dmg, 997) + 2
-        mod_dmg = math.floor(math.floor(base_dmg*STAB)*(TB*10/10))
 
-        if mod_dmg == 0 or mod_dmg == 1:
-            return float(mod_dmg)
+    # Some moves do a damage amount relative to the user's level. These moves
+    #    ignore STAB and type bonuses, BUT they do 0 damage to Pokemon who are
+    #    immune to the move's type.
+    def fixedAttack( self, move, opp ):
+        # Super Fang does half the opponent's current health, rounded down.
+        if move == 'super fang':
+            return max(1, math.floor(opp.stats['hp'] / 2))
+        # Supersonic and Dragon Rage do a fixed damage amount (20, 40 respectively).
         else:
-            R = 217 + np.random.choice(range(39),size=1,replace=False)[0]
-            return math.floor(mod_dmg*(R/255))
+            return float(self.moveDex.at[move,'power'])  
 
-    # Because of the randomness involved in damage calculations, we need a
-    #   method to get the expected damage amount on an average roll so that
-    #   we can accurately derive the move with the highest expected value.
-    def getExpectedDamage( self, mon, move, opp, mod='' ):
+    def rollHitCount( self, move ):
+        if self.moveDex.at[move, 'hit_distr'] == 'normal':
+            return np.random.choice([2,3,4,5], 1, p=[0.375,0.375,0.125,0.125])
+        elif self.moveDex.at[move, 'hit_distr'] == 'double':
+            return 2
+        else:
+            return 1
+
+    def attack( self, mon, move, opp, expected=False ):
         L = float(mon.level)
         AS = float(self.getAttackStat(move, mon))
-        if mod == 'burn':
+        if mon.status['burned']:
             AS = math.floor(AS/2)
         P = float(self.getMovePower(move))
         DS = float(self.getDefenseStat(move, opp))
         STAB = float(self.calculateSTAB(mon, move))
         TB = float(self.calculateTypeBonus(move, opp))
 
-        base_dmg = min(((((2*L/5)+2)*(AS/DS)*P)/50),997)+2
-        crit_base_dmg = min(((((2*(2*L)/5)+2)*(AS/DS)*P)/50),997)+2
-
+        base_dmg = min(((((2*L/5)+2)*(AS/DS)*P)/50),997)+2      
         mod_dmg = math.floor(math.floor(base_dmg*STAB)*(TB*10/10))
-        if mod_dmg > 1:
-            mod_dmg = math.floor(mod_dmg*(236/255))
 
+        crit_base_dmg = min(((((2*(2*L)/5)+2)*(AS/DS)*P)/50),997)+2
         crit_mod_dmg = math.floor(math.floor(crit_base_dmg*STAB)*(TB*10/10))
-        if crit_mod_dmg > 1:
-            crit_mod_dmg = math.floor(crit_mod_dmg*(236/255))
-        
+
         crit_chance = self.calculateCritChance(mon,move)
 
-        total = math.floor((1 - crit_chance) * mod_dmg)
-        total_crit = math.floor(crit_chance * crit_mod_dmg)
+        if expected==False:
+            dmg = crit_mod_dmg if np.random.binomial(1,crit_chance) else mod_dmg
+            num_hits = self.rollHitCount(move)
 
-        return total + total_crit
+            if dmg == 0 or dmg == 1:
+                return math.floor(dmg) * num_hits
+            else:
+                R = 217 + np.random.choice(range(39),size=1,replace=False)[0]
+                return math.floor(dmg * (R/255)) * num_hits
+        
+        else:
+            total = math.floor((1 - crit_chance) * mod_dmg)
+            total_crit = math.floor(crit_chance * crit_mod_dmg)
+            return (total + total_crit) * self.moveDex.at[move,'avg_hits']
+
+    def getDamage( self, mon, move, opp, expected=False):
+        # Some moves do a variable amount of damage based on the user's level.
+        if self.moveDex.at[move,'subcat'] == 'level_dep':
+            return self.levelDepAttack(mon, move, opp, expected=expected)
+                
+        # Some moves do a fixed amount of damage, ignoring types and STAB.
+        elif self.moveDex.at[move,'subcat'] == 'fixed':
+            return self.fixedAttack(move, opp)
+
+        # The flying move Mirror Move copies the opponent's last-used attack.
+        elif self.moveDex.at[move,'subcat'] == 'reflect':
+            if opp.lastUsedMove == "":
+                return 0
+            else:
+                return self.processMove(mon, opp.lastUsedMove, opp, expected=expected)
+
+        # Some moves instantly KO if they land, but have a low accuracy. To evaluate the
+        #   value of these moves, we will return the opponent's max HP, which will then
+        #   be multiplied by the accuracy in the pickMove function.
+        elif self.moveDex.at[move,'subcat'] == 'ko':
+            return self.pokeDex.at[opp.name, 'hp']
+
+        # Finally, the rest of the moves are calculated in a normal way.
+        else:
+            # If the opponent is charging Fly or Dig, only certain moves will hit it.
+            if (opp.isUnderground) and not (self.moveDex.at[move, 'hit_dig']):
+                return 0
+            elif (opp.isAirborne) and not (self.moveDex.at[move,'hit_fly']):
+                return 0
+            # And here we have the calculation for every other move.
+            else:
+                return self.attack(mon, move, opp, expected=expected)
+
+
+    # This is the default damage calculation for most moves in the game.
+    def processAttack( self, mon, move, opp, expected=False, damageOnly=False ):
+
+        attackScore = 0
+
+        dmg = self.getDamage(mon, move, opp, expected=expected)
+        acc = self.getMoveAccuracy(move)
+
+        attackScore += dmg * acc
+
+        # We also want to account for how many turns the move takes to charge up.
+        #    Moves like Fly and Dig aren't checked here because the charge is done 
+        #    in a way that protects the user.
+        if self.moveDex.at[move,'subcat'] == 'charge':
+            attackScore /= float(self.moveDex.at[move,'avg_turns'])
+
+        # There is a single move (Hyper Beam) that does not charge up but instead
+        #   shoots first with a turn of rest afterwards required. If the move is
+        #   expected to kill the next turn, this rest turn is ignored. If the move
+        #   will not kill, this rest turn must be accounted for.
+        elif (self.moveDex.at[move,'subcat'] == 'burst') and (attackScore < opp.stats['hp']):
+            attackScore /= float(self.moveDex.at[move,'avg_turns'])
+
+        #   Moves with recoil inflict damage on the user as a percentage of the damage
+        #   inflicted, so we have to account for those.
+        if pd.notna(self.moveDex.at[move,'recoil']) and not damageOnly:
+            recoil = math.floor(dmg * self.moveDex.at[move,'recoil'])
+            
+            # If the recoil would kill the user, its score is made to be zero to ensure 
+            # it doesn't pick it.
+            if ((mon.stats['hp'] - recoil) <= 0):
+                # BUT, if using the move is expected to kill, it will process the move
+                # normally, because the user will "win" before they die.
+                if attackScore < opp.stats['hp']:
+                    attackScore = 0
+            else:
+                attackScore -= recoil
+
+        #   This is kind of petty, but we also have to be wary of crash damage, which
+        #   in Gen 1 is always 1 HP, lol.
+        if pd.notna(self.moveDex.at[move,'crash']) and not damageOnly:
+            attackScore -= 1
+
+        # Next, we account for ways in which the move can affect the user's HP.
+        #   "Absorb" type moves heal the user for a percentage of the damage dealt,
+        #   so we add the HP the user would heal to the score.
+        if (self.moveDex.at[move,'subcat'] == 'absorb') and not damageOnly:
+            exp_heal_amt = math.floor(dmg * acc * self.moveDex.at[move,'heal'])
+            health_diff = self.pokeDex.at[mon.name,'hp'] - mon.stats['hp']
+            if health_diff > exp_heal_amt:
+                attackScore += exp_heal_amt
+            else:
+                attackScore += health_diff
+
+        # Next, we account for status conditions.
+        if pd.notna(self.moveDex.at[move,'opp_status']) and not damageOnly:
+            attackScore += self.processStatusMove(mon, move, opp)
+        
+        return attackScore        
+
+
 
     def hurtItselfInConfusion( self, mon, expected=False ):
         L = mon.level
@@ -351,7 +456,7 @@ class Gen1Battle:
 
         return mod_dmg
 
-    def calculateStatusValue( self, mon, move, opp ):
+    def processStatusMove( self, mon, move, opp ):
         status = self.moveDex.at[move,'opp_status']
         status_chance = float(self.moveDex.at[move,'opp_status_chance'].strip('%'))/100
         status_score = 0
@@ -384,12 +489,14 @@ class Gen1Battle:
             status_score += self.hurtItselfInConfusion(opp) * self.avg_confusion_turns
 
         else:
-            incomingMove = self.pickMove( opp, mon, simplify=True )
+            incomingMove = self.pickMove( opp, mon, damageOnly=True )
             incomingDamage = self.processMove(opp, incomingMove, mon, expected=True)
 
             if status == 'burn' and 'fire' not in opp.types:
                 status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * self.avg_battle_length)
-                incomingDamage_burned = self.processMove(opp, incomingMove, mon, expected=True, mod='burn')
+                burned_opp = copy.deepcopy(opp)
+                burned_opp.status['burned'] == True
+                incomingDamage_burned = self.processMove(burned_opp, incomingMove, mon, expected=True)
                 burnDiff = incomingDamage - incomingDamage_burned
                 status_score += burnDiff * self.avg_battle_length
 
@@ -422,57 +529,16 @@ class Gen1Battle:
 
     # Here we will process the incoming move and account for all of the
     #   ways an attack can deal damage.
-    def processMove( self, mon, move, opp, expected=False, mod='' ):
-        # Some moves do a damage amount relative to the user's level. These moves
-        #    ignore STAB and type bonuses, BUT they do 0 damage to Pokemon who are
-        #    immune to the move's type.
-        if self.moveDex.at[move,'subcat'] == 'level_dep':
-            if self.calculateTypeBonus(move,opp) == 0:
-                return 0
-            else:
-                # Psywave does between 1 and 1.5x the user's level in damage.
-                if move == 'psywave':
-                    return math.floor(mon.level*0.75) if expected else (random.randrange(1, math.floor(mon.level*1.5)))
-                # Night Shade and Submission do damage equal to the user's level.
-                else:
-                    return mon.level
+    def processMove( self, mon, move, opp, expected=False, damageOnly=False ):
 
-        # Some moves do a fixed amount of damage, ignoring types and STAB.
-        elif self.moveDex.at[move,'subcat'] == 'fixed':
-            # Super Fang does half the opponent's current health, rounded down.
-            if move == 'super fang':
-                return max(1, math.floor(opp.stats['hp'] / 2))
-            # Supersonic and Dragon Rage do a fixed damage amount (20, 40 respectively).
-            else:
-                return float(self.moveDex.at[move,'power'])  
+        if self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] not in ['suicide', 'reflect','counter', 'ko', 'rage', 'random', 'status_dep']:
+            return self.processAttack( mon, move, opp, expected=expected, damageOnly=damageOnly )
 
-        # The flying move Mirror Move copies the opponent's last-used attack.
-        elif self.moveDex.at[move,'subcat'] == 'reflect':
-            if opp.lastUsedMove == "":
-                return 0
-            else:
-                return self.processMove(mon, opp.lastUsedMove, opp, expected=expected, mod=mod)
+        elif self.moveDex.at[move, 'category'] == 'status':
+            return self.processStatusMove( mon, move, opp )
 
-        # Some moves instantly KO if they land, but have a low accuracy. To evaluate the
-        #   value of these moves, we will return the opponent's max HP, which will then
-        #   be multiplied by the accuracy in the pickMove function.
-        elif self.moveDex.at[move,'subcat'] == 'ko':
-            return self.pokeDex.at[opp.name, 'hp']
-
-        # Finally, the rest of the moves are calculated in a normal way.
-        else:
-            # If the opponent is charging Fly or Dig, only certain moves will hit it.
-            if (opp.isUnderground) and not (self.moveDex.at[move, 'hit_dig']):
-                return 0
-            elif (opp.isAirborne) and not (self.moveDex.at[move,'hit_fly']):
-                return 0
-            # And here we have the calculation for every other move.
-            else:
-                if(expected):
-                    return self.getExpectedDamage(mon, move, opp, mod=mod)
-                else:
-                    return self.getDamage(mon, move, opp, mod=mod)
-
+        else: # this should never happen
+            return -1
 
     # For each move the Pokemon can use, we calculate a heuristic score for the overall value 
     #   of using the move versus a given opponent. We select the move with the highest score.
@@ -486,23 +552,17 @@ class Gen1Battle:
         for move in self.learnDex.columns:
 
             if pd.notna(self.learnDex.at[mon.name, move]) and move != 'index' and self.moveDex.at[move,'type'] in validTypes:
-                # We're only considering attacking moves here, so status moves are skipped.
-                if damageOnly and self.moveDex.at[move,'category'] == 'status':
-                    continue
 
-                # These are the attacking moves I haven't implemented yet.
-                if self.moveDex.at[move,'subcat'] in ['suicide', 'reflect','counter', 'rage', 'random', 'status_dep']:
-                    continue
+                moveScore = 0
+                # If we're only considering attacking moves, status moves are skipped.
+                if self.moveDex.at[move,'category'] == 'status' and damageOnly:
+                        continue
 
-                # First, the move's expected damage against the opponent is calculated.
-                exp_dmg = self.processMove(mon, move, opp, expected=True)
-                score=exp_dmg
+                elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] in ['suicide', 'reflect','counter', 
+                                                                                                            'rage', 'random', 'status_dep']:
+                        continue
 
-                # Then, we account for the move's accuracy and the number of times
-                #    the move hits. Even "max" accuracy is not 100% unless the move is 
-                #    Swift. Otherwise, it's equal to 255/256, or 0.996.
-                accuracy = self.getMoveAccuracy(move)
-                score = exp_dmg * accuracy * self.moveDex.at[move,'avg_hits']
+                score = self.processMove(mon, move, opp, expected=True, damageOnly=damageOnly)
 
                 # At this stage we have an emergency exit clause. If the currently selected
                 #   move is Quick Attack, and using it would kill the opponent, the Pokemon
@@ -512,59 +572,8 @@ class Gen1Battle:
                     optimalMove = 'quick attack'
                     maxMoveScore = score
                     break
-                
-                # We also want to account for how many turns the move takes to charge up.
-                #    Moves like Fly and Dig aren't checked here because the charge is done 
-                #    in a way that protects the user.
-                if self.moveDex.at[move,'subcat'] == 'charge':
-                    score /= float(self.moveDex.at[move,'avg_turns'])
-                
-                # There is a single move (Hyper Beam) that does not charge up but instead
-                #   shoots first with a turn of rest afterwards required. If the move is
-                #   expected to kill the next turn, this rest turn is ignored. If the move
-                #   will not kill, this rest turn must be accounted for.
-                if (self.moveDex.at[move,'subcat'] == 'burst') and (score < opp.stats['hp']):
-                    score /= float(self.moveDex.at[move,'avg_turns'])
 
-                expected_roll = score
-                
-                #   Moves with recoil inflict damage on the user as a percentage of the damage
-                #   inflicted, so we have to account for those.
-                if pd.notna(self.moveDex.at[move,'recoil']) and not damageOnly:
-                    recoil = math.floor(exp_dmg * self.moveDex.at[move,'recoil'])
-                    
-                    # If the recoil would kill the user, its score is made to be zero to ensure 
-                    # it doesn't pick it.
-                    if ((mon.stats['hp'] - recoil) <= 0):
-                        # BUT, if using the move is expected to kill, it will process the move
-                        # normally, because the user will "win" before they die.
-                        if expected_roll < opp.stats['hp']:
-                            score = 0
-                    else:
-                        score -= recoil
-                
-                #   This is kind of petty, but we also have to be wary of crash damage, which
-                #   in Gen 1 is always 1 HP, lol.
-                if pd.notna(self.moveDex.at[move,'crash']) and not damageOnly:
-                    score -= 1
 
-                # Next, we account for ways in which the move can affect the user's HP.
-                #   "Absorb" type moves heal the user for a percentage of the damage dealt,
-                #   so we add the HP the user would heal to the score.
-                if (self.moveDex.at[move,'subcat'] == 'absorb') and not damageOnly:
-                    heal_amt = math.floor(exp_dmg * self.moveDex.at[move,'heal'])
-                    health_diff = self.pokeDex.at[mon.name,'hp'] - mon.stats['hp']
-                    if health_diff > heal_amt:
-                        score += heal_amt
-                    else:
-                        score += health_diff
-
-                # Next, we account for status conditions by multiplying the score by a
-                #    factor of 1 + its affliction chance.
-                #    e.g., a 100-score move with 20% chance to freeze now has a score of 120.
-                if pd.notna(self.moveDex.at[move,'opp_status']) and not damageOnly:
-                    score += self.calculateStatusValue(mon, move, opp)
-                
                 # If this move amounts to be optimal, we update the optimal move.
                 if score > maxMoveScore:
                     optimalMove = move
