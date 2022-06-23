@@ -1,7 +1,7 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('tauros', 50)
+mon1 = g.Gen1Mon('mew', 50)
 mon2 = g.Gen1Mon('chansey', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -172,8 +172,9 @@ if testingProcessMove:
     print("==============TESTING PROCESS MOVE=================") 
     moveDict = {}
     for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon1.name, move]) and (arena.moveDex.at[move,'category'] == 'attack' or arena.moveDex.at[move, 'subcat'] == 'status'):
-            moveDict[move] = int(arena.processMove(mon1, move, mon2, expected=True))
+        if move != 'index' and pd.notna(arena.learnDex.at[mon1.name, move]):
+            value = (arena.processMove(mon1, move, mon2, expected=True))
+            moveDict[move] = int(value) if pd.notna(value) else -1
 
     for tuple in sorted( ((v,k) for k,v in moveDict.items()), reverse=True):
         print("Move value of %s using %s vs. %s is %s" % (mon1.name, tuple[1], mon2.name, tuple[0]))
@@ -182,8 +183,9 @@ if testingProcessMove:
 
     moveDict = {}
     for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]) and (arena.moveDex.at[move,'category'] == 'attack' or arena.moveDex.at[move, 'subcat'] == 'status'):
-            moveDict[move] = int(arena.processMove(mon2, move, mon1, expected=True))
+        if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]):
+            value = (arena.processMove(mon2, move, mon1, expected=True))
+            moveDict[move] = int(value) if pd.notna(value) else -1
 
     for tuple in sorted( ((v,k) for k,v in moveDict.items()), reverse=True):
         print("Move value of %s using %s vs. %s is %s" % (mon2.name, tuple[1], mon1.name, tuple[0]))

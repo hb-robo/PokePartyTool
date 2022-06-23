@@ -107,22 +107,24 @@ class Gen1Mon:
         self.isUnderground = False
 
     def updateStats( self ):
-        for stat in self.stats.keys():
-            self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.statStages[self.statMods])
+        for stat in self.stats:
+            if stat == 'hp':
+                continue
+            elif stat == 'evasion':
+                self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.evasionStages[self.statMods[stat]])
+            else:
+                self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.statStages[self.statMods[stat]])
 
     def buff( self, stat, num_stages ):
-        if stat not in ['attack','defense','special','speed','accuracy','evasion'] \
-            or type(num_stages) != 'int' or num_stages <= 0:
+        if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages <= 0:
             print("ERROR: Invalid input for buff(). No stat buff applied.")
         else:
             self.statMods[stat] += num_stages
             self.updateStats()
-            
 
 
     def debuff( self, stat, num_stages ):
-        if stat not in ['attack','defense','special','speed','accuracy','evasion'] or \
-            type(num_stages) != 'int' or num_stages >= 0:
+        if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages >= 0:
             print("ERROR: Invalid input for debuff(). No stat debuff applied.")
         else:
             self.statMods[stat] += num_stages
@@ -261,6 +263,13 @@ class Gen1Battle:
     def getMoveAccuracy( self, move ):
         return 1 if move == 'swift' else min(0.996, self.moveDex.at[move,'accuracy']/100)
 
+    def calculateAccuracy( self, mon, move, opp ):
+        acc = self.getMoveAccuracy(move)
+        accMod = mon.statStages[mon.statMods['accuracy']]
+        evasionMod = opp.evasionStages[opp.statMods['evasion']]
+        return acc * accMod * evasionMod
+
+
     # Because Pokemon is turn-based, we have to pick who attacks first.
     #   First, we check if one mon uses a priority move. Then, we compare
     #   speeds. Finally, if either of those methods tie, we flip a coin. 
@@ -381,7 +390,7 @@ class Gen1Battle:
         attackScore = 0
 
         dmg = self.getDamage(mon, move, opp, expected=expected)
-        acc = self.getMoveAccuracy(move)
+        acc = self.calculateAccuracy(mon, move, opp)
 
         attackScore += dmg * acc
 
@@ -432,7 +441,11 @@ class Gen1Battle:
         # Next, we account for status conditions.
         if pd.notna(self.moveDex.at[move,'opp_status']) and not damageOnly:
             attackScore += self.processStatusMove(mon, move, opp)
-        
+
+        # Next, we account for status conditions.
+        if (pd.notna(self.moveDex.at[move,'stat']) or pd.notna(self.moveDex.at[move,'opp_stat'])) and not damageOnly:
+            attackScore += self.processStatMove(mon, move, opp)
+
         return attackScore        
 
 
@@ -490,13 +503,13 @@ class Gen1Battle:
 
         else:
             incomingMove = self.pickMove( opp, mon, damageOnly=True )
-            incomingDamage = self.processMove(opp, incomingMove, mon, expected=True)
+            incomingDamage = self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True)
 
             if status == 'burn' and 'fire' not in opp.types:
                 status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * self.avg_battle_length)
                 burned_opp = copy.deepcopy(opp)
                 burned_opp.status['burned'] == True
-                incomingDamage_burned = self.processMove(burned_opp, incomingMove, mon, expected=True)
+                incomingDamage_burned = self.processMove(burned_opp, incomingMove, mon, expected=True, damageOnly=True)
                 burnDiff = incomingDamage - incomingDamage_burned
                 status_score += burnDiff * self.avg_battle_length
 
@@ -524,7 +537,88 @@ class Gen1Battle:
                 status_score += incomingDamage
 
         status_mod = (status_score * status_chance)
-        return math.floor(status_mod * self.getMoveAccuracy(move))
+        return math.floor(status_mod * self.calculateAccuracy(mon, move, opp))
+
+    def processStatMove( self, mon, move, opp ):
+        buff_value = 0
+        if pd.notna(self.moveDex.at[move,'stat']):
+            stat = self.moveDex.at[move,'stat']
+            stages = int(self.moveDex.at[move,'stat_change'])
+            acc = self.calculateAccuracy(mon, move, opp)
+            
+            buffedMon = copy.deepcopy(mon)
+            buffedMon.buff(stat, stages)
+
+            if stat == 'speed' and mon.stats['speed'] < opp.stats['speed']:
+               
+                if buffedMon.stats['speed'] >= opp.stats['speed']:
+                    incomingMove = self.pickMove( opp, mon, damageOnly=True )
+                    incomingDamage = self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True)
+                    if buffedMon == opp.stats['speed']:  
+                        incomingDamage /= 2
+                    buff_value += incomingDamage * (acc)
+
+            if stat in ['attack', 'special']:
+
+                bestMove = self.pickMove( mon, opp, damageOnly=True)
+                bestDamage = self.processMove(mon, bestMove, opp, expected=True, damageOnly=True)
+
+                buffedMove = self.pickMove( buffedMon, opp, damageOnly=True)
+                buffedDamage = self.processMove(buffedMon, buffedMove, opp, expected=True, damageOnly=True)
+
+                buff_value += ((buffedDamage - bestDamage) * (acc))
+
+            if stat in ['defense', 'special', 'evasion']:
+                
+                incomingMove = self.pickMove( opp, mon, damageOnly=True )
+                incomingDamage = self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True)
+                
+                buffedIncomingMove = self.pickMove( opp, buffedMon, damageOnly=True )
+                buffedIncomingDamage = self.processMove(opp, buffedIncomingMove, buffedMon, expected=True, damageOnly=True)
+
+                buff_value += ((incomingDamage - buffedIncomingDamage) * (acc))
+
+        debuff_value = 0
+        if pd.notna(self.moveDex.at[move,'opp_stat']):
+            stat = self.moveDex.at[move,'opp_stat']
+            stages = int(self.moveDex.at[move,'opp_stat_change'])
+            acc = self.calculateAccuracy( mon, move, opp )
+            status_chance = float(str(self.moveDex.at[move,'opp_stat_chance']).strip('%'))/100
+
+            nerfedOpp = copy.deepcopy(opp)
+            nerfedOpp.debuff(stat, stages)
+
+            if stat == 'speed' and mon.stats['speed'] < opp.stats['speed']:
+
+                if nerfedOpp.stats['speed'] >= opp.stats['speed']:
+                    incomingMove = self.pickMove( opp, mon, damageOnly=True )
+                    incomingDamage = self.processMove(opp, incomingMove, mon, expected=True)
+                    if nerfedOpp == opp.stats['speed']:  
+                        incomingDamage /= 2
+                    debuff_value += incomingDamage * acc * status_chance
+
+            if stat in ['attack', 'special']:
+
+                incomingMove = self.pickMove( opp, mon, damageOnly=True )
+                incomingDamage = self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True)
+                
+                nerfedIncomingMove = self.pickMove( nerfedOpp, mon, damageOnly=True )
+                nerfedIncomingDamage = self.processMove( nerfedOpp, nerfedIncomingMove, mon, expected=True, damageOnly=True)
+
+                debuff_value += (incomingDamage - nerfedIncomingDamage) * acc * status_chance
+
+            if stat in ['defense', 'special', 'accuracy']:
+
+                bestMove = self.pickMove( mon, opp, damageOnly=True)
+                bestDamage = self.processMove(mon, bestMove, opp, expected=True, damageOnly=True)
+
+                nerfedOppMove = self.pickMove( mon, nerfedOpp, damageOnly=True)
+                nerfedOppDamage = self.processMove(mon, nerfedOppMove, nerfedOpp, expected=True, damageOnly=True)
+
+                debuff_value += (nerfedOppDamage - bestDamage) * (acc)
+        
+        return (buff_value + debuff_value)
+
 
 
     # Here we will process the incoming move and account for all of the
@@ -534,8 +628,11 @@ class Gen1Battle:
         if self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] not in ['suicide', 'reflect','counter', 'ko', 'rage', 'random', 'status_dep']:
             return self.processAttack( mon, move, opp, expected=expected, damageOnly=damageOnly )
 
-        elif self.moveDex.at[move, 'category'] == 'status':
+        elif self.moveDex.at[move, 'subcat'] == 'status':
             return self.processStatusMove( mon, move, opp )
+
+        elif self.moveDex.at[move, 'subcat'] == 'stat':
+            return self.processStatMove( mon, move, opp )
 
         else: # this should never happen
             return -1
