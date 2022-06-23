@@ -1,8 +1,8 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('mew', 50)
-mon2 = g.Gen1Mon('chansey', 50)
+mon1 = g.Gen1Mon('charizard', 50)
+mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
 arena = g.Gen1Battle(mon1, mon2)
@@ -167,7 +167,7 @@ if testingStatusValue:
         if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]) and pd.notna(arena.moveDex.at[move,'opp_status']):
             print("The estimated status value of %s using %s vs. %s is %s" % (mon2.name, move, mon1.name, arena.calculateStatusValue(mon2, move, mon1)))
 
-testingProcessMove = 1
+testingProcessMove = 0
 if testingProcessMove:
     print("==============TESTING PROCESS MOVE=================") 
     moveDict = {}
@@ -190,22 +190,47 @@ if testingProcessMove:
     for tuple in sorted( ((v,k) for k,v in moveDict.items()), reverse=True):
         print("Move value of %s using %s vs. %s is %s" % (mon2.name, tuple[1], mon1.name, tuple[0]))
 
+testingMovePicker = 0
+if testingMovePicker:
+    print("==============TESTING MOVE PICKER=================")
+    moveDict = {}
+    for pokemon in list(arena.pokeDex.index):
+        opponent = g.Gen1Mon(pokemon, level=50)
+        move = arena.pickMove(mon1, opponent)
+        # print("%s's optimal opener vs. %s is %s" % (mon1.name, pokemon, move))
+        moveDict[move] = 1 if move not in moveDict else (moveDict[move]+1)
+
+    print("~~~optimal move list for %s~~~" % mon1.name)
+    moveList = sorted( ((v,k) for k,v in moveDict.items()), reverse=True)
+    i = 0
+    while i < 4 and i < len(moveList):
+        print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
+        i += 1
+
+testingBattleSim = 1
+if testingBattleSim:
+    print("==============BATTLE SIMULATOR=================")
+
+    monRecord = {}
+    wins = 0
+
+    for pokemon in list(arena.pokeDex.index):
+        if pokemon == mon1.name:
+            continue
+        opponent = g.Gen1Mon(pokemon, level=50)
+        battle = g.Gen1Battle(mon1, opponent)
+        result = battle.battle(log=True)
+        if result > 0:
+            wins += 1
+        monRecord[pokemon] = result
+
+        mon1.reset(mon1.name, level=50)
+
+    print("%s won %s/150 matchups." % (mon1.name, wins))
 
 
-
-
-# print("==============TESTING MOVE PICKER=================") 
-# # with open("log.txt","w") as f:
-# #     for pokemon in list(gen1.pokeDex.index):
-# #         opponent = classes.Mon(pokemon, gen1.pokeDex)
-
-# #         print('~~~~VERSUS %s~~~~\n' % pokemon, file=f)
-# #         print("Bulbasaur's optimal move is %s\n" % string.capwords(gen1.pickMove(bulbasaur, opponent)), file=f)
-# #         print("Charmander's optimal move is %s\n" % string.capwords(gen1.pickMove(charmander, opponent)), file=f)
-# #         print("Squirtle's optimal move is %s\n" % string.capwords(gen1.pickMove(squirtle, opponent)), file=f)
-
-
-# print("==============BATTLE SIMULATOR=================")
+getELO = 0
+# if getELO:
 
 # df = pd.DataFrame(columns=list(gen1.pokeDex.index.values))
 # print(df.shape)
