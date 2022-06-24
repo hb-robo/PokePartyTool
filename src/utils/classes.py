@@ -46,6 +46,7 @@ class Gen1Mon:
         if name not in list(self.dex.index.values):
             print("ERROR: Invalid Pokemon inputted to Gen1Mon object.")
         else:
+            self.moveLog = {}
             self.reset(name, level)
 
     def reset( self, name, level ):
@@ -109,6 +110,8 @@ class Gen1Mon:
         self.hasToCharge = False
         self.isCharged = False
 
+        self.wokeUp = False
+
         self.bufferedMove = ""
 
         # miscellaneous conditions
@@ -121,6 +124,7 @@ class Gen1Mon:
         self.isAirborne = False
         self.isUnderground = False
 
+
     def updateStats( self ):
         for stat in self.stats:
             if stat == 'hp':
@@ -130,14 +134,21 @@ class Gen1Mon:
             else:
                 self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.statStages[self.statMods[stat]])
 
+    def logMove( self, move ):
+
+        if move in self.moveLog:
+            self.moveLog[move] += 1
+        else:
+            self.moveLog[move] = 1
+
+
     def increment( self ):
         if self.status['toxic'] == True and self.statusCounter < 16:
             self.statusCounter += 1
-        if self.status['sleep'] == True:
+        if self.status['sleep'] == True and self.statusCounter > 0:
             self.statusCounter -= 1
             if self.statusCounter == 0:
-                self.status['sleep'] = False
-                self.hasStatus = False
+                self.wokeUp = True
 
         if self.volStatus['confuse'] == True:
             self.confusionCounter -= 1
@@ -150,13 +161,6 @@ class Gen1Mon:
             self.rageCounter -= 1
         if self.willFlinch:
             self.willFlinch = False
-
-        if self.isCharged and not self.hasToCharge:
-            self.isCharged = False
-
-        if self.hasToCharge:
-            self.hasToCharge = False
-            self.isCharged = True
 
     def buff( self, stat, num_stages ):
         if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages <= 0:
@@ -431,13 +435,6 @@ class Gen1Battle:
         elif self.moveDex.at[move,'subcat'] == 'fixed':
             return self.fixedAttack(move, opp)
 
-        # The flying move Mirror Move copies the opponent's last-used attack.
-        elif self.moveDex.at[move,'subcat'] == 'reflect':
-            if opp.lastUsedMove == "":
-                return 0
-            else:
-                return self.processMove(mon, opp.lastUsedMove, opp, expected=expected)
-
         # Some moves instantly KO if they land, but have a low accuracy. To evaluate the
         #   value of these moves, we will return the opponent's max HP, which will then
         #   be multiplied by the accuracy in the pickMove function.
@@ -696,7 +693,14 @@ class Gen1Battle:
     #   ways an attack can deal damage.
     def processMove( self, mon, move, opp, expected=False, damageOnly=False ):
 
-        if self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] not in ['suicide', 'reflect','counter', 'ko', 'rage', 'random', 'status_dep']:
+        # The flying move Mirror Move copies the opponent's last-used attack.
+        if self.moveDex.at[move,'subcat'] == 'reflect':
+            if opp.lastUsedMove in ["", "mirror move"]:
+                return 0
+            else:
+                return self.processMove(mon, opp.lastUsedMove, opp, expected=expected)
+
+        elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] not in ['suicide', 'counter', 'reflect','ko', 'rage', 'random', 'status_dep']:
             return self.processAttack( mon, move, opp, expected=expected, damageOnly=damageOnly )
 
         elif self.moveDex.at[move, 'subcat'] == 'status':
@@ -726,7 +730,10 @@ class Gen1Battle:
                 if self.moveDex.at[move,'category'] == 'status' and damageOnly:
                         continue
 
-                elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] in ['suicide', 'reflect','counter', 'rampage',
+                if self.moveDex.at[move,'subcat'] == 'reflect' and damageOnly:
+                        continue
+
+                elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] in ['suicide', 'counter', 'rampage',
                                                                                                             'rage', 'random', 'status_dep']:
                         continue
 
@@ -758,6 +765,11 @@ class Gen1Battle:
 
     def runTurn( self, mon, monMove, opp, log=False ):
 
+        if mon.wokeUp:
+            print("%s woke up!" % mon.name)
+            mon.status['sleep'] = False
+            mon.hasStatus = False
+
         if mon.status['sleep'] == True:
             if log:
                 print("%s is fast asleep!" % mon.name)
@@ -780,15 +792,40 @@ class Gen1Battle:
             mon.hasToRest = False
 
         else: # able to move
-            if self.moveDex.at[monMove, 'subcat'] == 'charge' and not mon.isCharged:
-                mon.needstoCharge = True
+            if self.moveDex.at[monMove, 'subcat'] == 'charge' and mon.isCharged == False:
                 mon.bufferedMove = monMove
                 print("%s is building up energy!" % mon.name)
+                mon.isCharged = True
+
+            elif self.moveDex.at[monMove, 'subcat'] == 'fly' and mon.isAirborne == False:
+                mon.bufferedMove = monMove
+                print("%s flies up high!" % mon.name)
+                mon.isAirborne = True
+
+            elif self.moveDex.at[monMove, 'subcat'] == 'dig' and mon.isUnderground == False:
+                mon.bufferedMove = monMove
+                print("%s digs underground!" % mon.name)
+                mon.isUnderground = True
 
             else:
                 print("%s uses %s!" % (mon.name, monMove))
+                mon.lastUsedMove = monMove
+                mon.logMove(monMove)
 
-                if(np.random.binomial(1, float(self.moveDex.at[monMove,'accuracy'])/100)):
+                if self.moveDex.at[monMove, 'subcat'] == 'reflect':
+                    if opp.lastUsedMove in ["", "mirror move"]:
+                        print("...but it failed!")
+                    else:
+                        return self.runTurn(mon, opp.lastUsedMove, opp, log=log)
+
+                elif (opp.isAirborne and pd.isna(self.moveDex.at[monMove,'hit_fly'])) or \
+                    (opp.isUnderground and pd.isna(self.moveDex.at[monMove,'hit_dig'])) or \
+                    not (np.random.binomial(1, float(self.moveDex.at[monMove,'accuracy'])/100)):
+                    
+                    if(log):
+                        print("...but it missed!")
+
+                else:
 
                     if self.moveDex.at[monMove,'category'] == 'attack':
                         dmg = self.getDamage(mon, monMove, opp)
@@ -856,9 +893,13 @@ class Gen1Battle:
                         if log:
                             print("%s's %s fell by %s stages!" % (opp.name, stat, -1*int(stages)))
 
-                else:
-                    if(log):
-                        print("...but it missed!")
+
+                    if self.moveDex.at[monMove, 'subcat'] == 'charge':
+                        mon.isCharged = False
+                    if self.moveDex.at[monMove, 'subcat'] == 'fly':
+                        mon.isAirborne = False
+                    if self.moveDex.at[monMove, 'subcat'] == 'dig':
+                        mon.isUnderground = False
 
         if mon.status['poison'] == True:
             poison_dmg = math.floor(self.pokeDex.at[mon.name, 'hp'] / 16)
@@ -887,6 +928,8 @@ class Gen1Battle:
             if(log):
                 print("%s fainted!" % mon.name)
 
+        return
+
     def battle( self, log=False ):
         
         if(log):
@@ -900,8 +943,17 @@ class Gen1Battle:
                     (self.turn, self.pokemon.name, self.pokemon.stats['hp'], self.pokeDex.at[self.pokemon.name, 'hp'], \
                         self.opponent.name, self.opponent.stats['hp'], self.pokeDex.at[self.opponent.name,'hp']))
 
-            monMove = self.pickMove(self.pokemon, self.opponent) if self.pokemon.bufferedMove == "" else self.pokemon.bufferedMove
-            oppMove = self.pickMove(self.opponent, self.pokemon) if self.opponent.bufferedMove == "" else self.opponent.bufferedMove
+            if self.pokemon.bufferedMove != "":
+                monMove = self.pokemon.bufferedMove
+                self.pokemon.bufferedMove = ""
+            else:
+                monMove = self.pickMove(self.pokemon, self.opponent)
+
+            if self.opponent.bufferedMove != "":
+                oppMove = self.opponent.bufferedMove
+                self.opponent.bufferedMove = ""
+            else:
+                oppMove = self.pickMove(self.opponent, self.pokemon)
 
             if self.monMovesFirst(monMove, oppMove):
                 self.runTurn( self.pokemon, monMove, self.opponent, log=log )

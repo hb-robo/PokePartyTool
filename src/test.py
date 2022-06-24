@@ -1,7 +1,7 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('charizard', 50)
+mon1 = g.Gen1Mon('mewtwo', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -227,6 +227,12 @@ if testingBattleSim:
         mon1.reset(mon1.name, level=50)
 
     print("%s won %s/150 matchups." % (mon1.name, wins))
+
+    moveList = sorted( ((v,k) for k,v in mon1.moveLog.items()), reverse=True)
+    i = 0
+    while i < len(moveList):
+        print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
+        i += 1
 
 
 getELO = 0
