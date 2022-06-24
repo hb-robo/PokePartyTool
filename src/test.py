@@ -213,6 +213,7 @@ if testingBattleSim:
 
     monRecord = {}
     wins = 0
+    losses = []
 
     for pokemon in list(arena.pokeDex.index):
         if pokemon == mon1.name:
@@ -222,10 +223,13 @@ if testingBattleSim:
         result = battle.battle(log=True)
         if result > 0:
             wins += 1
+        else:
+            losses.append(pokemon)
         monRecord[pokemon] = result
 
         mon1.reset(mon1.name, level=50)
 
+    print("=======================================")
     print("%s won %s/150 matchups." % (mon1.name, wins))
 
     moveList = sorted( ((v,k) for k,v in mon1.moveLog.items()), reverse=True)
@@ -233,6 +237,69 @@ if testingBattleSim:
     while i < len(moveList):
         print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
         i += 1
+    print("Losses: %s" % losses)
+    print("=======================================")
+
+testingAllMatchups = 0
+if testingAllMatchups:
+    print("==============1V1 SIMULATOR=================")
+    matchups = {}
+    moves = {}
+
+    for name in list(arena.pokeDex.index):
+        challenger = g.Gen1Mon(name, level=50)
+        monRecord = {}
+        wins = 0
+
+        for pokemon in list(arena.pokeDex.index):
+            if pokemon == name:
+                continue
+            opponent = g.Gen1Mon(pokemon, level=50)
+            battle = g.Gen1Battle(challenger, opponent)
+            result = battle.battle(log=True)
+            if result > 0:
+                wins += 1
+                
+            monRecord[pokemon] = wins
+
+            challenger.reset(challenger.name, level=50)
+
+        print("=======================================")
+        print("%s won %s/150 matchups." % (challenger.name, wins))
+        matchups[name] = wins
+
+        moveList = sorted( ((v,k) for k,v in challenger.moveLog.items()), reverse=True)
+        i = 0
+        while i < len(moveList):
+            print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
+            i += 1
+        print("=======================================")
+
+        matchups[name] = wins
+
+        for move in moveList:
+            if move[1] not in moves:
+                moves[move[1]] = move[0]
+            else:
+                moves[move[1]] += move[0]
+
+
+    print("==============FINAL RESULTS=================")
+    results = sorted( ((v,k) for k,v in matchups.items()), reverse=True)
+    i = 0
+    while i < len(moveList):
+        print("%16s \t(%s wins)" % (matchups[i][1], matchups[i][0]))
+        i += 1
+
+    print("=============MOST USED MOVES================")
+    movesList = sorted( ((v,k) for k,v in moves.items()), reverse=True)
+    i = 0
+    while i < len(movesList):
+        print("%16s \t(%s uses)" % (movesList[i][1], movesList[i][0]))
+        i += 1
+    print("============================================")
+
+
 
 
 getELO = 0

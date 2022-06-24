@@ -766,7 +766,8 @@ class Gen1Battle:
     def runTurn( self, mon, monMove, opp, log=False ):
 
         if mon.wokeUp:
-            print("%s woke up!" % mon.name)
+            if log:
+                print("%s woke up!" % mon.name)
             mon.status['sleep'] = False
             mon.hasStatus = False
 
@@ -794,33 +795,37 @@ class Gen1Battle:
         else: # able to move
             if self.moveDex.at[monMove, 'subcat'] == 'charge' and mon.isCharged == False:
                 mon.bufferedMove = monMove
-                print("%s is building up energy!" % mon.name)
+                if log:
+                    print("%s is building up energy!" % mon.name)
                 mon.isCharged = True
 
             elif self.moveDex.at[monMove, 'subcat'] == 'fly' and mon.isAirborne == False:
                 mon.bufferedMove = monMove
-                print("%s flies up high!" % mon.name)
+                if log:
+                    print("%s flies up high!" % mon.name)
                 mon.isAirborne = True
 
             elif self.moveDex.at[monMove, 'subcat'] == 'dig' and mon.isUnderground == False:
                 mon.bufferedMove = monMove
-                print("%s digs underground!" % mon.name)
+                if log:
+                    print("%s digs underground!" % mon.name)
                 mon.isUnderground = True
 
             else:
-                print("%s uses %s!" % (mon.name, monMove))
+                if log:
+                    print("%s uses %s!" % (mon.name, monMove))
                 mon.lastUsedMove = monMove
                 mon.logMove(monMove)
 
                 if self.moveDex.at[monMove, 'subcat'] == 'reflect':
-                    if opp.lastUsedMove in ["", "mirror move"]:
+                    if opp.lastUsedMove in ["", "mirror move"] and log:
                         print("...but it failed!")
                     else:
                         return self.runTurn(mon, opp.lastUsedMove, opp, log=log)
 
-                elif (opp.isAirborne and pd.isna(self.moveDex.at[monMove,'hit_fly'])) or \
-                    (opp.isUnderground and pd.isna(self.moveDex.at[monMove,'hit_dig'])) or \
-                    not (np.random.binomial(1, float(self.moveDex.at[monMove,'accuracy'])/100)):
+                elif not (np.random.binomial(1, float(self.moveDex.at[monMove,'accuracy'])/100)) or \
+                    (opp.isAirborne and pd.isna(self.moveDex.at[monMove,'hit_fly'])) or \
+                    (opp.isUnderground and pd.isna(self.moveDex.at[monMove,'hit_dig'])):
                     
                     if(log):
                         print("...but it missed!")
@@ -875,7 +880,8 @@ class Gen1Battle:
                                 print("%s was afflicted with %s!" % (opp.name, opp_status))
                             
                         else:
-                            print("...but it failed!")
+                            if self.moveDex.at[monMove, 'category'] == 'status' and log:
+                                print("...but it failed!")
 
                     # applying buffs
                     if pd.notna(self.moveDex.at[monMove, 'stat']):
@@ -894,12 +900,12 @@ class Gen1Battle:
                             print("%s's %s fell by %s stages!" % (opp.name, stat, -1*int(stages)))
 
 
-                    if self.moveDex.at[monMove, 'subcat'] == 'charge':
-                        mon.isCharged = False
-                    if self.moveDex.at[monMove, 'subcat'] == 'fly':
-                        mon.isAirborne = False
-                    if self.moveDex.at[monMove, 'subcat'] == 'dig':
-                        mon.isUnderground = False
+                if self.moveDex.at[monMove, 'subcat'] == 'charge':
+                    mon.isCharged = False
+                if self.moveDex.at[monMove, 'subcat'] == 'fly':
+                    mon.isAirborne = False
+                if self.moveDex.at[monMove, 'subcat'] == 'dig':
+                    mon.isUnderground = False
 
         if mon.status['poison'] == True:
             poison_dmg = math.floor(self.pokeDex.at[mon.name, 'hp'] / 16)
