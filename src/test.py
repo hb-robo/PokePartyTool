@@ -1,7 +1,7 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('vaporeon', 50)
+mon1 = g.Gen1Mon('chansey', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
