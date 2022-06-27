@@ -152,7 +152,12 @@ class Gen1Mon:
             self.rageCounter -= 1
 
     def buff( self, stat, num_stages ):
-        if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages <= 0:
+        if stat == 'all' and num_stages == 0:
+            for stat in self.statMods:
+                self.statMods[stat] = 0
+            self.updateStats()
+
+        elif stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages <= 0:
             print("ERROR: Invalid input for buff(). No stat buff applied.")
         else:
             if self.statMods[stat] + num_stages <= 6:
@@ -161,13 +166,16 @@ class Gen1Mon:
 
 
     def debuff( self, stat, num_stages ):
-        if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages >= 0:
+        if stat == 'all' and num_stages == 0:
+            for stat in self.statMods:
+                self.statMods[stat] = 0
+            self.updateStats()
+        elif stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages >= 0:
             print("ERROR: Invalid input for debuff(). No stat debuff applied.")
         else:
             if self.statMods[stat] + num_stages >= -6:
                 self.statMods[stat] += num_stages
                 self.updateStats()
-
 
     def processStatus( self, status ):
 
@@ -617,7 +625,7 @@ class Gen1Battle:
             buffedMon = copy.deepcopy(mon)
             buffedMon.buff(stat, stages)
 
-            if stat == 'speed' and mon.stats['speed'] < opp.stats['speed']:
+            if stat in ['speed','all'] and mon.stats['speed'] < opp.stats['speed']:
                 if buffedMon.stats['speed'] >= opp.stats['speed']:
                     incomingMove = self.pickMove( opp, mon, damageOnly=True )
                     incomingDamage = self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True)
@@ -625,7 +633,7 @@ class Gen1Battle:
                         incomingDamage /= 2
                     buff_value += incomingDamage * (acc)
 
-            if stat in ['attack', 'special']:
+            if stat in ['attack', 'special', 'all']:
 
                 bestMove = self.pickMove( mon, opp, damageOnly=True)
                 bestDamage = min(self.processMove(mon, bestMove, opp, expected=True, damageOnly=True), opp.stats['hp'])
@@ -635,7 +643,7 @@ class Gen1Battle:
 
                 buff_value += ((buffedDamage - bestDamage) * (acc))
 
-            if stat in ['defense', 'special', 'evasion']:
+            if stat in ['defense', 'special', 'evasion', 'all']:
                 
                 incomingMove = self.pickMove( opp, mon, damageOnly=True )
                 incomingDamage = min(self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True), mon.stats['hp'])
@@ -655,7 +663,7 @@ class Gen1Battle:
             nerfedOpp = copy.deepcopy(opp)
             nerfedOpp.debuff(stat, stages)
 
-            if stat == 'speed' and mon.stats['speed'] < opp.stats['speed']:
+            if stat in ['speed', 'all'] and mon.stats['speed'] < opp.stats['speed']:
 
                 if nerfedOpp.stats['speed'] >= opp.stats['speed']:
                     incomingMove = self.pickMove( opp, mon, damageOnly=True )
@@ -664,7 +672,7 @@ class Gen1Battle:
                         incomingDamage /= 2
                     debuff_value += incomingDamage * acc * status_chance
 
-            if stat in ['attack', 'special']:
+            if stat in ['attack', 'special', 'all']:
 
                 incomingMove = self.pickMove( opp, mon, damageOnly=True )
                 incomingDamage = min(self.processMove(opp, incomingMove, mon, expected=True, damageOnly=True), mon.stats['hp'])
@@ -674,7 +682,7 @@ class Gen1Battle:
 
                 debuff_value += (incomingDamage - nerfedIncomingDamage) * acc * status_chance
 
-            if stat in ['defense', 'special', 'accuracy']:
+            if stat in ['defense', 'special', 'accuracy', 'all']:
 
                 bestMove = self.pickMove( mon, opp, damageOnly=True)
                 bestDamage = min(self.processMove(mon, bestMove, opp, expected=True, damageOnly=True), opp.stats['hp'])
