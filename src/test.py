@@ -1,7 +1,7 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('mewtwo', 50)
+mon1 = g.Gen1Mon('golbat', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -207,7 +207,7 @@ if testingMovePicker:
         print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
         i += 1
 
-testingBattleSim = 1
+testingBattleSim = 0
 if testingBattleSim:
     print("==============BATTLE SIMULATOR=================")
 
@@ -240,66 +240,54 @@ if testingBattleSim:
     print("Losses: %s" % losses)
     print("=======================================")
 
-testingAllMatchups = 0
+
+testingAllMatchups = 1
 if testingAllMatchups:
     print("==============1V1 SIMULATOR=================")
     matchups = {}
-    moves = {}
+    # moves = {}
+    num_rounds = 10
 
     for name in list(arena.pokeDex.index):
         challenger = g.Gen1Mon(name, level=50)
         monRecord = {}
-        wins = 0
+        totWins = 0
+        totMatches = 0
 
         for pokemon in list(arena.pokeDex.index):
             if pokemon == name:
                 continue
-            opponent = g.Gen1Mon(pokemon, level=50)
-            battle = g.Gen1Battle(challenger, opponent)
-            result = battle.battle(log=True)
-            if result > 0:
-                wins += 1
+
+            wins = 0
+            matches = 0
+
+            for i in range(num_rounds):
+                opponent = g.Gen1Mon(pokemon, level=50)
+                battle = g.Gen1Battle(challenger, opponent)
+                result = battle.battle(log=False)
+                if result > 0:
+                    wins += 1
+                matches += 1
+                challenger.reset(challenger.name, level=50)
                 
-            monRecord[pokemon] = wins
+            monRecord[opponent.name] = float(wins) / matches
+            # print("%s record against %s: %s/%s" % (challenger.name, opponent.name, wins, matches))
+            totWins += wins
+            totMatches += matches
 
-            challenger.reset(challenger.name, level=50)
+        monRecord['total'] = float(totWins) / totMatches
+        print("%s overall record: %s/%s" % (challenger.name, totWins, totMatches))
 
-        print("=======================================")
-        print("%s won %s/150 matchups." % (challenger.name, wins))
-        matchups[name] = wins
+        matchups[challenger.name] = monRecord
 
-        moveList = sorted( ((v,k) for k,v in challenger.moveLog.items()), reverse=True)
-        i = 0
-        while i < len(moveList):
-            print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
-            i += 1
-        print("=======================================")
+        # for move in moveList:
+        #     if move[1] not in moves:
+        #         moves[move[1]] = move[0]
+        #     else:
+        #         moves[move[1]] += move[0]
 
-        matchups[name] = wins
-
-        for move in moveList:
-            if move[1] not in moves:
-                moves[move[1]] = move[0]
-            else:
-                moves[move[1]] += move[0]
-
-
-    print("==============FINAL RESULTS=================")
-    results = sorted( ((v,k) for k,v in matchups.items()), reverse=True)
-    i = 0
-    while i < len(moveList):
-        print("%16s \t(%s wins)" % (matchups[i][1], matchups[i][0]))
-        i += 1
-
-    print("=============MOST USED MOVES================")
-    movesList = sorted( ((v,k) for k,v in moves.items()), reverse=True)
-    i = 0
-    while i < len(movesList):
-        print("%16s \t(%s uses)" % (movesList[i][1], movesList[i][0]))
-        i += 1
-    print("============================================")
-
-
+    df = pd.DataFrame.from_dict(matchups, orient='index')
+    df.to_csv('results.csv')
 
 
 getELO = 0

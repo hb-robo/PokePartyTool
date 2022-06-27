@@ -95,12 +95,14 @@ class Gen1Mon:
             'paralyze': False,
             'freeze': False
         }
+        self.wokeUp = False
 
         self.volStatus = {
             'confuse': False,
             'seed': False,
             'curse': False
         }
+        self.confusedNoLonger = False
 
         self.confusionCounter = 0
 
@@ -109,8 +111,6 @@ class Gen1Mon:
         self.hasToRest = False
         self.hasToCharge = False
         self.isCharged = False
-
-        self.wokeUp = False
 
         self.bufferedMove = ""
 
@@ -141,41 +141,29 @@ class Gen1Mon:
         else:
             self.moveLog[move] = 1
 
-
     def increment( self ):
-        if self.status['toxic'] == True and self.statusCounter < 16:
-            self.statusCounter += 1
-        if self.status['sleep'] == True and self.statusCounter > 0:
-            self.statusCounter -= 1
-            if self.statusCounter == 0:
-                self.wokeUp = True
-
-        if self.volStatus['confuse'] == True:
-            self.confusionCounter -= 1
-        if self.confusionCounter == 0:
-            self.volStatus['confuse'] = False
-
         if self.rampageCounter > 0:
             self.rampageCounter -= 1
         if self.rageCounter > 0:
             self.rageCounter -= 1
-        if self.willFlinch:
-            self.willFlinch = False
 
     def buff( self, stat, num_stages ):
         if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages <= 0:
             print("ERROR: Invalid input for buff(). No stat buff applied.")
         else:
-            self.statMods[stat] += num_stages
-            self.updateStats()
+            if self.statMods[stat] + num_stages <= 6:
+                self.statMods[stat] += num_stages
+                self.updateStats()
 
 
     def debuff( self, stat, num_stages ):
         if stat not in ['attack','defense','special','speed','accuracy','evasion'] or num_stages >= 0:
             print("ERROR: Invalid input for debuff(). No stat debuff applied.")
         else:
-            self.statMods[stat] += num_stages
-            self.updateStats()
+            if self.statMods[stat] + num_stages >= -6:
+                self.statMods[stat] += num_stages
+                self.updateStats()
+
 
     def processStatus( self, status ):
 
@@ -538,6 +526,7 @@ class Gen1Battle:
 
         return mod_dmg
 
+
     def processStatusMove( self, mon, move, opp ):
         status = self.moveDex.at[move,'opp_status']
         status_chance = float(self.moveDex.at[move,'opp_status_chance'].strip('%'))/100
@@ -770,10 +759,19 @@ class Gen1Battle:
                 print("%s woke up!" % mon.name)
             mon.status['sleep'] = False
             mon.hasStatus = False
+        
+        if mon.confusedNoLonger:
+            if log:
+                print("%s snapped out of confusion!" % mon.name)
+            mon.confusedNoLonger = False          
 
         if mon.status['sleep'] == True:
             if log:
                 print("%s is fast asleep!" % mon.name)
+            if mon.status['sleep'] == True and mon.statusCounter > 0:
+                mon.statusCounter -= 1
+                if mon.statusCounter == 0:
+                    mon.wokeUp = True
 
         elif mon.status['freeze'] == True:
             if log:
@@ -786,6 +784,7 @@ class Gen1Battle:
         elif mon.willFlinch == True:
             if log:
                 print("%s flinched!" % mon.name)
+            mon.willFlinch = False
 
         elif mon.hasToRest == True:
             if log:
@@ -793,6 +792,25 @@ class Gen1Battle:
             mon.hasToRest = False
 
         else: # able to move
+
+            if mon.volStatus['confuse'] == True:
+                if log:
+                    print("%s is confused!" % mon.name)
+
+                if np.random.choice([0,1], 1):
+                    confuse_dmg = self.hurtItselfInConfusion( mon )
+                    mon.stats['hp'] -= confuse_dmg
+                    if log:
+                        print("%s took %s damage in its confusion!" % (mon.name, confuse_dmg))
+                    if mon.stats['hp'] <= 0:
+                        if(log):
+                            print("%s fainted!" % mon.name)
+
+                mon.confusionCounter -= 1
+                if mon.confusionCounter == 0:
+                    mon.volStatus['confuse'] = False
+                    mon.confusedNoLonger = True
+
             if self.moveDex.at[monMove, 'subcat'] == 'charge' and mon.isCharged == False:
                 mon.bufferedMove = monMove
                 if log:
@@ -918,7 +936,9 @@ class Gen1Battle:
             mon.stats['hp'] -= tox_dmg
             if log:
                 print("%s took %s damage from toxin!" % (mon.name, tox_dmg))
-        
+            if mon.statusCounter < 16:
+                mon.statusCounter += 1
+
         if mon.stats['hp'] <= 0:
             if(log):
                 print("%s fainted!" % mon.name)
