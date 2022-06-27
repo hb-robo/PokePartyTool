@@ -1,7 +1,7 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('golbat', 50)
+mon1 = g.Gen1Mon('gengar', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -207,41 +207,60 @@ if testingMovePicker:
         print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
         i += 1
 
-testingBattleSim = 0
+testingBattleSim = 1
 if testingBattleSim:
     print("==============BATTLE SIMULATOR=================")
 
     monRecord = {}
-    wins = 0
-    losses = []
+    totWins = 0
+    losses = {}
+
+    matches = 1
 
     for pokemon in list(arena.pokeDex.index):
         if pokemon == mon1.name:
             continue
-        opponent = g.Gen1Mon(pokemon, level=50)
-        battle = g.Gen1Battle(mon1, opponent)
-        result = battle.battle(log=True)
-        if result > 0:
-            wins += 1
-        else:
-            losses.append(pokemon)
-        monRecord[pokemon] = result
 
-        mon1.reset(mon1.name, level=50)
+        wins = 0
+
+        for i in range(matches):
+            opponent = g.Gen1Mon(pokemon, level=50)
+            battle = g.Gen1Battle(mon1, opponent)
+            result = battle.battle(log=True)
+            if result > 0:
+                wins += 1
+            else:
+                if pokemon not in losses:
+                    losses[pokemon] = 1
+                else:
+                    losses[pokemon] += 1
+            mon1.reset()
+
+        print("%s won %s/%s matchups vs. %s." % (mon1.name, wins, matches, pokemon))
+        monRecord[pokemon] = wins
+        totWins += wins
 
     print("=======================================")
-    print("%s won %s/150 matchups." % (mon1.name, wins))
+    print("%s won %s/%s total matchups." % (mon1.name, totWins, matches*150))
 
     moveList = sorted( ((v,k) for k,v in mon1.moveLog.items()), reverse=True)
     i = 0
     while i < len(moveList):
         print("%16s \t(%s uses)" % (moveList[i][1], moveList[i][0]))
         i += 1
-    print("Losses: %s" % losses)
+
+    print("=======================================")
+    print("Losses:")
+
+    lossList = sorted( ((v,k) for k,v in losses.items()), reverse=True)
+    i = 0
+    while i < len(lossList):
+        print("%16s \t(%s Ls)" % (lossList[i][1], lossList[i][0]))
+        i += 1
     print("=======================================")
 
 
-testingAllMatchups = 1
+testingAllMatchups = 0
 if testingAllMatchups:
     print("==============1V1 SIMULATOR=================")
     matchups = {}
