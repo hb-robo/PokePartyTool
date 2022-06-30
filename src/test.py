@@ -1,7 +1,12 @@
 import pandas as pd
 import utils.classes as g
 
-mon1 = g.Gen1Mon('victreebel', 50)
+pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
+moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
+learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
+types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
+
+mon1 = g.Gen1Mon('nidoking', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -10,76 +15,76 @@ arena = g.Gen1Battle(mon1, mon2)
 testingCrit = 0
 if testingCrit:
     print("==============TESTING CRIT=================")
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and (arena.learnDex.at[mon1.name, col] in ['HM','TM','RTM'] or int(arena.learnDex.at[mon1.name, col]) <= mon1.level):
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and (learnDex.at[mon1.name, col] in ['HM','TM','RTM'] or int(learnDex.at[mon1.name, col]) <= mon1.level):
             print("Crit chance of %s using %s: %s" % (mon1.name, col, arena.calculateCritChance(mon1, col)))
 
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and (arena.learnDex.at[mon2.name, col] in ['HM','TM','RTM'] or int(arena.learnDex.at[mon2.name, col]) <= mon2.level):
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and (learnDex.at[mon2.name, col] in ['HM','TM','RTM'] or int(learnDex.at[mon2.name, col]) <= mon2.level):
             print("Crit chance of %s using %s: %s" % (mon2.name, col, arena.calculateCritChance(mon2, col)))
 
 
 testingSTAB = 0
 if testingSTAB:
     print("==============TESTING STAB=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("STAB of %s using %s: %s" % (mon1.name, col, arena.calculateSTAB(mon1, col)))
 
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("STAB of %s using %s: %s" % (mon2.name, col, arena.calculateSTAB(mon2, col)))
 
 testingTB = 0
 if testingTB:
     print("==============TESTING TYPE BONUS=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Type Bonus of %s using %s vs %s: %s" % (mon1.name, col, mon2.name, arena.calculateTypeBonus(col, mon2)))
         
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Type Bonus of %s using %s vs %s: %s" % (mon2.name, col, mon1.name, arena.calculateTypeBonus(col, mon1)))
 
 testingAttStat = 0
 if testingAttStat:
     print("==============TESTING ATT STAT=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Attack Stat for %s using move %s: %s" % (mon1.name, col, arena.getAttackStat(col,mon1)))
 
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Attack Stat for %s using move %s: %s" % (mon2.name, col, arena.getAttackStat(col,mon2)))
 
 testingDefStat = 0
 if testingDefStat:
     print("==============TESTING DEF STAT=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Defense Stat for %s defending against move %s: %s" % (mon2.name, col, arena.getDefenseStat(col,mon2)))
 
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack':
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack':
             print("Defense Stat for %s defending against move %s: %s" % (mon1.name, col, arena.getDefenseStat(col,mon1)))
 
 testingMovePower = 0
 if testingMovePower:
     print("==============TESTING MOVE POWER=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
             print("Move Power of %s: %s" % (col, arena.getMovePower(col)))
 
-        elif col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
+        elif col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
             print("Move Power of %s: %s" % (col, arena.getMovePower(col)))
 
 testingMoveAcc = 0
 if testingMoveAcc:
     print("==============TESTING MOVE ACCURACY=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
             print("Move Accuracy of %s: %s" % (col, arena.getMoveAccuracy(col)))
 
-        elif col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
+        elif col != 'index' and pd.notna(learnDex.at[mon2.name, col]) and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['suicide', 'counter', 'rage', 'random', 'status_dep']:
             print("Move Accuracy of %s: %s" % (col, arena.getMoveAccuracy(col)))
 
 testingMovesFirst = 0
@@ -90,64 +95,64 @@ if testingMovesFirst:
 testingGetDamage = 0
 if testingGetDamage:
     print("==============TESTING GET DAMAGE=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("%s uses %s vs %s for %s/%s HP" % (mon1.name, col, mon2.name, arena.getDamage(mon1, col, mon2), arena.pokeDex.at[mon2.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("%s uses %s vs %s for %s/%s HP" % (mon1.name, col, mon2.name, arena.getDamage(mon1, col, mon2), pokeDex.at[mon2.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("A burned %s uses %s vs %s for %s/%s HP" % (mon1.name, col, mon2.name, arena.getDamage(mon1, col, mon2, mod='burn'), arena.pokeDex.at[mon2.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("A burned %s uses %s vs %s for %s/%s HP" % (mon1.name, col, mon2.name, arena.getDamage(mon1, col, mon2, mod='burn'), pokeDex.at[mon2.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("%s uses %s vs %s for %s/%s HP" % (mon2.name, col, mon1.name, arena.getDamage(mon2, col, mon1), arena.pokeDex.at[mon1.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("%s uses %s vs %s for %s/%s HP" % (mon2.name, col, mon1.name, arena.getDamage(mon2, col, mon1), pokeDex.at[mon1.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("A burned %s uses %s vs %s for %s/%s HP" % (mon2.name, col, mon1.name, arena.getDamage(mon2, col, mon1, mod='burn'), arena.pokeDex.at[mon1.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("A burned %s uses %s vs %s for %s/%s HP" % (mon2.name, col, mon1.name, arena.getDamage(mon2, col, mon1, mod='burn'), pokeDex.at[mon1.name,'hp']))
 
 testingExpectedDamage = 0
 if testingExpectedDamage:
     print("==============TESTING EXPECTED DAMAGE=================") 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("%s uses %s vs %s for an expected %s/%s HP" % (mon1.name, col, mon2.name, arena.getExpectedDamage(mon1, col, mon2), arena.pokeDex.at[mon2.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("%s uses %s vs %s for an expected %s/%s HP" % (mon1.name, col, mon2.name, arena.getExpectedDamage(mon1, col, mon2), pokeDex.at[mon2.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon1.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("A burned %s uses %s vs %s for an expected %s/%s HP" % (mon1.name, col, mon2.name, arena.getExpectedDamage(mon1, col, mon2, mod='burn'), arena.pokeDex.at[mon2.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon1.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("A burned %s uses %s vs %s for an expected %s/%s HP" % (mon1.name, col, mon2.name, arena.getExpectedDamage(mon1, col, mon2, mod='burn'), pokeDex.at[mon2.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("%s uses %s vs %s for an expected %s/%s HP" % (mon2.name, col, mon1.name, arena.getExpectedDamage(mon2, col, mon1), arena.pokeDex.at[mon1.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("%s uses %s vs %s for an expected %s/%s HP" % (mon2.name, col, mon1.name, arena.getExpectedDamage(mon2, col, mon1), pokeDex.at[mon1.name,'hp']))
 
-    for col in arena.learnDex.columns:
-        if col != 'index' and pd.notna(arena.learnDex.at[mon2.name, col]) \
-            and arena.moveDex.at[col,'category'] == 'attack' \
-            and arena.moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
-            and pd.notna(arena.moveDex.at[col,'power']):
-            print("A burned %s uses %s vs %s for an expected %s/%s HP" % (mon2.name, col, mon1.name, arena.getExpectedDamage(mon2, col, mon1, mod='burn'), arena.pokeDex.at[mon1.name,'hp']))
+    for col in learnDex.columns:
+        if col != 'index' and pd.notna(learnDex.at[mon2.name, col]) \
+            and moveDex.at[col,'category'] == 'attack' \
+            and moveDex.at[col,'subcat'] not in ['level_dep','fixed','reflect','ko','suicide', 'counter', 'rage', 'ko', 'random', 'status_dep'] \
+            and pd.notna(moveDex.at[col,'power']):
+            print("A burned %s uses %s vs %s for an expected %s/%s HP" % (mon2.name, col, mon1.name, arena.getExpectedDamage(mon2, col, mon1, mod='burn'), pokeDex.at[mon1.name,'hp']))
 
 testingConfusionDamage = 0
 if testingConfusionDamage:
@@ -160,19 +165,19 @@ if testingConfusionDamage:
 testingStatusValue = 0
 if testingStatusValue:
     print("==============TESTING STATUS VALUE=================") 
-    for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon1.name, move]) and pd.notna(arena.moveDex.at[move,'opp_status']):
+    for move in learnDex.columns:
+        if move != 'index' and pd.notna(learnDex.at[mon1.name, move]) and pd.notna(moveDex.at[move,'opp_status']):
             print("The estimated status value of %s using %s vs. %s is %s" % (mon1.name, move, mon2.name, arena.calculateStatusValue(mon1, move, mon2)))
-    for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]) and pd.notna(arena.moveDex.at[move,'opp_status']):
+    for move in learnDex.columns:
+        if move != 'index' and pd.notna(learnDex.at[mon2.name, move]) and pd.notna(moveDex.at[move,'opp_status']):
             print("The estimated status value of %s using %s vs. %s is %s" % (mon2.name, move, mon1.name, arena.calculateStatusValue(mon2, move, mon1)))
 
 testingProcessMove = 0
 if testingProcessMove:
     print("==============TESTING PROCESS MOVE=================") 
     moveDict = {}
-    for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon1.name, move]):
+    for move in learnDex.columns:
+        if move != 'index' and pd.notna(learnDex.at[mon1.name, move]):
             value = (arena.processMove(mon1, move, mon2, expected=True))
             moveDict[move] = int(value) if pd.notna(value) else -1
 
@@ -182,8 +187,8 @@ if testingProcessMove:
     print("==============TESTING PROCESS MOVE=================") 
 
     moveDict = {}
-    for move in arena.learnDex.columns:
-        if move != 'index' and pd.notna(arena.learnDex.at[mon2.name, move]):
+    for move in learnDex.columns:
+        if move != 'index' and pd.notna(learnDex.at[mon2.name, move]):
             value = (arena.processMove(mon2, move, mon1, expected=True))
             moveDict[move] = int(value) if pd.notna(value) else -1
 
@@ -194,7 +199,7 @@ testingMovePicker = 0
 if testingMovePicker:
     print("==============TESTING MOVE PICKER=================")
     moveDict = {}
-    for pokemon in list(arena.pokeDex.index):
+    for pokemon in list(pokeDex.index):
         opponent = g.Gen1Mon(pokemon, level=50)
         move = arena.pickMove(mon1, opponent)
         # print("%s's optimal opener vs. %s is %s" % (mon1.name, pokemon, move))
@@ -215,9 +220,9 @@ if testingBattleSim:
     totWins = 0
     losses = {}
 
-    matches = 1
+    matches = 10
 
-    for pokemon in list(arena.pokeDex.index):
+    for pokemon in list(pokeDex.index):
         if pokemon == mon1.name:
             continue
 
@@ -267,13 +272,13 @@ if testingAllMatchups:
     # moves = {}
     num_rounds = 10
 
-    for name in list(arena.pokeDex.index):
+    for name in list(pokeDex.index):
         challenger = g.Gen1Mon(name, level=50)
         monRecord = {}
         totWins = 0
         totMatches = 0
 
-        for pokemon in list(arena.pokeDex.index):
+        for pokemon in list(pokeDex.index):
             if pokemon == name:
                 continue
 

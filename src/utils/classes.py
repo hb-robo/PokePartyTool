@@ -5,9 +5,19 @@ import numpy as np
 import random
 import copy
 
+
+# constant lists for gens 1-3 calculation
+SPECTYPES = ['fire', 'water', 'grass', 'electric', 'ice', 'psychic', 'dragon']
+PHYSTYPES = ['normal', 'fighting', 'flying', 'poison', 'rock', 'ground', 'bug', 'ghost']
+
+# import data relevant to the generation
+pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
+moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
+learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
+types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
+
 class Gen1Mon:
 
-    dex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
 
     statStages = {
         6: 4.00,
@@ -42,7 +52,7 @@ class Gen1Mon:
     }
     
     def __init__( self, name, level ):
-        if name not in list(self.dex.index.values):
+        if name not in list(pokeDex.index.values):
             print("ERROR: Invalid Pokemon inputted to Gen1Mon object.")
         else:
             self.moveLog = {}
@@ -54,8 +64,8 @@ class Gen1Mon:
 
         self.name = self.trueName
         self.types = [
-            self.dex.at[self.trueName, 'first_type'],
-            self.dex.at[self.trueName, 'second_type']
+            pokeDex.at[self.trueName, 'first_type'],
+            pokeDex.at[self.trueName, 'second_type']
         ]
 
         # self.stats = {
@@ -66,11 +76,11 @@ class Gen1Mon:
         #     'speed': int(self.dex.at[name,'lvl%s_speed' % level])
         # }
         self.stats = {
-            'hp': int(self.dex.at[self.trueName,'hp']),
-            'attack': int(self.dex.at[self.trueName,'attack']),
-            'defense': int(self.dex.at[self.trueName,'defense']),
-            'special': int(self.dex.at[self.trueName,'special']),
-            'speed': int(self.dex.at[self.trueName,'speed'])          
+            'hp': int(pokeDex.at[self.trueName,'hp']),
+            'attack': int(pokeDex.at[self.trueName,'attack']),
+            'defense': int(pokeDex.at[self.trueName,'defense']),
+            'special': int(pokeDex.at[self.trueName,'special']),
+            'speed': int(pokeDex.at[self.trueName,'speed'])          
         }
 
         self.lastUsedMove = ""
@@ -134,6 +144,9 @@ class Gen1Mon:
         self.incomingMove = ''
         self.incomingDamage = 0
 
+        self.knowsSwift = True if pd.notna(learnDex.at[self.name, 'swift']) else False
+            
+
     def uses( self, move, log=False ):
         if log:
             print("%s uses %s!" % (self.trueName, move))
@@ -146,9 +159,9 @@ class Gen1Mon:
             if stat == 'hp':
                 continue
             elif stat == 'evasion':
-                self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.evasionStages[self.statMods[stat]])
+                self.stats[stat] = math.floor(pokeDex.at[self.name, stat] * self.evasionStages[self.statMods[stat]])
             else:
-                self.stats[stat] = math.floor(self.dex.at[self.name, stat] * self.statStages[self.statMods[stat]])
+                self.stats[stat] = math.floor(pokeDex.at[self.name, stat] * self.statStages[self.statMods[stat]])
 
     def logMove( self, move ):
 
@@ -248,16 +261,6 @@ class StadiumMon(Gen1Mon):
 
 class Gen1Battle:
 
-    # constant lists for gens 1-3 calculation
-    SPECTYPES = ['fire', 'water', 'grass', 'electric', 'ice', 'psychic', 'dragon']
-    PHYSTYPES = ['normal', 'fighting', 'flying', 'poison', 'rock', 'ground', 'bug', 'ghost']
-
-    # import data relevant to the generation
-    pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
-    moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
-    learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
-    types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
-
     # status condition heuristics:
     statusScores = {
         'freeze': 1,
@@ -289,13 +292,13 @@ class Gen1Battle:
     # There is a chance for an attack to do bonus critical damage.
     # In Generation 1, this is calculated using a Mon's base speed.
     def calculateCritChance( self, mon, move ):
-        if self.moveDex.at[move, 'category'] != 'attack':
+        if moveDex.at[move, 'category'] != 'attack':
             print("ERROR: Status moves do not have critical chances.")
             return 0
-        baseSpeed = self.pokeDex.at[mon.trueName, 'base_speed']
+        baseSpeed = pokeDex.at[mon.trueName, 'base_speed']
 
         # Some moves have additional improved critical chance.
-        if pd.notna(self.moveDex.at[move,'crit']):
+        if pd.notna(moveDex.at[move,'crit']):
             critChance = (baseSpeed * 100 / 64) / 100
             #   However, crit chances can't exceed 255/256 due to programming error.
             return min(0.996, critChance)
@@ -307,46 +310,46 @@ class Gen1Battle:
     # A damage multiplier called Same Type Attack Bonus (STAB) is
     #   triggered when a Mon uses a move with the same type as its own.
     def calculateSTAB( self, mon, move ):
-        if self.moveDex.at[move,'type'] in mon.types:
+        if moveDex.at[move,'type'] in mon.types:
             return 1.5
         else:
             return 1
     
     # Certain types of Pokemon are weak or resistant to certain types of attacks.
     def calculateTypeBonus( self, move, mon ):
-        moveType = self.moveDex.at[move, 'type']
+        moveType = moveDex.at[move, 'type']
         if pd.notna(mon.types[1]):
-            return self.types.at[moveType,'vs_%s_%s' % (mon.types[0], mon.types[1])]
+            return types.at[moveType,'vs_%s_%s' % (mon.types[0], mon.types[1])]
         else:
-            return self.types.at[moveType,'vs_%s' % mon.types[0]]
+            return types.at[moveType,'vs_%s' % mon.types[0]]
 
     # Depending on a move's typing, we need to pick the corresponding statistics
     #   for the attacking and defending Mons to calculate the move damage.
     def getAttackStat( self, move, mon ):
-        moveType = self.moveDex.at[move,'type']
-        if moveType in self.PHYSTYPES:
+        moveType = moveDex.at[move,'type']
+        if moveType in PHYSTYPES:
             return mon.stats['attack']
-        elif moveType in self.SPECTYPES:
+        elif moveType in SPECTYPES:
             return mon.stats['special']
 
     def getDefenseStat( self, move, mon ):
-        moveType = self.moveDex.at[move,'type']
-        if moveType in self.PHYSTYPES:
+        moveType = moveDex.at[move,'type']
+        if moveType in PHYSTYPES:
             if mon.physDefense:
                 return mon.stats['defense'] * 2
             else: 
                 return mon.stats['defense']
-        elif moveType in self.SPECTYPES:
+        elif moveType in SPECTYPES:
             if mon.specDefense:
                 return mon.stats['special'] * 2
             else:
                 return mon.stats['special']
 
     def getMovePower( self, move ):
-        return self.moveDex.at[move,'power']
+        return moveDex.at[move,'power']
 
     def getMoveAccuracy( self, move ):
-        return 1 if move == 'swift' else min(0.996, self.moveDex.at[move,'accuracy']/100)
+        return 1 if move == 'swift' else min(0.996, moveDex.at[move,'accuracy']/100)
 
     def calculateAccuracy( self, mon, move, opp ):
         acc = self.getMoveAccuracy(move)
@@ -359,9 +362,9 @@ class Gen1Battle:
     #   First, we check if one mon uses a priority move. Then, we compare
     #   speeds. Finally, if either of those methods tie, we flip a coin. 
     def monMovesFirst( self, monMove, oppMove ):
-        if int(self.moveDex.at[monMove,'priority']) > int(self.moveDex.at[oppMove,'priority']):
+        if int(moveDex.at[monMove,'priority']) > int(moveDex.at[oppMove,'priority']):
             return True 
-        elif int(self.moveDex.at[oppMove,'priority']) > int(self.moveDex.at[monMove,'priority']):
+        elif int(moveDex.at[oppMove,'priority']) > int(moveDex.at[monMove,'priority']):
             return False 
         elif self.pokemon.stats['speed'] > self.opponent.stats['speed']:
             return True
@@ -392,12 +395,12 @@ class Gen1Battle:
             return max(1, math.floor(opp.stats['hp'] / 2))
         # Supersonic and Dragon Rage do a fixed damage amount (20, 40 respectively).
         else:
-            return float(self.moveDex.at[move,'power'])  
+            return float(moveDex.at[move,'power'])  
 
     def rollHitCount( self, move ):
-        if self.moveDex.at[move, 'hit_distr'] == 'normal':
+        if moveDex.at[move, 'hit_distr'] == 'normal':
             return np.random.choice([2,3,4,5], 1, p=[0.375,0.375,0.125,0.125])
-        elif self.moveDex.at[move, 'hit_distr'] == 'double':
+        elif moveDex.at[move, 'hit_distr'] == 'double':
             return 2
         else:
             return 1
@@ -433,29 +436,29 @@ class Gen1Battle:
         else:
             total = math.floor((1 - crit_chance) * mod_dmg)
             total_crit = math.floor(crit_chance * crit_mod_dmg)
-            return (total + total_crit) * self.moveDex.at[move,'avg_hits']
+            return (total + total_crit) * moveDex.at[move,'avg_hits']
 
     def getDamage( self, mon, move, opp, expected=False):
         # Some moves do a variable amount of damage based on the user's level.
-        if self.moveDex.at[move,'subcat'] == 'level_dep':
+        if moveDex.at[move,'subcat'] == 'level_dep':
             return self.levelDepAttack(mon, move, opp, expected=expected)
                 
         # Some moves do a fixed amount of damage, ignoring types and STAB.
-        elif self.moveDex.at[move,'subcat'] == 'fixed':
+        elif moveDex.at[move,'subcat'] == 'fixed':
             return self.fixedAttack(move, opp)
 
         # Some moves instantly KO if they land, but have a low accuracy. To evaluate the
         #   value of these moves, we will return the opponent's max HP, which will then
         #   be multiplied by the accuracy in the pickMove function.
-        elif self.moveDex.at[move,'subcat'] == 'ko':
-            return self.pokeDex.at[opp.trueName, 'hp']
+        elif moveDex.at[move,'subcat'] == 'ko':
+            return pokeDex.at[opp.trueName, 'hp']
 
         # Finally, the rest of the moves are calculated in a normal way.
         else:
             # If the opponent is charging Fly or Dig, only certain moves will hit it.
-            if (opp.isUnderground) and not (self.moveDex.at[move, 'hit_dig']):
+            if (opp.isUnderground) and not (moveDex.at[move, 'hit_dig']):
                 return 0
-            elif (opp.isAirborne) and not (self.moveDex.at[move,'hit_fly']):
+            elif (opp.isAirborne) and not (moveDex.at[move,'hit_fly']):
                 return 0
             # And here we have the calculation for every other move.
             else:
@@ -465,7 +468,7 @@ class Gen1Battle:
     # This is the default damage calculation for most moves in the game.
     def processAttack( self, mon, move, opp, expected=False, damageOnly=False ):
 
-        if self.moveDex.at[move, 'subcat'] == 'status_dep' and not opp.status[self.moveDex.at[move, 'opp_status']]:
+        if moveDex.at[move, 'subcat'] == 'status_dep' and not opp.status[moveDex.at[move, 'opp_status']]:
             return 0
 
         attackScore = 0
@@ -478,20 +481,20 @@ class Gen1Battle:
         # We also want to account for how many turns the move takes to charge up.
         #    Moves like Fly and Dig aren't checked here because the charge is done 
         #    in a way that protects the user.
-        if self.moveDex.at[move,'subcat'] == 'charge':
-            attackScore /= float(self.moveDex.at[move,'avg_turns'])
+        if moveDex.at[move,'subcat'] == 'charge':
+            attackScore /= float(moveDex.at[move,'avg_turns'])
 
         # There is a single move (Hyper Beam) that does not charge up but instead
         #   shoots first with a turn of rest afterwards required. If the move is
         #   expected to kill the next turn, this rest turn is ignored. If the move
         #   will not kill, this rest turn must be accounted for.
-        elif (self.moveDex.at[move,'subcat'] == 'burst') and (attackScore < opp.stats['hp']):
-            attackScore /= float(self.moveDex.at[move,'avg_turns'])
+        elif (moveDex.at[move,'subcat'] == 'burst') and (attackScore < opp.stats['hp']):
+            attackScore /= float(moveDex.at[move,'avg_turns'])
 
         #   Moves with recoil inflict damage on the user as a percentage of the damage
         #   inflicted, so we have to account for those.
-        if pd.notna(self.moveDex.at[move,'recoil']) and not damageOnly:
-            recoil = math.floor(dmg * self.moveDex.at[move,'recoil'])
+        if pd.notna(moveDex.at[move,'recoil']) and not damageOnly:
+            recoil = math.floor(dmg * moveDex.at[move,'recoil'])
             
             # If the recoil would kill the user, its score is made to be zero to ensure 
             # it doesn't pick it.
@@ -503,28 +506,35 @@ class Gen1Battle:
             else:
                 attackScore -= recoil
 
+        # Patchwork solution to encourage Earthquake over Dig, for example.
+        #   Want mon to realize that using even a semi-invulnerable two-turn move is more
+        #   dangerous than just using a one-turn normal attack.
+        if moveDex.at[move, 'subcat'] in ['fly', 'dig']:
+            if mon.stats['speed'] < opp.stats['speed'] and opp.knowsSwift != "":
+                attackScore -= self.processMove(opp, 'swift', mon, expected=True, damageOnly=True)
+
         #   This is kind of petty, but we also have to be wary of crash damage, which
         #   in Gen 1 is always 1 HP, lol.
-        if pd.notna(self.moveDex.at[move,'crash']) and not damageOnly:
+        if pd.notna(moveDex.at[move,'crash']) and not damageOnly:
             attackScore -= 1
 
         # Next, we account for ways in which the move can affect the user's HP.
         #   "Absorb" type moves heal the user for a percentage of the damage dealt,
         #   so we add the HP the user would heal to the score.
-        if (self.moveDex.at[move,'subcat'] == 'absorb') and not damageOnly:
-            exp_heal_amt = math.floor(dmg * acc * self.moveDex.at[move,'heal'])
-            health_diff = self.pokeDex.at[mon.name,'hp'] - mon.stats['hp']
+        if (moveDex.at[move,'subcat'] == 'absorb') and not damageOnly:
+            exp_heal_amt = math.floor(dmg * acc * moveDex.at[move,'heal'])
+            health_diff = pokeDex.at[mon.name,'hp'] - mon.stats['hp']
             if health_diff > exp_heal_amt:
                 attackScore += exp_heal_amt
             else:
                 attackScore += health_diff
 
         # Next, we account for status conditions.
-        if self.moveDex.at[move, 'subcat'] != 'status_dep' and pd.notna(self.moveDex.at[move,'opp_status']) and not damageOnly:
+        if moveDex.at[move, 'subcat'] != 'status_dep' and pd.notna(moveDex.at[move,'opp_status']) and not damageOnly:
             attackScore += self.processStatusMove(mon, move, opp)
 
         # Next, we account for status conditions.
-        if (pd.notna(self.moveDex.at[move,'stat']) or pd.notna(self.moveDex.at[move,'opp_stat'])) and not damageOnly:
+        if (pd.notna(moveDex.at[move,'stat']) or pd.notna(moveDex.at[move,'opp_stat'])) and not damageOnly:
             attackScore += self.processStatMove(mon, move, opp)
 
         return attackScore        
@@ -551,37 +561,37 @@ class Gen1Battle:
         return mod_dmg
 
     def processStatusMove( self, mon, move, opp ):
-        status = self.moveDex.at[move,'opp_status']
-        status_chance = float( str(self.moveDex.at[move,'opp_status_chance']).strip('%') )/100
+        status = moveDex.at[move,'opp_status']
+        status_chance = float( str(moveDex.at[move,'opp_status_chance']).strip('%') )/100
         status_score = 0
 
         # In Gen 1, status effects cannot be inflicted on a Pokemon of the same type as the
         #   move. This applies even to, e.g., Normal Pokemon paralyzes from Body Slam.
-        if self.moveDex.at[move,'type'] in opp.types:
+        if moveDex.at[move,'type'] in opp.types:
             return 0
 
         # Poison does 1/16th of the opponent's maximum health per turn, so that's the
         #   factor we multiply by the status chance and the average number of turns per battle.
         if status == 'seed' and not opp.volStatus['seed']:
-            status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * 2 * status_chance * float(self.avg_battle_length/self.turn))
+            status_score += (math.floor(pokeDex.at[opp.name, 'hp'] / 16) * 2 * status_chance * float(self.avg_battle_length/self.turn))
 
         elif status == 'confuse' and not opp.volStatus['confuse']:
             status_score += self.hurtItselfInConfusion(opp) * (self.avg_confusion_turns/self.turn)
 
         elif status == 'poison' and 'poison' not in opp.types and not opp.hasStatus:
-            status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * float(self.avg_battle_length/self.turn))
+            status_score += (math.floor(pokeDex.at[opp.name, 'hp'] / 16) * status_chance * float(self.avg_battle_length/self.turn))
 
         elif status == 'toxic' and 'poison' not in opp.types and not opp.hasStatus:
             if type(self.avg_battle_length/self.turn) is int:
                 rangeUpper = (self.avg_battle_length/self.turn) + 1
             else:
                 rangeUpper = math.ceil(float(self.avg_battle_length/self.turn))
-            status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * sum(range(1,rangeUpper)))
+            status_score += (math.floor(pokeDex.at[opp.name, 'hp'] / 16) * status_chance * sum(range(1,rangeUpper)))
 
         else:
 
             if status == 'burn' and not opp.hasStatus:
-                status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * float(self.avg_battle_length/self.turn))
+                status_score += (math.floor(pokeDex.at[opp.name, 'hp'] / 16) * status_chance * float(self.avg_battle_length/self.turn))
                 burned_opp = copy.deepcopy(opp)
                 burned_opp.status['burn'] == True
                 incomingDamage_burned = self.processMove(burned_opp, mon.incomingMove, mon, expected=True, damageOnly=True)
@@ -620,9 +630,9 @@ class Gen1Battle:
     def processStatMove( self, mon, move, opp ):
         buff_value = 0
 
-        if pd.notna(self.moveDex.at[move,'stat']):
-            stat = self.moveDex.at[move,'stat']
-            stages = int(self.moveDex.at[move,'stat_change'])
+        if pd.notna(moveDex.at[move,'stat']):
+            stat = moveDex.at[move,'stat']
+            stages = int(moveDex.at[move,'stat_change'])
             acc = self.calculateAccuracy(mon, move, opp)
             
             buffedMon = copy.deepcopy(mon)
@@ -658,11 +668,11 @@ class Gen1Battle:
 
 
         debuff_value = 0
-        if pd.notna(self.moveDex.at[move,'opp_stat']):
-            stat = self.moveDex.at[move,'opp_stat']
-            stages = int(self.moveDex.at[move,'opp_stat_change'])
+        if pd.notna(moveDex.at[move,'opp_stat']):
+            stat = moveDex.at[move,'opp_stat']
+            stages = int(moveDex.at[move,'opp_stat_change'])
             acc = self.calculateAccuracy( mon, move, opp )
-            status_chance = float(str(self.moveDex.at[move,'opp_stat_chance']).strip('%'))/100
+            status_chance = float(str(moveDex.at[move,'opp_stat_chance']).strip('%'))/100
 
             nerfedOpp = copy.deepcopy(opp)
             nerfedOpp.alterStats(stat, stages)
@@ -740,8 +750,8 @@ class Gen1Battle:
 
     def processHeal( self, mon, move ):
         # We use unprocessed accuracy because it's a self-applying status move.
-        exp_heal_amt = math.floor( self.getMoveAccuracy(move) * self.pokeDex.at[mon.trueName, 'hp'] * self.moveDex.at[move,'heal'] )
-        health_diff = self.pokeDex.at[mon.trueName,'hp'] - mon.stats['hp']
+        exp_heal_amt = math.floor( self.getMoveAccuracy(move) * pokeDex.at[mon.trueName, 'hp'] * moveDex.at[move,'heal'] )
+        health_diff = pokeDex.at[mon.trueName,'hp'] - mon.stats['hp']
 
         if move == 'rest':
             if health_diff > exp_heal_amt:
@@ -761,32 +771,32 @@ class Gen1Battle:
     def processMove( self, mon, move, opp, expected=False, damageOnly=False ):
 
         # The flying move Mirror Move copies the opponent's last-used attack.
-        if self.moveDex.at[move,'subcat'] == 'reflect':
+        if moveDex.at[move,'subcat'] == 'reflect':
             if opp.lastUsedMove in ["", "mirror move"]:
                 return 0
             else:
                 return self.processMove(mon, opp.lastUsedMove, opp, expected=expected)
 
-        elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] not in ['suicide', 'counter', 'reflect','ko', 'rage', 'random']:
+        elif moveDex.at[move, 'category'] == 'attack' and moveDex.at[move,'subcat'] not in ['suicide', 'counter', 'reflect','ko', 'rage', 'random']:
             return self.processAttack( mon, move, opp, expected=expected, damageOnly=damageOnly )
 
         elif not damageOnly:
-            if self.moveDex.at[move, 'subcat'] == 'status':
+            if moveDex.at[move, 'subcat'] == 'status':
                 return self.processStatusMove( mon, move, opp )
 
-            elif self.moveDex.at[move, 'subcat'] == 'stat':
+            elif moveDex.at[move, 'subcat'] == 'stat':
                 return self.processStatMove( mon, move, opp )
 
-            elif self.moveDex.at[move, 'subcat'] == 'type_copy':
+            elif moveDex.at[move, 'subcat'] == 'type_copy':
                 return self.processConversion( mon, opp )
 
-            elif self.moveDex.at[move, 'subcat'] == 'transform':
+            elif moveDex.at[move, 'subcat'] == 'transform':
                 return 0
             
-            elif self.moveDex.at[move, 'subcat'] in ['spec_protect', 'phys_protect']:
-                return self.processDefense(mon, opp, self.moveDex.at[move, 'subcat'])
+            elif moveDex.at[move, 'subcat'] in ['spec_protect', 'phys_protect']:
+                return self.processDefense(mon, opp, moveDex.at[move, 'subcat'])
 
-            elif self.moveDex.at[move, 'subcat'] == 'heal':
+            elif moveDex.at[move, 'subcat'] == 'heal':
                 return self.processHeal(mon, move)
 
         return -1
@@ -796,7 +806,7 @@ class Gen1Battle:
     def pickMove( self, mon, opp, damageOnly=False, validTypes='' ):
 
         if validTypes == '':
-            validTypes = self.SPECTYPES + self.PHYSTYPES
+            validTypes = SPECTYPES + PHYSTYPES
 
         if not damageOnly:
             mon.incomingMove = self.pickMove(opp, mon, damageOnly=True)
@@ -810,19 +820,19 @@ class Gen1Battle:
 
         optimalMove = ""
         maxMoveScore = -1
-        for move in self.learnDex.columns:
+        for move in learnDex.columns:
 
-            if pd.notna(self.learnDex.at[mon.name, move]) and move not in ['index','struggle'] and self.moveDex.at[move,'type'] in validTypes:
+            if pd.notna(learnDex.at[mon.name, move]) and move not in ['index','struggle'] and moveDex.at[move,'type'] in validTypes:
 
                 moveScore = 0
                 # If we're only considering attacking moves, status moves are skipped.
-                if self.moveDex.at[move,'category'] == 'status' and damageOnly:
+                if moveDex.at[move,'category'] == 'status' and damageOnly:
                         continue
 
-                if self.moveDex.at[move,'subcat'] == 'reflect' and damageOnly:
+                if moveDex.at[move,'subcat'] == 'reflect' and damageOnly:
                         continue
 
-                elif self.moveDex.at[move, 'category'] == 'attack' and self.moveDex.at[move,'subcat'] in ['suicide', 'counter', 'rampage',
+                elif moveDex.at[move, 'category'] == 'attack' and moveDex.at[move,'subcat'] in ['suicide', 'counter', 'rampage',
                                                                                                             'rage', 'random']:
                         continue
 
@@ -834,8 +844,8 @@ class Gen1Battle:
                 #   speed is higher.
                 if (self.processMove(mon, move, opp, expected=True, damageOnly=True) >= opp.stats['hp']):
                     killMoves[move] = score
-                    if self.moveDex.at[move,'priority'] > killMoveBests['priority']:
-                        killMoveBests['priority'] = self.moveDex.at[move,'priority']
+                    if moveDex.at[move,'priority'] > killMoveBests['priority']:
+                        killMoveBests['priority'] = moveDex.at[move,'priority']
 
                 # If this move amounts to be optimal, we update the optimal move.
                 if score > maxMoveScore:
@@ -848,7 +858,7 @@ class Gen1Battle:
         #   or lower-priority move when it's not necessary.
         if len(killMoves) > 0:
             # First we filter for the highest-priority moves:
-            killMoves = dict(filter(lambda elem: self.moveDex.at[elem[0],'priority'] == killMoveBests['priority'], killMoves.items()))
+            killMoves = dict(filter(lambda elem: moveDex.at[elem[0],'priority'] == killMoveBests['priority'], killMoves.items()))
 
             # Then we sort by accuracy in our new list:
             for move in killMoves:
@@ -902,13 +912,13 @@ class Gen1Battle:
 
     def handlePoison( self, mon, log=False ):
         if mon.status['toxic'] == True:
-            poison_dmg = math.floor(self.pokeDex.at[mon.trueName, 'hp'] / 16)
+            poison_dmg = math.floor(pokeDex.at[mon.trueName, 'hp'] / 16)
             mon.stats['hp'] -= poison_dmg
             if log:
                 print("%s took %s damage from poison!" % (mon.trueName, poison_dmg))
 
         elif mon.status['toxic'] == True:
-            tox_dmg = math.floor(self.pokeDex.at[mon.trueName, 'hp'] * mon.statusCounter / 16)
+            tox_dmg = math.floor(pokeDex.at[mon.trueName, 'hp'] * mon.statusCounter / 16)
             mon.stats['hp'] -= tox_dmg
             if log:
                 print("%s took %s damage from toxin!" % (mon.trueName, tox_dmg))
@@ -916,7 +926,7 @@ class Gen1Battle:
                 mon.statusCounter += 1
 
     def handleSeed( self, mon, opp, log=False ):
-        seedDmg = math.floor(self.pokeDex.at[mon.trueName, 'hp'] / 16)
+        seedDmg = math.floor(pokeDex.at[mon.trueName, 'hp'] / 16)
         mon.stats['hp'] -= seedDmg
         opp.stats['hp'] += seedDmg
         if log:
@@ -964,21 +974,21 @@ class Gen1Battle:
 
     def buildingUp( self, mon, monMove, log=False ):
 
-        if self.moveDex.at[monMove, 'subcat'] == 'charge' and mon.isCharged == False:
+        if moveDex.at[monMove, 'subcat'] == 'charge' and mon.isCharged == False:
             mon.bufferedMove = monMove
             if log:
                 print("%s is building up energy!" % mon.trueName)
             mon.isCharged = True
             return True
 
-        elif self.moveDex.at[monMove, 'subcat'] == 'fly' and mon.isAirborne == False:
+        elif moveDex.at[monMove, 'subcat'] == 'fly' and mon.isAirborne == False:
             mon.bufferedMove = monMove
             if log:
                 print("%s flies up high!" % mon.trueName)
             mon.isAirborne = True
             return True
 
-        elif self.moveDex.at[monMove, 'subcat'] == 'dig' and mon.isUnderground == False:
+        elif moveDex.at[monMove, 'subcat'] == 'dig' and mon.isUnderground == False:
             mon.bufferedMove = monMove
             if log:
                 print("%s digs underground!" % mon.trueName)
@@ -991,15 +1001,15 @@ class Gen1Battle:
     #   forced to miss by an opponent state, we of course do not process the move.
     def aMiss( self, mon, monMove, opp, log=False ):
         if not (np.random.binomial(1, self.calculateAccuracy(mon, monMove, opp))) or \
-        (opp.isAirborne and pd.isna(self.moveDex.at[monMove,'hit_fly'])) or \
-        (opp.isUnderground and pd.isna(self.moveDex.at[monMove,'hit_dig'])):
-            if log and self.moveDex.at[monMove,'category'] == 'attack':
+        (opp.isAirborne and pd.isna(moveDex.at[monMove,'hit_fly'])) or \
+        (opp.isUnderground and pd.isna(moveDex.at[monMove,'hit_dig'])):
+            if log and moveDex.at[monMove,'category'] == 'attack':
                 print("...but it missed!")
 
-            elif log and self.moveDex.at[monMove,'category'] == 'status':
+            elif log and moveDex.at[monMove,'category'] == 'status':
                 print("...but it failed!")
 
-            if self.moveDex.at[monMove, 'subcat'] == 'burst':
+            if moveDex.at[monMove, 'subcat'] == 'burst':
                 mon.hasToRest = True
 
             return True
@@ -1034,21 +1044,21 @@ class Gen1Battle:
             else:
                 mon.uses(monMove, log=log)
 
-                if self.moveDex.at[monMove, 'subcat'] == 'reflect':
+                if moveDex.at[monMove, 'subcat'] == 'reflect':
                     if opp.lastUsedMove in ["", "mirror move"] and log:
                         print("...but it failed!")
                     else:
                         mon.reflecting = True
                         return self.runTurn(mon, opp.lastUsedMove, opp, log=log)
 
-                elif self.moveDex.at[monMove, 'subcat'] == 'status_dep' and not opp.status[self.moveDex.at[monMove, 'opp_status']]:
+                elif moveDex.at[monMove, 'subcat'] == 'status_dep' and not opp.status[moveDex.at[monMove, 'opp_status']]:
                     if(log):
                         print("...but it failed!")
 
                 # If, of course, we don't miss the attack...
                 elif not self.aMiss( mon, monMove, opp, log=log ):
 
-                    if self.moveDex.at[monMove,'category'] == 'attack':
+                    if moveDex.at[monMove,'category'] == 'attack':
                         dmg = self.getDamage(mon, monMove, opp)
                         opp.stats['hp'] -= dmg
                         if(log):
@@ -1058,34 +1068,34 @@ class Gen1Battle:
                             return
 
                         # applying absorb healing
-                        if pd.notna(self.moveDex.at[monMove, 'heal']):
-                            recoil = math.floor(dmg * self.moveDex.at[monMove, 'heal'])
+                        if pd.notna(moveDex.at[monMove, 'heal']):
+                            recoil = math.floor(dmg * moveDex.at[monMove, 'heal'])
                             mon.stats['hp'] += recoil
                             if log:
                                 print("%s absorbs %s HP from %s!" % (mon.trueName, recoil, opp.trueName))
 
                         # applying recoil   
-                        if pd.notna(self.moveDex.at[monMove, 'recoil']):
-                            recoil = math.floor(dmg * self.moveDex.at[monMove, 'recoil'])
+                        if pd.notna(moveDex.at[monMove, 'recoil']):
+                            recoil = math.floor(dmg * moveDex.at[monMove, 'recoil'])
                             mon.stats['hp'] -= recoil
                             if log:
                                 print("%s is hit with %s damage of recoil!" % (mon.trueName, recoil))
 
-                        if self.moveDex.at[monMove, 'subcat'] == 'burst':
+                        if moveDex.at[monMove, 'subcat'] == 'burst':
                             mon.hasToRest = True
 
 
                     # applying self status effects
-                    if pd.notna(self.moveDex.at[monMove, 'status']) and not mon.hasStatus:
-                        status = self.moveDex.at[monMove, 'status']
+                    if pd.notna(moveDex.at[monMove, 'status']) and not mon.hasStatus:
+                        status = moveDex.at[monMove, 'status']
                         mon.processStatus(status, monMove)
                         if log:
                             print("%s was afflicted with %s!" % (mon.trueName, status))
 
                     # applying opponent status effects
-                    if self.moveDex.at[monMove, 'subcat'] != 'status_dep' and \
-                    pd.notna(self.moveDex.at[monMove, 'opp_status']) and np.random.binomial(1, float(str(self.moveDex.at[monMove,'opp_status_chance']).strip('%'))/100):
-                        opp_status = self.moveDex.at[monMove, 'opp_status']
+                    if moveDex.at[monMove, 'subcat'] != 'status_dep' and \
+                    pd.notna(moveDex.at[monMove, 'opp_status']) and np.random.binomial(1, float(str(moveDex.at[monMove,'opp_status_chance']).strip('%'))/100):
+                        opp_status = moveDex.at[monMove, 'opp_status']
                         if opp_status in ['freeze', 'paralyze', 'poison', 'toxic', 'burn','sleep'] and not opp.hasStatus:
                             opp.processStatus(opp_status, '')
                             if log:
@@ -1096,59 +1106,59 @@ class Gen1Battle:
                                 print("%s was afflicted with %s!" % (opp.trueName, opp_status))
                             
                         else:
-                            if self.moveDex.at[monMove, 'category'] == 'status' and log:
+                            if moveDex.at[monMove, 'category'] == 'status' and log:
                                 print("...but it failed!")
 
                     # applying buffs
-                    if pd.notna(self.moveDex.at[monMove, 'stat']):
-                        stat = self.moveDex.at[monMove,'stat']
-                        stages = self.moveDex.at[monMove,'stat_change']
+                    if pd.notna(moveDex.at[monMove, 'stat']):
+                        stat = moveDex.at[monMove,'stat']
+                        stages = moveDex.at[monMove,'stat_change']
                         mon.alterStats(stat, stages)
                         if log:
                             print("%s's %s rose by %s stage(s)!" % (mon.trueName, stat, int(stages)))
 
                     # applying debuffs
-                    if pd.notna(self.moveDex.at[monMove, 'opp_stat']) and np.random.binomial(1, float(str(self.moveDex.at[monMove,'opp_stat_chance']).strip('%'))/100):
-                        stat = self.moveDex.at[monMove,'opp_stat']
-                        stages = self.moveDex.at[monMove,'opp_stat_change']
+                    if pd.notna(moveDex.at[monMove, 'opp_stat']) and np.random.binomial(1, float(str(moveDex.at[monMove,'opp_stat_chance']).strip('%'))/100):
+                        stat = moveDex.at[monMove,'opp_stat']
+                        stages = moveDex.at[monMove,'opp_stat_change']
                         opp.alterStats(stat, stages)
                         if log:
                             print("%s's %s fell by %s stages!" % (opp.trueName, stat, -1*int(stages)))
 
-                    if self.moveDex.at[monMove,'subcat'] == 'heal' and self.moveDex.at[monMove,'category'] == 'status':
-                        heal_amt = math.floor( int(self.pokeDex.at[mon.trueName, 'hp']) * float(self.moveDex.at[monMove, 'heal']) )
-                        lost_health = int(self.pokeDex.at[mon.trueName, 'hp']) - mon.stats['hp']
+                    if moveDex.at[monMove,'subcat'] == 'heal' and moveDex.at[monMove,'category'] == 'status':
+                        heal_amt = math.floor( int(pokeDex.at[mon.trueName, 'hp']) * float(moveDex.at[monMove, 'heal']) )
+                        lost_health = int(pokeDex.at[mon.trueName, 'hp']) - mon.stats['hp']
                         mon.stats['hp'] += min(heal_amt, lost_health)
                         if log:
                             print("%s healed for %s points!" % (mon.trueName, min(heal_amt, lost_health)) )
 
-                    if self.moveDex.at[monMove,'subcat'] == 'phys_protect':
+                    if moveDex.at[monMove,'subcat'] == 'phys_protect':
                         mon.physDefense = True
                         if log:
                             print("%s is protected against physical attacks!" % (mon.trueName))
 
-                    if self.moveDex.at[monMove,'subcat'] == 'spec_protect':
+                    if moveDex.at[monMove,'subcat'] == 'spec_protect':
                         mon.specDefense = True
                         if log:
                             print("%s is protected against special attacks!" % (mon.trueName))
 
-                    if self.moveDex.at[monMove,'subcat'] == 'type_copy':
+                    if moveDex.at[monMove,'subcat'] == 'type_copy':
                         mon.types = opp.types
                         types_str = "%s-%s" % (mon.types[0],mon.types[1]) if pd.notna(mon.types[1]) else mon.types[0]
                         if log:
                             print("%s copied %s's %s type!" % (mon.trueName, opp.trueName, types_str))
 
-                    if self.moveDex.at[monMove,'subcat'] == 'transform':
+                    if moveDex.at[monMove,'subcat'] == 'transform':
                         mon = self.transform(mon, opp)
                         mon.isTransformed = True
                         if log:
                             print("%s transformed into %s!" % (mon.trueName, opp.trueName))
 
-                    if self.moveDex.at[monMove, 'subcat'] == 'charge':
+                    if moveDex.at[monMove, 'subcat'] == 'charge':
                         mon.isCharged = False
-                    if self.moveDex.at[monMove, 'subcat'] == 'fly':
+                    if moveDex.at[monMove, 'subcat'] == 'fly':
                         mon.isAirborne = False
-                    if self.moveDex.at[monMove, 'subcat'] == 'dig':
+                    if moveDex.at[monMove, 'subcat'] == 'dig':
                         mon.isUnderground = False
 
         # Finally, we handle the end-of-turn status operations.
@@ -1183,8 +1193,8 @@ class Gen1Battle:
 
             if(log):
                 print("---TURN %s | %s: %s/%s, opponent %s: %s/%s" % \
-                    (self.turn, self.pokemon.trueName, self.pokemon.stats['hp'], self.pokeDex.at[self.pokemon.trueName, 'hp'], \
-                        self.opponent.trueName, self.opponent.stats['hp'], self.pokeDex.at[self.opponent.trueName,'hp']))
+                    (self.turn, self.pokemon.trueName, self.pokemon.stats['hp'], pokeDex.at[self.pokemon.trueName, 'hp'], \
+                        self.opponent.trueName, self.opponent.stats['hp'], pokeDex.at[self.opponent.trueName,'hp']))
 
             # The challenger picks its highest-value move, unless one is buffered from a previous turn.
             if self.pokemon.bufferedMove != "":
