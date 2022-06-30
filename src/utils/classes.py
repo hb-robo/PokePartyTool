@@ -555,19 +555,15 @@ class Gen1Battle:
         status_chance = float( str(self.moveDex.at[move,'opp_status_chance']).strip('%') )/100
         status_score = 0
 
+        # In Gen 1, status effects cannot be inflicted on a Pokemon of the same type as the
+        #   move. This applies even to, e.g., Normal Pokemon paralyzes from Body Slam.
+        if self.moveDex.at[move,'type'] in opp.types:
+            return 0
+
         # Poison does 1/16th of the opponent's maximum health per turn, so that's the
         #   factor we multiply by the status chance and the average number of turns per battle.
-        if status == 'seed' and 'grass' not in opp.types and not opp.volStatus['seed']:
+        if status == 'seed' and not opp.volStatus['seed']:
             status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * 2 * status_chance * float(self.avg_battle_length/self.turn))
-
-        elif status == 'curse' and 'ghost' in mon.types and not opp.volStatus['seed']:
-            curseSelfHarm = math.floor(self.pokeDex.at[mon.name, 'hp']/ 2)
-            if curseSelfHarm > mon.stats['hp']:
-                status_score = 0
-                score = 0
-            else:
-                status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 4) * float(self.avg_battle_length/self.turn))
-                status_score -= curseSelfHarm
 
         elif status == 'confuse' and not opp.volStatus['confuse']:
             status_score += self.hurtItselfInConfusion(opp) * (self.avg_confusion_turns/self.turn)
@@ -584,7 +580,7 @@ class Gen1Battle:
 
         else:
 
-            if status == 'burn' and 'fire' not in opp.types and not opp.hasStatus:
+            if status == 'burn' and not opp.hasStatus:
                 status_score += (math.floor(self.pokeDex.at[opp.name, 'hp'] / 16) * status_chance * float(self.avg_battle_length/self.turn))
                 burned_opp = copy.deepcopy(opp)
                 burned_opp.status['burn'] == True
@@ -592,7 +588,7 @@ class Gen1Battle:
                 burnDiff = mon.incomingDamage - incomingDamage_burned
                 status_score += burnDiff * float(self.avg_battle_length/self.turn)
 
-            elif status == 'paralyze' and (self.moveDex.at[move, 'type'] not in opp.types) and not opp.hasStatus:
+            elif status == 'paralyze' and not opp.hasStatus:
                 par_turns = self.avg_battle_length
                 if mon.stats['speed'] <= opp.stats['speed']:
                     if mon.stats['speed'] == opp.stats['speed']:
@@ -604,7 +600,7 @@ class Gen1Battle:
             elif status == 'sleep' and not opp.hasStatus:
                 status_score += self.avg_sleep_turns * mon.incomingDamage
 
-            elif status == 'freeze' and 'ice' not in opp.types and not opp.hasStatus:
+            elif status == 'freeze' and not opp.hasStatus:
                 status_score += self.avg_battle_length * mon.incomingDamage
             
             # Similarly, we account for flinch, but only if the user outspeeds its opponent.
