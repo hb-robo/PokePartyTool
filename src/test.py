@@ -6,7 +6,7 @@ moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
 learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
 types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
 
-mon1 = g.Gen1Mon('nidoking', 50)
+mon1 = g.Gen1Mon('dugtrio', 50)
 mon2 = g.Gen1Mon('cloyster', 50)
 mon3 = g.Gen1Mon('charmander', 50)
 
@@ -220,7 +220,7 @@ if testingBattleSim:
     totWins = 0
     losses = {}
 
-    matches = 10
+    matches = 5
 
     for pokemon in list(pokeDex.index):
         if pokemon == mon1.name:

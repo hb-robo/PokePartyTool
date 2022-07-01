@@ -145,6 +145,7 @@ class Gen1Mon:
         self.incomingDamage = 0
 
         self.knowsSwift = True if pd.notna(learnDex.at[self.name, 'swift']) else False
+        print(self.knowsSwift)
             
 
     def uses( self, move, log=False ):
@@ -1154,12 +1155,12 @@ class Gen1Battle:
                         if log:
                             print("%s transformed into %s!" % (mon.trueName, opp.trueName))
 
-                    if moveDex.at[monMove, 'subcat'] == 'charge':
-                        mon.isCharged = False
-                    if moveDex.at[monMove, 'subcat'] == 'fly':
-                        mon.isAirborne = False
-                    if moveDex.at[monMove, 'subcat'] == 'dig':
-                        mon.isUnderground = False
+                if moveDex.at[monMove, 'subcat'] == 'charge':
+                    mon.isCharged = False
+                if moveDex.at[monMove, 'subcat'] == 'fly':
+                    mon.isAirborne = False
+                if moveDex.at[monMove, 'subcat'] == 'dig':
+                    mon.isUnderground = False
 
         # Finally, we handle the end-of-turn status operations.
 
