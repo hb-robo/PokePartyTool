@@ -1,0 +1,92 @@
+Index,Name,Level,HP,Attack,Defense,Special,Speed,Move1,Move2,Move3,Move4
+#001,Bulbasaur,15,42,23,23,28,22,Leech Seed,Double-edge,Toxic,Mega Drain
+#002,Ivysaur,15,47,27,28,33,27,Swords Dance,Leech Seed,Body Slam,Solar Beam
+#004,Charmander,15,40,24,22,24,28,Fire Blast,Growl,Seismic Toss,Strength
+#005,Charmeleon,15,46,28,26,28,33,Swords Dance,Ember,Mega Kick,Toxic
+#007,Squirtle,15,42,23,28,24,22,Tackle,Blizzard,Dig,Surf
+#008,Wartortle,15,46,28,33,28,26,Body Slam,Reflect,Bide,Surf
+#010,Caterpie,15,42,18,19,15,22,String Shot,Tackle,,
+#011,Metapod,15,44,15,25,16,18,Tackle,String Shot,,
+#012,Butterfree,15,47,22,24,33,30,Poisonpowder,Take Down,Hyper Beam,Psywave
+#013,Weedle,15,41,19,18,15,24,String Shot,Poison Sting,,
+#014,Kakuna,15,42,16,24,16,19,String Shot,Poison Sting,,
+#015,Beedrill,15,48,33,21,22,31,Fury Attack,Hyper Beam,Double Team,Swords Dance
+#016,Pidgey,15,41,22,21,19,26,Reflect,Double-edge,Fly,Toxic
+#017,Pidgeotto,15,48,27,25,24,30,Sky Attack,Sand-attack,Take Down,Quick Attack
+#019,Rattata,15,38,26,19,16,30,Thunder,Dig,Quick Attack,Blizzard
+#020,Raticate,15,45,33,27,24,38,Hyper Fang,Swift,Toxic,Ice Beam
+#021,Spearow,15,41,27,18,18,30,Double-edge,Mimic,Double Team,Fly
+#022,Fearow,15,48,36,28,27,39,Fly,Mimic,Double Team,Peck
+#023,Ekans,15,39,27,22,21,25,Wrap,Leer,Poison Sting,Earthquake
+#025,Pikachu,15,39,25,18,24,36,Quick Attack,Thunder Wave,Submission,Thunderbolt
+#026,Raichu,15,47,36,25,36,39,Thunder,Growl,Thunder Wave,Seismic Toss
+#027,Sandshrew,15,44,31,34,18,21,Sand-attack,Swords Dance,Earthquake,Submission
+#029,Nidoran♀,15,45,23,24,21,21,Toxic,Body Slam,Thunder,Blizzard
+#030,Nidorina,15,50,27,29,25,26,Toxic,Horn Drill,Ice Beam,Take Down
+#031,Nidoqueen,15,56,33,35,31,32,Fissure,Reflect,Double Kick,Surf
+#032,Nidoran♂,15,43,26,21,21,24,Blizzard,Toxic,Thunderbolt,Body Slam
+#033,Nidorino,15,47,30,26,25,28,Horn Drill,Horn Attack,Ice Beam,Double Kick
+#034,Nidoking,15,53,36,32,31,34,Poison Sting,Double Kick,Earthquake,Bubblebeam
+#035,Clefairy,15,50,22,23,27,19,Thunder Wave,Metronome,Tri Attack,Psychic
+#036,Clefable,15,57,30,31,34,27,Metronome,Tri Attack,Sing,Double Team
+#037,Vulpix,15,40,21,21,28,28,Double-edge,Fire Blast,Double Team,Dig
+#038,Ninetales,15,51,32,31,39,39,Dig,Ember,Reflect,Hyper Beam
+#039,Jigglypuff,15,63,22,15,16,15,Sing,Body Slam,Thunder Wave,Ice Beam
+#040,Wigglytuff,15,71,30,22,24,22,Thunder,Mega Punch,Double Team,Sing
+#041,Zubat,15,41,22,19,21,25,Supersonic,Swift,Mega Drain,Toxic
+#043,Oddish,15,42,24,25,31,18,Toxic,Swords Dance,Mega Drain,Take Down
+#046,Paras,15,39,30,25,25,16,Stun Spore,Dig,Mega Drain,Take Down
+#048,Venonat,15,47,25,24,21,22,Supersonic,Psychic,Flash,Double-edge
+#050,Diglett,15,32,25,16,22,37,Earthquake,Double Team,Take Down,Fissure
+#052,Meowth,15,41,22,19,21,36,Double Team,Thunderbolt,Body Slam,Rest
+#054,Psyduck,15,44,24,23,24,25,Bubblebeam,Blizzard,Dig,Mimic
+#056,Mankey,15,41,33,19,19,30,Low Kick,Karate Chop,Dig,Counter
+#058,Growlithe,15,45,30,22,24,27,Dig,Fire Blast,Double-edge,Reflect
+#059,Arcanine,15,56,42,33,33,37,Dig,Bite,Ember,Double Team
+#060,Poliwag,15,41,24,21,21,36,Surf,Body Slam,Blizzard,Toxic
+#061,Poliwhirl,15,48,28,28,24,36,Surf,Double-edge,Metronome,Earthquake
+#062,Poliwrath,15,56,34,37,30,30,Surf,Doubleslap,Metronome,Hypnosis
+#063,Abra,15,36,15,13,40,36,Psychic,Thunder Wave,Seismic Toss,Reflect
+#064,Kadabra,15,41,19,18,45,40,Psychic,Metronome,Double Team,Seismic Toss
+#065,Alakazam,15,45,24,22,49,45,Psywave,Metronome,Thunder Wave,Mega Punch
+#066,Machop,15,50,33,24,19,19,Karate Chop,Submission,Fire Blast,Bide
+#069,Bellsprout,15,44,31,19,30,21,Growth,Take Down,Mega Drain,Reflect
+#072,Tentacool,15,41,21,19,39,30,Surf,Acid,Supersonic,Toxic
+#073,Tentacruel,15,53,30,28,45,39,Supersonic,Wrap,Toxic,Mega Drain
+#074,Geodude,15,41,33,39,18,15,Mega Punch,Earthquake,Rock Slide,Defense Curl
+#077,Ponyta,15,44,34,25,28,36,Fire Blast,Horn Drill,Reflect,Swift
+#079,Slowpoke,15,56,28,28,21,13,Psychic,Surf,Flash,Dig
+#081,Magnemite,15,36,19,30,37,22,Thunder Wave,Thunderbolt,Swift,Substitute
+#083,Farfetch'd,15,44,28,25,26,27,Sand-attack,Fury Attack,Fly,Reflect
+#086,Seel,15,48,22,25,30,22,Surf,Headbutt,Horn Drill,Blizzard
+#090,Shellder,15,38,28,39,22,21,Blizzard,Tri Attack,Exploison,Surf
+#091,Cloyster,15,44,37,63,34,30,Supersonic,Clamp,Hyper Beam,Aurora Beam
+#092,Gastly,15,38,19,18,39,33,Confuse Ray,Psychic,Night Shade,Exploison
+#093,Haunter,15,42,24,22,43,37,Confuse Ray,Thunderbolt,Night Shade,Selfdestruct
+#094,Gengar,15,47,28,27,48,42,Confuse Ray,Nigh Shade,Mega Drain,Metronome
+#095,Onix,15,39,22,57,18,30,Rock Slide,Strength,Earthquake,Selfdestruct
+#096,Drowzee,15,47,23,22,36,21,Hypnosis,Psychic,Dream Eater,Tri Attack
+#098,Krabby,15,38,40,36,16,24,Ice Beam,Body Slam,Surf,Toxic
+#099,Kingler,15,45,48,43,24,31,Surf,Strength,Double Team,Mimic
+#100,Voltorb,15,41,18,24,25,39,Exploison,Take Down,Thunderbolt,Thunder Wave
+#102,Exeggcute,15,47,21,33,27,21,Psychic,Double Team,Egg Bomb,Toxic
+#103,Exeggutor,15,57,37,34,46,25,Toxic,Barrage,Mega Drain,Psywave
+#104,Cubone,15,44,24,37,21,19,Strength,Blizzard,Earthquake,Tail Whip
+#108,Lickitung,15,56,25,31,27,18,Double-edge,Supersonic,Fire Blast,Thunder
+#109,Koffing,15,41,28,37,27,19,Fire Blast,Toxic,Thunderbolt,Selfdestruct
+#111,Rhyhorn,15,53,34,37,18,16,Rock Slide,Earthquake,Horn Attack,Substitute
+#113,Chansey,15,104,10,10,40,24,Tri Attack,Counter,Bubblebeam,Thunderbolt
+#116,Horsea,15,38,21,30,30,27,Surf,Blizzard,Toxic,Swift
+#117,Seadra,15,45,28,37,37,34,Smokescreen,Bubblebeam,Ice Beam,Mimic
+#118,Goldeen,15,42,29,27,24,28,Surf,Double-edge,Ice Beam,Horn Drill
+#120,Staryu,15,38,22,25,30,34,Surf,Psychic,Tri Attack,Thunder Wave
+#121,Starmie,15,47,31,34,39,43,Psywave,Bubblebeam,Thunder,Substitute
+#122,Mr. Mime,15,41,22,28,39,36,Mega Kick,Psychic,Barrier,Metronome
+#123,Scyther,15,50,42,33,25,40,Quick Attack,Swords Dance,Hyper Beam,Double Team
+#127,Pinsir,15,48,46,39,25,34,Take Down,Submission,Bide,Mimic
+#129,Magikarp,15,35,12,25,15,33,Splash,Tackle,,
+#130,Gyarados,15,57,46,32,39,33,Hydro Pump,Bite,Rest,Leer
+#131,Lapras,15,68,34,33,37,27,Bubblebeam,Ice Beam,Growl,Skull Bash
+#132,Ditto,15,43,23,23,23,23,Transform,,,
+#137,Porygon,15,48,27,30,31,21,Conversion,Sharpen,Psychic,Tri Attack
+#147,Dratini,15,41,28,22,24,24,Fire Blast,Blizzard,Body Slam,Thunder Wave

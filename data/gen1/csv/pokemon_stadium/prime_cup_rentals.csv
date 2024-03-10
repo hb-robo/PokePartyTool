@@ -1,0 +1,151 @@
+Index,Name,Level,HP,Attack,Defense,Special,Speed,Move1,Move2,Move3,Move4
+#001,Bulbasaur,100,262,165,163,197,157,Leech Seed,Razor Leaf,Growth,Body Slam
+#002,Ivysaur,100,284,181,185,219,179,Leech Seed,Razor Leaf,Growth,Mega Drain
+#003,Venusaur,100,310,209,211,245,205,Leech Seed,Solarbeam,Growth,Sleep Powder
+#004,Charmander,100,250,171,151,167,197,Flamethrower,Body Slam,Seismic Toss,Dig
+#005,Charmeleon,100,280,185,175,189,219,Flamethrower,Slash,Dig,Submission
+#006,Charizard,100,306,213,201,215,245,Fire Blast,Fly,Fire Spin,Swords Dance
+#007,Squirtle,100,260,163,195,167,153,Hydro Pump,Blizzard,Body Slam,Dig
+#008,Wartortle,100,282,183,219,189,175,Surf,Seismic Toss,Dig,Toxic
+#009,Blastoise,100,308,211,245,215,201,Hydro Pump,Skull Bash,Withdraw,Tail Whip
+#010,Caterpie,100,262,127,135,107,157,Tackle,String Shot,,
+#011,Metapod,100,272,107,175,117,127,Tackle,String Shot,,
+#012,Butterfree,100,284,147,159,219,199,Psychic,Mega Drain,Swift,Stun Spore
+#013,Weedle,100,252,137,125,107,167,String Shot,Poison Sting,,
+#014,Kakuna,100,262,117,165,117,137,String Shot,Poison Sting,,
+#015,Beedrill,100,294,217,139,149,209,Twineedle,Hyper Beam,Mega Drain,Focus Energy
+#016,Pidgey,100,252,157,145,137,179,Fly,Sand-attack,Mirror Move,Whirlwind
+#017,Pidgeotto,100,298,187,175,167,209,Fly,Sand-attack,Swift,Toxic
+#018,Pidgeot,100,322,209,199,191,233,Quick Attack,Mirror Move,Sand-attack,Fly
+#019,Rattata,100,232,179,135,117,211,Super Fang,Body Slam,Dig,Toxic
+#020,Raticate,100,274,219,179,159,253,Super Fang,Hyper Fang,Quick Attack,Toxic
+#021,Spearow,100,252,187,125,129,207,Drill Peck,Swift,Double Team,Fly
+#022,Fearow,100,286,229,179,173,251,Drill Peck,Mirror Move,Hyper Beam,Growl
+#023,Ekans,100,242,187,153,147,177,Double-edge,Glare,Earthquake,Mega Drain
+#024,Arbok,100,284,227,197,189,219,Dig,Glare,Strength,Acid
+#025,Pikachu,100,242,177,125,167,247,Thunderbolt,Thunder Wave,Swift,Reflect
+#026,Raichu,100,276,229,159,231,251,Thunder,Thunder Wave,Quick Attack,Mega Kick
+#027,Sandshrew,100,272,217,235,127,147,Sand-attack,Dig,Strength,Rock Slide
+#028,Sandslash,100,306,249,269,161,181,Sand-attack,Dig,Strength,Rock Slide
+#029,Nidoran♀,100,282,161,169,147,149,Body Slam,Blizzard,Thunderbolt,Toxic
+#030,Nidorina,100,304,181,193,169,171,Body Slam,Bubblebeam,Thunder,Toxic
+#031,Nidoqueen,100,330,209,219,195,197,Earthquake,Double Kick,Rock Slide,Toxic
+#032,Nidoran♂,100,264,181,145,147,167,Body Slam,Blizzard,Thunder,Horn Drill
+#033,Nidorino,100,286,201,173,169,189,Body Slam,Thunderbolt,Ice Beam,Horn Drill
+#034,Nidoking,100,312,229,199,195,215,Horn Attack,Earthquake,Bide,Horn Drill
+#035,Clefairy,100,312,157,161,187,137,Metronome,Body Slam,Thunder Wave,Blizzard
+#036,Clefable,100,346,189,195,221,171,Metronome,Strength,Thunder Wave,Thunder
+#037,Vulpix,100,248,149,145,197,197,Flamethrower,Dig,Confuse Ray,Toxic
+#038,Ninetales,100,296,197,195,245,245,Fire Blast,Quick Attack,Confuse Ray,Tail Whip
+#039,Jigglypuff,100,402,157,105,117,107,Sing,Flash,Body Slam,Seismic Toss
+#040,Wigglytuff,100,444,197,149,159,149,Sing,Disable,Strength,Hyper Beam
+#041,Zubat,100,252,157,135,147,177,Confuse Ray,Swift,Mega Drain,Haze
+#042,Golbat,100,306,209,189,201,231,Supersonic,Hyper Beam,Mega Drain,Haze
+#043,Oddish,100,262,167,175,217,127,Petal Dance,Mega Drain,Stun Spore,Double-edge
+#044,Gloom,100,284,187,199,229,139,Petal Dance,Mega Drain,Stun Spore,Acid
+#045,Vileplume,100,306,209,219,251,151,Solarbeam,Mega Drain,Stun Spore,Acid
+#046,Paras,100,242,207,175,177,117,Slash,Spore,Dig,Mega Drain
+#047,Parasect,100,284,247,219,219,119,Slash,Spore,Growth,Mega Drain
+#048,Venonat,100,292,177,165,147,157,Psychic,Mega Drain,Double-edge,Toxic
+#049,Venomoth,100,304,187,179,239,239,Psychic,Mega Drain,Sleep Powder,Flash
+#050,Diglett,100,192,177,115,157,257,Earthquake,Fissure,Slash,Sand-attack
+#051,Dugtrio,100,234,217,159,199,299,Dig,Rock Slide,Growl,Sand  Attack
+#052,Meowth,100,252,157,135,147,247,Bubblebeam,Screech,Slash,Thunderbolt
+#053,Persian,100,294,197,179,189,289,Hyper Beam,Screech,Bite,Thunder
+#054,Psyduck,100,272,171,161,167,177,Hydro Pump,Blizzard,Dig,Disable
+#055,Golduck,100,316,213,205,211,221,Bubblebeam,Ice Beam,Confusion,Disable
+#056,Mankey,100,252,227,135,137,207,Submission,Thrash,Dig,Counter
+#057,Primeape,100,286,259,169,171,241,Low Kick,Thrash,Seismic Toss,Counter
+#058,Growlithe,100,282,207,155,167,187,Flamethrower,Dig,Body Slam,Double Team
+#059,Arcanine,100,324,259,199,199,229,Fire Blast,Dig,Leer,Agility
+#060,Poliwag,100,252,167,145,147,247,Hydro Pump,Blizzard,Psychic,Amnesia
+#061,Poliwhirl,100,294,187,189,159,239,Surf,Ice Beam,Psychic,Amnesia
+#062,Poliwrath,100,336,219,239,191,191,Bubblebeam,Submission,Hypnosis,Amnesia
+#063,Abra,100,222,107,95,277,247,Psychic,Thunder Wave,Double Team,Body Slam
+#064,Kadabra,100,244,127,119,299,269,Psychic,Thunder Wave,Double Team,Body Slam
+#065,Alakazam,100,260,145,135,306,276,Psybeam,Kinesis,Reflect,Hyper Beam
+#066,Machop,100,312,227,165,137,137,Submission,Body Slam,Seismic Toss,Focus Energy
+#067,Machoke,100,324,257,199,159,149,Submission,Dig,Seismic Toss,Focus Energy
+#068,Machamp,100,330,305,205,175,155,Low Kick,Mega Punch,Leer,Focus Energy
+#069,Bellsprout,100,272,217,135,207,147,Razor Leaf,Toxic,Wrap,Double-edge
+#070,Weepinbell,100,294,237,159,229,169,Razor Leaf,Mega Drain,Growth,Stun Spore
+#071,Victreebel,100,310,255,175,245,185,Razor Leaf,Acid,Wrap,Sleep Powder
+#072,Tentacool,100,252,147,135,267,207,Surf,Blizzard,Mega Drain,Toxic
+#073,Tentacruel,100,310,185,175,285,245,Bubblebeam,Wrap,Screech,Toxic
+#074,Geodude,100,252,227,265,127,107,Rock Slide,Earthquake,Seismic Toss,Fire Blast
+#075,Graveler,100,274,247,289,149,129,Rock Slide,Earthquake,Fire Blast,Metronome
+#076,Golem,100,310,265,305,155,135,Rock Throw,Dig,Defense Curl,Fire Blast
+#077,Ponyta,100,264,227,169,189,239,Fire Spin,Agility,Horn Drill,Toxic
+#078,Rapidash,100,280,245,185,205,255,Fire Blast,Stomp,Reflect,Tail Whip
+#079,Slowpoke,100,352,197,195,147,97,Surf,Psychic,Amnesia,Thunder Wave
+#080,Slowbro,100,346,199,269,207,111,Surf,Psychic,Disable,Mega Punc
+#081,Magnemite,100,222,137,205,257,157,Thunderbolt,Thunder Wave,Swift,Flash
+#082,Magneton,100,256,169,239,291,191,Thunder,Thunder Wave,Flash,Supersonic
+#083,Farfetch'd,100,276,197,175,183,187,Slash,Sand-attack,Fly,Toxic
+#084,Doduo,100,242,237,155,137,217,Drill Peck,Body Slam,Reflect,Double Team
+#085,Dodrio,100,276,269,189,171,251,Tri Attack,Fly,Growl,Agility
+#086,Seel,100,302,157,175,207,157,Surf,Blizzard,Body Slam,Double Team
+#087,Dewgong,100,336,189,209,241,191,Aurora Beam,Surf,Headbutt,Horn Drill
+#088,Grimer,100,324,217,159,139,109,Sludge,Body Slam,Thunderbolt,Acid Armor
+#089,Muk,100,366,259,199,181,151,Sludge,Fire Blast,Screech,Acid Armor
+#090,Shellder,100,232,197,265,157,147,Blizzard,Surf,Swift,Supersonic
+#091,Cloyster,100,244,229,399,209,179,Ice Beam,Bubblebeam,Clamp,Supersonic
+#092,Gastly,100,232,137,125,267,227,Hypnosis,Psychic,Confuse Ray,Night Shade
+#093,Haunter,100,254,157,149,289,249,Hypnosis,Dream Eater,Confuse Ray,Psychic
+#094,Gengar,100,270,175,165,305,265,Hypnosis,Dream Eater,Metronome,Night Shade
+#095,Onix,100,234,147,379,119,199,Rock Slide,Earthquake,Fissure,Selfdestruct
+#096,Drowzee,100,292,163,155,247,151,Hypnosis,Dream Eater,Seismic Toss,Psychic
+#097,Hypno,100,320,191,185,275,179,Hypnosis,Poison Gas,Headbutt,Psychic
+#098,Krabby,100,224,267,239,109,159,Surf,Body Slam,Gilotine,Blizzard
+#099,Kingler,100,260,305,275,145,195,Crabhammer,Strength,Guillotine,Toxic
+#100,Voltorb,100,252,127,165,177,267,Thunderbolt,Thunder Wave,Take Down,Reflect
+#101,Electrode,100,276,149,189,211,331,Thunder,Thunder Wave,Swift,Flash
+#102,Exeggcute,100,292,147,225,187,147,Leech Seed,Toxic,Psychic,Selfdestruct
+#103,Exeggutor,100,334,229,209,289,149,Stomp,Sleep Powder,Psychic,Solarbeam
+#104,Cubone,100,272,167,255,147,137,Bonemerang,Blizzard,Thrash,Focus Energy
+#105,Marowak,100,284,217,279,159,149,Bone Club,Headbutt,Thrash,Focus Energy
+#106,Hitmonlee,100,264,297,165,129,233,Rolling Kick,Jump Kick,Hi Jump Kick,Focus Energy
+#107,Hitmonchan,100,264,267,217,129,211,Mega Punch,Fire Punch,Ice Punch,Thunderpunch
+#108,Lickitung,100,344,167,209,179,119,Body Slam,Thunder,Earthquake,Blizzard
+#109,Koffing,100,252,197,255,187,137,Sludge,Thunder,Haze,Toxic
+#110,Weezing,100,280,225,282,215,165,Sludge,Thunder,Haze,Mimic
+#111,Rhyhorn,100,324,227,249,119,109,Body Slam,Earthquake,Rock Slide,Fissure
+#112,Rhydon,100,354,299,279,129,119,Horn Attack,Earthquake,Thunder,Fissure
+#113,Chansey,100,650,55,55,255,145,Egg Bomb,Rest,Metronome,Seismic Toss
+#114,Tangela,100,294,167,289,259,179,Mega Drain,Solarbeam,Growth,Stun Spore
+#115,Kangaskhan,100,360,235,205,125,225,Dizzy Punch,Rock Slide,Surf,Substitute
+#116,Horsea,100,232,147,205,207,187,Hydro Pump,Ice Beam,Toxic,Smokescreen
+#117,Seadra,100,266,179,239,241,221,Surf,Double-edge,Toxic,Smokescreen
+#118,Goldeen,100,262,201,185,167,193,Surf,Horn Drill,Double Team,Agility
+#119,Seaking,100,316,233,179,211,187,Waterfall,Horn Drill,Supersonic,Fury Attack
+#120,Staryu,100,224,147,169,199,229,Surf,Psychic,Mminimize,Recover
+#121,Starmie,100,270,195,215,245,275,Bubblebeam,Thunder,Minimize,Recover
+#122,Mr. Mime,100,244,147,189,259,239,Barrier,Light Screen,Psychic,Hyper Beam
+#123,Scyther,100,290,265,205,155,255,Focus Energy,Hyper Beam,Swift,Double Team
+#124,Jynx,100,286,149,119,237,241,Lovely Kiss,Body Slam,Ice Punch,Psychic
+#125,Electabuzz,100,286,215,163,221,261,Thunderpunch,Thunder Wave,Metronome,Reflect
+#126,Magmar,100,286,239,163,221,237,Fire Punch,Mega Punch,Confuse Ray,Psychic
+#127,Pinsir,100,280,295,245,155,215,Slash,Guillotine,Seismic Toss,Toxic
+#128,Tauros,100,294,239,229,179,259,Stomp,Skull Bash,Bide,Fire Blast
+#129,Magikarp,100,212,87,175,107,227,Splash,Tackle,,
+#130,Gyarados,100,334,289,197,239,201,Bubblebeam,Bite,Fire Blast,Leer
+#131,Lapras,100,404,209,199,229,159,Bubblebeam,Mist,Sing,Ice Beam
+#132,Ditto,100,268,163,161,163,163,Transform,,,
+#133,Eevee,100,282,177,165,197,177,Double-edge,Focus Energy,Sand-attack,Quick Attack
+#134,Vaporeon,100,410,175,165,265,175,Hydro Pump,Acid Armor,Haze,Quick Attack
+#135,Jolteon,100,280,175,165,265,305,Thunder,Pin Missile,Sand  Attack,Quick Attack
+#136,Flareon,100,280,305,165,265,175,Fire Blast,Smog ,Sand-attack,Quick Attack
+#137,Porygon,100,294,177,199,209,139,Psybeam,Tri Attack,Conversion,Recover
+#138,Omanyte,100,234,137,259,239,129,Hydro Pump,Body Slam,Ice Beam,Toxic
+#139,Omastar,100,290,165,295,275,155,Surf,Spike Cannon,Horn Drill,Toxic
+#140,Kabuto,100,224,217,239,149,169,Surf,Blizzard,Slash,Double Team
+#141,Kabutops,100,270,275,255,185,205,Hydro Pump,Mega Kick,Ice Beam,Swords Dance
+#142,Aerodactyl,100,304,249,169,159,299,Bite,Supersonic,Fly,Fire Blast
+#143,Snorlax,100,470,265,175,175,105,Take Down,Metronome,Rest,Bide
+#144,Articuno,100,318,203,233,283,203,Ice Beam,Sky Attack,Mist,Agility
+#145,Zapdos,100,318,213,203,283,233,Thunder,Sky Attack,Bide,Flash
+#146,Moltres,100,318,233,213,283,213,Fire Blast,Sky Attack,Agility,Reflect
+#147,Dratini,100,254,195,155,167,167,Blizzard,Thunderbolt,Body Slam,Fire Blast
+#148,Dragonair,100,286,225,189,199,199,Thunderbolt,Body Slam,Ice Beam,Fire Blast
+#149,Dragonite,100,320,301,223,233,193,Thunder,Wrap,Slam,Fire Blast
+#151,Mew,100,330,225,225,225,225,Psychic,Metronome,Mega Punch,FlashOnly useable within Round 2

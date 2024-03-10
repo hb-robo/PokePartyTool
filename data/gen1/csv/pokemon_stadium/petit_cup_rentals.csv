@@ -1,0 +1,46 @@
+Index,Name,Level,HP,Attack,Defense,Special,Speed,Move1,Move2,Move3,Move4
+#001,Bulbasaur,25,69,40,40,39,39,Leech Seed,Mega Drain,Solarbeam,Cut
+#004,Charmander,25,66,42,37,41,49,Fire Blast,Rage,Growl,Mega Punch
+#007,Squirtle,25,68,40,48,41,38,Bite,Bubblebeam,Toxic,Submission
+#010,Caterpie,25,69,31,33,26,39,Tackle,String Shot,,
+#013,Weedle,25,66,33,31,26,41,Poison Sting,String Shot,,
+#016,Pidgey,25,66,38,36,34,44,Sand-attack,Quick Attack,Double-edge,Fly
+#019,Rattata,25,61,44,33,29,52,Quick Attack,Hyper Fang,Bubblebeam,Dig
+#021,Spearow,25,66,46,31,32,51,Double-edge,Mirror Move,Fly,Toxic
+#023,Ekans,25,64,46,38,36,44,Bite,Glare,Dig,Mega Drain
+#025,Pikachu,25,64,43,31,41,61,Thunder Wave,Slam,Thunder,Flash
+#027,Sandshrew,25,71,53,58,31,36,Slash,Poison Sting,Dig,Rock Slide
+#029,Nidoran♀,25,74,39,42,36,37,Double Kick,Blizzard,Take Down,Toxic
+#032,Nidoran♂,25,69,44,36,36,41,Double Kick,Horn Drill,Body Slam,Toxic
+#035,Clefairy,25,81,38,40,46,34,Sing,Fire Blast,Tri Attack,Metronome
+#037,Vulpix,25,65,36,36,49,49,Toxic,Double-edge,Dig,Ember
+#039,Jigglypuff,25,104,38,26,29,26,Sing,Psychic,Take Down,Submission
+#041,Zubat,25,66,38,33,36,44,Confuse Ray,Double-edge,Toxic,Mega Drain
+#043,Oddish,25,69,41,43,54,31,Acid,Sleep Powder,Solarbeam,Cut
+#046,Paras,25,64,51,43,44,29,Stun Spore,Mega Drain,Leech Life,Dig
+#050,Diglett,25,51,43,28,39,64,Dig,Sand-attack,Cut,Rock Slide
+#052,Meowth,25,66,38,33,36,61,Bite,Screech,Bubblebeam,Thunderbolt
+#054,Psyduck,25,71,42,40,41,44,Bubblebeam,Mimic,Mega Punch,Submission
+#058,Growlithe,25,74,51,38,41,46,Fire Blast,Bite,Mimic,Leer
+#060,Poliwag,25,66,41,36,36,61,Hypnosis,Skull Bash,Psywave,Surf
+#063,Abra,25,59,26,23,69,61,Metronome,Psywave,Body Slam,Thunder Wave
+#066,Machop,25,81,56,41,34,34,Karate Chop,Low Kick,Seismic Toss,Fire Blast
+#069,Bellsprout,25,71,53,33,51,36,Wrap,Mega Drain,Growth,Poisonpowder
+#074,Geodude,25,66,56,66,31,26,Rock Throw,Selfdestruct,Dig,Strength
+#081,Magnemite,25,59,33,51,64,39,Flash,Swift,Thunder Wave,Thunder
+#083,Farfetch'd,25,72,48,43,45,46,Fury Attack,Swords Dance,Sand-attack,Fly
+#090,Shellder,25,61,48,66,39,36,Supersonic,Clamp,Ice Beam,Selfdestruct
+#092,Gastly,25,61,33,31,66,56,Confuse Ray,Night Shade,Thunder,Mega Drain
+#098,Krabby,25,61,68,61,29,41,Guillotine,Surf,Swords Dance,Strength
+#100,Voltorb,25,66,31,41,44,66,Screech,Thunder Wave,Thunder,Take Down
+#102,Exeggcute,25,76,36,56,46,36,Hypnosis,Psywave,Egg Bomb,Reflect
+#104,Cubone,25,71,41,63,36,34,Bone Club,Tail Whip,Fire Blast,Headbutt
+#109,Koffing,25,66,48,63,46,34,Smog,Toxic,Fire Blast,Thunderbolt
+#116,Horsea,25,61,36,51,51,46,Smokescreen,Bubblebeam,Swift,Ice Beam
+#118,Goldeen,25,69,49,46,41,48,Supersonic,Horn Attack,Surf,Horn Drill
+#129,Magikarp,25,56,21,43,26,56,Splash,Tackle,,
+#132,Ditto,25,70,40,40,40,40,Transform,,,
+#133,Eevee,25,74,43,41,49,44,Sand-attack,Quick Attack,Double-edge,Substitute
+#138,Omanyte,25,64,36,66,61,34,Withdraw,Bubblebeam,Double-edge,Toxic
+#140,Kabuto,25,61,56,61,39,44,Ice Beam,Take Down,Surf,Bide
+#147,Dratini,25,67,48,38,41,41,Thunder Wave,Wrap,Thunder,Fire Blast
