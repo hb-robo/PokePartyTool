@@ -30,3 +30,35 @@ TYPE_COLORS = {  # sourced from Pocket Monsters' Stadium (1998)
 # Statistic Labels and Names
 STATS = ['HP', 'Attack', 'Defense', 'Special', 'Speed', 'Accuracy', 'Evasion']
 BASE_STATS = ['HP', 'Attack', 'Defense', 'Special', 'Speed']
+
+# Statistic Stages
+statStages = {
+    6: 4.00,
+    5: 3.50,
+    4: 3.00,
+    3: 2.50,
+    2: 2.00,
+    1: 1.50,
+    0: 1.00,
+    -1: 0.66,
+    -2: 0.50,
+    -3: 0.40,
+    -4: 0.33,
+    -5: 0.28,
+    -6: 0.25
+}
+evasionStages = {
+    6: 0.25,
+    5: 0.28,
+    4: 0.33,
+    3: 0.40,
+    2: 0.50,
+    1: 0.66,
+    0: 1.00,
+    -1: 1.50,
+    -2: 2.00,
+    -3: 2.50,
+    -4: 3.00,
+    -5: 3.50,
+    -6: 4.00
+}
