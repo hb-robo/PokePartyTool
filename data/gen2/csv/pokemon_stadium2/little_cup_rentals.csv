@@ -1,0 +1,87 @@
+Index,Name,Level,HP,Attack,Defense,Sp.Atk,Sp.Def,Speed,Move1,Move2,Move3,Move4
+#001,Bulbasaur,5,20,10,10,12,12,10,Razor Leaf,Growl,Cut,Sleep Powder
+#004,Charmander,5,19,10,9,11,10,12,Flamethrower,Rage,Sunny Day,Growl
+#007,Squirtle,5,20,10,12,10,12,9,Hydro Pump,Rapid Spin,Rain Dance,Tail Whip
+#010,Caterpie,5,20,9,9,8,8,10,Tackle,String Shot,,
+#013,Weedle,5,20,9,9,8,8,11,Poison Sting,String Shot,,
+#016,Pidgey,5,19,10,9,9,9,11,Fly,Steel Wing,Quick Attack,Quick Attack
+#019,Rattata,5,18,11,9,8,9,13,Super Fang,Hyper Fang,Thief,Tail Whip
+#021,Spearow,5,19,11,8,9,9,12,Drill Peck,Fury Attack,Pursuit,Mirror Move
+#023,Ekans,5,19,11,10,9,11,11,Acid,Bite,Strength,Glare
+#027,Sandshrew,5,20,13,14,7,8,9,Dig,Swift,Sandstorm,Sand-attack
+#029,Nidoran♀,5,21,10,10,9,9,9,Blizzard,Double Kick,Poison Sting,Growl
+#032,Nidoran♂,5,20,11,9,9,9,10,Horn Attack,Poison Sting,Horn Drill,Leer
+#037,Vulpix,5,19,9,9,10,12,12,Fire Spin,Quick Attack,Confuse Ray,Attract
+#041,Zubat,5,19,10,9,8,9,11,Wing Attack,Bite,Supersonic,Toxic
+#043,Oddish,5,19,10,11,12,11,8,Petal Dance,Cut,Sweet Scent,Poisonpowder
+#046,Paras,5,19,12,11,10,11,8,Giga Drain,Leech Life,Spore,Curse
+#048,Venonat,5,21,11,10,9,11,10,Sludge Bomb,Confusion,Leech Life,Foresight
+#050,Diglett,5,16,11,8,9,10,15,Magnitude,Slash,Sand-attack,Growl
+#052,Meowth,5,19,10,9,9,9,14,Pay Day,Iron Tail,Screech,Attract
+#054,Psyduck,5,20,10,10,11,10,10,Waterfall,Fury Swipes,Disable,Psych Up
+#056,Mankey,5,19,13,9,9,10,12,Cross Chop,Scratch,Focus Energy,Leer
+#058,Growlithe,5,21,12,10,12,10,11,Flame Wheel,Take Down,Leer,Roar
+#060,Poliwag,5,19,10,9,9,9,14,Whirlpool,Doubleslap,Belly Drum,Hypnosis
+#063,Abra,5,18,7,7,16,11,14,Psychic,Thief,Endure,Flash
+#066,Machop,5,22,13,10,9,9,9,Vital Throw,Dig,Foresight,Scary Face
+#069,Bellsprout,5,20,13,9,12,8,9,Vine Whip,Sludge Bomb,Sweet Scent,Flash
+#072,Tentacool,5,19,9,9,10,15,12,Bubblebeam,Acid,Barrier,Supersonic
+#074,Geodude,5,19,13,15,8,8,7,Tackle,Rollout,Swagger,Defense Curl
+#077,Ponyta,5,20,13,11,11,11,14,Fire Blast,Tackle,Agility,Tail Whip
+#079,Slowpoke,5,24,12,12,9,9,7,Water Gun,Confusion,Headbutt,Amnesia
+#081,Magnemite,5,17,8,12,14,10,9,Zap Cannon,Tackle,Lock-on,Supersonic
+#084,Doduo,5,19,14,10,9,9,13,Peck,Tri Attack,Agility,Growl
+#086,Seel,5,21,9,11,9,12,9,Whirlpool,Aurora Beam,Headbutt,Rest
+#088,Grimer,5,23,13,10,9,10,7,Sludge Bomb,Pound,Fire Punch,Acid Armor
+#090,Shellder,5,18,12,15,10,8,9,Clamp,Icy Wind,Supersonic,Withdraw
+#092,Gastly,5,18,9,8,15,9,13,Shadow Ball,Thief,Curse,Spite
+#095,Onix,5,18,9,21,8,9,12,Dig,Rock Throw,Harden,Endure
+#096,Drowzee,5,21,10,10,9,14,9,Dream Eater,Headbutt,Poison Gas,Hypnosis
+#098,Krabby,5,18,15,14,7,7,10,Crabhammer,Vicegrip,Guillotine,Leer
+#100,Voltorb,5,19,8,10,10,10,15,Thunder,Rollout,Mirror Coat,Curse
+#102,Exeggcute,5,21,9,13,11,9,9,Solarbeam,Thief,Barrage,Leech Seed
+#104,Cubone,5,20,10,15,9,10,8,Bonemerang,Headbutt,Tail Whip,Focus Energy
+#109,Koffing,5,19,11,15,11,9,8,Sludge Bomb,Tackle,Haze,Smokescreen
+#111,Rhyhorn,5,23,13,15,8,8,7,Rollout,Horn Attack,Sandstorm,Scary Face
+#113,Chansey,5,40,5,5,8,15,10,Egg Bomb,Mud-slap,Defense Curl,Tail Whip
+#116,Horsea,5,18,9,12,12,8,11,Hydro Pump,Twister,Leer,Agility
+#118,Goldeen,5,19,12,11,8,10,11,Waterfall,Fury Attack,Supersonic,Tail Whip
+#120,Staryu,5,18,9,11,12,10,13,Bubblebeam,Swift,Harden,Light Screen
+#123,Scyther,5,22,16,13,10,13,15,Cut,Pursuit,Focus Energy,Leer
+#129,Magikarp,5,18,7,11,7,8,14,Tackle,Flail,Splash,
+#133,Eevee,5,20,10,10,9,11,10,Take Down,Bite,Focus Energy,Tail Whip
+#137,Porygon,5,21,11,12,13,12,9,Return,Icy Wind,Sharpen,Conversion 2
+#138,Omanyte,5,18,9,15,14,10,8,Water Gun,Ancientpower,Leer,Withdraw
+#140,Kabuto,5,18,13,14,10,9,10,Ancientpower,Mega Drain,Sand-attack,Harden
+#147,Dratini,5,19,12,10,10,10,10,Outrage,Wrap,Leer,Safeguard
+#152,Chikorita,5,20,10,12,10,12,10,Solarbeam,Body Slam,Poisonpowder,Growl
+#155,Cyndaquil,5,19,10,9,11,10,12,Flame Wheel,Dig,Leer,Smokescreen
+#158,Totodile,5,20,12,12,10,10,9,Surf,Cut,Scary Face,Leer
+#161,Sentret,5,19,10,9,9,10,8,Headbutt,Shadow Ball,Fury Cutter,Swagger
+#163,Hoothoot,5,21,8,8,9,11,10,Fly,Take Down,Nightmare,Hypnosis
+#165,Ledyba,5,19,7,8,9,13,11,Double-edge,Ice Punch,Supersonic,Agility
+#167,Spinarak,5,19,11,9,9,9,8,Dig,Leech Life,Leech Life,Spider Web
+#170,Chinchou,5,22,9,9,11,11,12,Water Gun,Spark,Flail,Supersonic
+#172,Pichu,5,18,10,7,9,9,12,Zap Cannon,Swift,Attract,Sweet Kiss
+#173,Cleffa,5,21,8,8,10,11,7,Headbutt,Psychic,Encore,Charm
+#174,Igglybuff,5,25,9,7,10,8,7,Icy Wind,Dream Eater,Sing,Flash
+#175,Togepi,5,19,7,12,9,12,7,Double-edge,Rollout,Metronome,Charm
+#177,Natu,5,19,10,10,12,9,12,Psychic,Peck,Flash,Leer
+#179,Mareep,5,21,9,9,12,10,9,Thunder,Return,Growl,Cotton Spore
+#183,Marill,5,22,7,10,7,10,9,Surf,Rollout,Defense Curl,Tail Whip
+#187,Hoppip,5,19,9,9,9,11,10,Giga Drain,Headbutt,Leech Seed,Cotton Spore
+#191,Sunkern,5,19,9,9,9,9,9,Giga Drain,Sludge Bomb,Flash,Growth
+#194,Wooper,5,21,10,10,8,8,7,Surf,Dig,Mist,Haze
+#204,Pineco,5,20,12,14,9,9,7,Strength,Solarbeam,Bide,Spikes
+#209,Snubbull,5,21,13,10,9,9,8,Take Down,Bite,Scary Face,Roar
+#216,Teddiursa,5,21,13,10,10,10,9,Thrash,Faint Attack,Lick,Leer
+#218,Slugma,5,19,9,9,12,9,7,Flamethrower,Rock Throw,Smog,Harden
+#220,Swinub,5,20,10,9,8,8,10,Blizzard,Mud-slap,Swagger,Mist
+#223,Remoraid,5,19,12,9,12,9,12,Bubblebeam,Psybeam,Mud-slap,Focus Energy
+#228,Houndour,5,19,11,8,13,10,11,Ember,Crunch,Smog,Roar
+#231,Phanpy,5,24,11,11,9,9,9,Earthquake,Flail,Defense Curl,Growl
+#236,Tyrogue,5,19,9,9,9,9,9,Rock Smash,Strength,Swagger,Attract
+#238,Smoochum,5,20,8,7,14,12,12,Confusion,Powder Snow,Sweet Kiss,Mean Look
+#239,Elekid,5,19,11,9,11,10,14,Thunderpunch,Quick Attack,Light Screen,Flash
+#240,Magby,5,19,12,9,12,10,13,Fire Punch,Dynamicpunch,Smog,Smokescreen
+#246,Larvitar,5,20,12,10,10,10,9,Rock Slide,Mud-slap,Scary Face,Sandstorm
