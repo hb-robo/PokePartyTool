@@ -18,39 +18,6 @@ types = pd.read_csv('data/types/gen1types_expanded.csv', index_col='off_type')
 
 class Gen1Mon:
 
-
-    statStages = {
-        6: 4.00,
-        5: 3.50,
-        4: 3.00,
-        3: 2.50,
-        2: 2.00,
-        1: 1.50,
-        0: 1.00,
-        -1: 0.66,
-        -2: 0.50,
-        -3: 0.40,
-        -4: 0.33,
-        -5: 0.28,
-        -6: 0.25
-    }
-
-    evasionStages = {
-        6: 0.25,
-        5: 0.28,
-        4: 0.33,
-        3: 0.40,
-        2: 0.50,
-        1: 0.66,
-        0: 1.00,
-        -1: 1.50,
-        -2: 2.00,
-        -3: 2.50,
-        -4: 3.00,
-        -5: 3.50,
-        -6: 4.00
-    }
-    
     def __init__( self, name, level ):
         if name not in list(pokeDex.index.values):
             print("ERROR: Invalid Pokemon inputted to Gen1Mon object.")
