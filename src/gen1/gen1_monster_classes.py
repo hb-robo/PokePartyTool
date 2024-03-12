@@ -1,27 +1,25 @@
-import pandas as pd
-from src.parent_classes import Pokemon
-import json
-
-pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
-
 """
 Classes to represent Pokemon from Generation 1 games.
 Contains physical attributes, default stats, type data, and movepool,
 as well as "live" HP, stats, status, etc.
 """
 
+from src.parent_classes import Pokemon
+import json
+from src.gen1.gen1_constants import PMRG_MON_CONSTANTS
+
 
 class PMRG_Pokemon(Pokemon):
+    POKEDEX_PATH = '../../data/gen1/json/pm_red_green_pokedex.json'
+    GEN1_MON_CONSTANTS = PMRG_MON_CONSTANTS
 
     def __init__(self, name, level=50):
-        self.name = name
-        self.level = level
-        # Grab static values from corresponding Pokedex
-        self.pokedex_path = '../../data/gen1/json/pm_red_green_pokedex.json'
-        self.getDexEntry()
-        
-        self.lastUsedMove = ''
-        self.stat_modifiers = {k: 0 for k in self.stats.keys()}
+        super().__init__(
+            self.name,
+            self.level,
+            dex=self.POKEDEX_PATH,
+            constants=self.GEN1_MON_CONSTANTS
+        )
 
     def getDexEntry(self):
         if self.pokedex_path is None:
@@ -33,3 +31,4 @@ class PMRG_Pokemon(Pokemon):
                     f"Pokemon '{self.name}' not found in Pokedex."
                 )
             self.__dict__.update(pokedex[self.name])
+
