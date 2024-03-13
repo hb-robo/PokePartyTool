@@ -118,6 +118,17 @@ class Pokemon():
             raise ValueError("Pokemon Type2 must be None or a string")
         self._type2 = value
 
+    @property
+    def tera_type(self):
+        return self._tera_type
+
+    @tera_type.setter
+    def tera_type(self, value):
+        # Only Gen 9 has Tera types, so empty string and None are valid.
+        if not isinstance(value, str) and value is not None:
+            raise ValueError("Pokemon Type2 must be None or a string")
+        self._tera_type = value
+
     """
     Pokemon Statistics Overridden Setters
     """
