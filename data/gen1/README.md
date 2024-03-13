@@ -24,6 +24,9 @@ Pocket Monsters Stadium 2
 
 Pocket Monsters / Pokemon Yellow
 * First game in series where JP and Intl. versions had identical gameplay mechanics.
+* Unique Pokemon availability compared to other Gen1 versions.
+* Updated movepools for most Pokemon, both for "natural" learnsets and TM/HM access.
+* Revamped opponents with stronger teams, new trainer encounters themed around the TV show.
 
 Pokemon Stadium
 * Western release of PMS2, with totally revamped rental teams and opponents.
