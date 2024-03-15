@@ -1,6 +1,16 @@
 import pandas as pd
 import utils.classes as g
 
+
+GENERATION = 1
+GAME_GROUP = 'rb'
+
+POKEDEX_PATH = f'../data/gen{GENERATION}/{GAME_GROUP}/csv/{GAME_GROUP}_pokedex.csv'
+MOVEDDEX_PATH = f'../data/gen{GENERATION}/{GAME_GROUP}/csv/{GAME_GROUP}_movedex.csv'
+LEARNDDEX_PATH = f'../data/gen{GENERATION}/{GAME_GROUP}/csv/{GAME_GROUP}_move_access.csv'
+TYPES_PATH = f'../data/types/gen1/csv/types_expanded.csv'
+LEVEL = 50
+
 pokeDex = pd.read_csv('data/rby/rby_pokedex.csv', index_col='mon_name')
 moveDex = pd.read_csv('data/rby/rby_movedex.csv', index_col='move')
 learnDex = pd.read_csv('data/rby/rby_move_access.csv', index_col='mon_name')
@@ -359,3 +369,10 @@ getELO = 0
 # df.index = list(gen1.pokeDex.index.values)
 
 # df.to_csv('results.csv')
+
+def test_functions():
+    # Your code here
+    pass
+
+if __name__ == "__main__":
+    main()
