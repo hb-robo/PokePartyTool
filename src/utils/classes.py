@@ -41,7 +41,7 @@ types = pd.read_csv(
 )
 
 class Gen1Mon:
-   
+
     def __init__( self, name, level ):
         if name not in list(pokeDex.index.values):
             print("ERROR: Invalid Pokemon inputted to Gen1Mon object.")
