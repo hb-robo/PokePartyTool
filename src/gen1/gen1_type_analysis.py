@@ -25,14 +25,21 @@ Rough analysis outline:
     * Presence of self-obliteration
 * 3D bar chart: move frequency by type and status effect applied
 """
+
+
 import pandas as pd
 import duckdb
+from bokeh.plotting import figure, show
+from bokeh.embed import components
+from bokeh.models import HoverTool, ColumnDataSource, Label, Range1d, FixedTicker
+from bokeh.layouts import column, gridplot
+import gen1_constants as constants
 
 g1typeinteractions = pd.read_csv(
-    'data/gen1/csv/gen1_type_interactions.csv'
+    '../../data/gen1/csv/gen1_type_interactions.csv'
 )
 g1typeinteractions_expanded = pd.read_csv(
-    'data/gen1/csv/gen1_expanded_type_interactions.csv'
+    '../../data/gen1/csv/gen1_expanded_type_interactions.csv'
 )
 
 """
@@ -54,8 +61,72 @@ offensive_type_advantages = duckdb.query(
     group by off_type;
     '''
 ).df()
-print(offensive_type_advantages)
-# TODO: dataviz stuff
+offensive_type_advantages.index = offensive_type_advantages['off_type']
+# print(offensive_type_advantages)
+
+"""
+Below might be unnecessary, can just use #Types.
+"""
+# off_type_adv_y_max = duckdb.query(
+#     '''
+#     SELECT 
+#         CASE
+#             WHEN max_0 >= max_0_5 AND max_0 >= max_1 AND max_0 >= max_2 THEN max_0
+#             WHEN max_0_5 >= max_1 AND max_0_5 >= max_2 THEN max_0_5
+#             WHEN max_1 >= max_2 THEN max_1
+#             ELSE max_2
+#         END AS max
+#     FROM (
+#         SELECT
+#             MAX(ota."0.0x") as max_0,
+#             MAX(ota."0.5x") as max_0_5,
+#             MAX(ota."1.0x") as max_1,
+#             MAX(ota."2.0x") as max_2
+#         from offensive_type_advantages ota
+#     ) t1;
+#     '''
+# ).df()
+# ota_ymax = off_type_adv_y_max.loc[0, 'max']
+
+
+off_types = sorted(offensive_type_advantages['off_type'])
+categories = offensive_type_advantages.columns[1:].tolist()
+bar_colors = [constants.TYPE_COLORS[off_type] for off_type in off_types]
+
+num_cols = 4
+grid = []
+row = []
+
+plots = []
+for off_type in off_types:
+    data = offensive_type_advantages[(offensive_type_advantages['off_type'] == off_type)]
+
+    source = ColumnDataSource(data=dict(
+        x=categories,
+        top = data.values[0].tolist()[1:],
+    ))
+
+    p = figure(x_range=categories, height=200, width=400, y_range=Range1d(0, len(constants.TYPES)), title=off_type)
+    p.yaxis.ticker = FixedTicker(ticks=[x for x in list(range(0, len(constants.TYPES)+1)) if x % 5 == 0])
+    p.vbar(x='x', top = 'top', width=0.9,color=constants.TYPE_COLORS[off_type], source=source)
+
+    label = Label(x=-10, y=0, text=off_type, text_font_size='10pt')
+    p.add_layout(label)
+        
+    hover = HoverTool(tooltips=[
+        ("Count", "@top")
+    ])
+    p.add_tools(hover)
+
+    row.append(p)
+    if len(row) == num_cols:
+        grid.append(row)
+        row = []
+
+if row:
+    grid.append(row)
+
+show(gridplot(grid))
 
 defensive_type_advantages = duckdb.query(
     '''
