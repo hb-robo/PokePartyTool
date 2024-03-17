@@ -31,9 +31,9 @@ import pandas as pd
 import duckdb
 from bokeh.plotting import figure, show
 from bokeh.embed import components
-from bokeh.models import HoverTool, ColumnDataSource, Label, Range1d, FixedTicker
+from bokeh.models import HoverTool, ColumnDataSource, Label, Range1d, FixedTicker, Div
 from bokeh.layouts import column, gridplot
-import gen1_constants as constants
+import src.gen1.gen1_constants as constants
 
 g1typeinteractions = pd.read_csv(
     '../../data/gen1/csv/gen1_type_interactions.csv'
@@ -42,105 +42,112 @@ g1typeinteractions_expanded = pd.read_csv(
     '../../data/gen1/csv/gen1_expanded_type_interactions.csv'
 )
 
-"""
-PART 1: Naive Analysis
-* Assumes equal distribution of type frequencies in available Pokemon.
-* Assumes equal stats and equivalent move access for each type.
-* Assumes attacking moves are limited to the typing of the Pokemon.
-"""
+def save_plot_as_html_js_snippets(path_and_filename, plot_figure):
+    """
+    Save a Bokeh plot as in HTML/JS snippet format for easy webpage import.
 
-# Single-Type Advantages
-offensive_type_advantages = duckdb.query(
-    '''
-    SELECT off_type,
-        SUM(CASE g.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
-        SUM(CASE g.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
-        SUM(CASE g.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
-        SUM(CASE g.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x"
-    from g1typeinteractions g
-    group by off_type;
-    '''
-).df()
-offensive_type_advantages.index = offensive_type_advantages['off_type']
-# print(offensive_type_advantages)
+    Parameters:
+    - path_and_filename (str): The path and name of the HTML file to save.
+    - plot_figure (bokeh.plotting.Figure): The Bokeh plot to save.
+    """
+    script, div = components(plot_figure)
+    with open(f'{path_and_filename}_script.js', 'w', encoding='utf8') as f:
+        f.write(script)
 
-"""
-Below might be unnecessary, can just use #Types.
-"""
-# off_type_adv_y_max = duckdb.query(
-#     '''
-#     SELECT 
-#         CASE
-#             WHEN max_0 >= max_0_5 AND max_0 >= max_1 AND max_0 >= max_2 THEN max_0
-#             WHEN max_0_5 >= max_1 AND max_0_5 >= max_2 THEN max_0_5
-#             WHEN max_1 >= max_2 THEN max_1
-#             ELSE max_2
-#         END AS max
-#     FROM (
-#         SELECT
-#             MAX(ota."0.0x") as max_0,
-#             MAX(ota."0.5x") as max_0_5,
-#             MAX(ota."1.0x") as max_1,
-#             MAX(ota."2.0x") as max_2
-#         from offensive_type_advantages ota
-#     ) t1;
-#     '''
-# ).df()
-# ota_ymax = off_type_adv_y_max.loc[0, 'max']
+    with open(f'{path_and_filename}_div.html', 'w', encoding='utf8') as f:
+        f.write(div)
 
 
-off_types = sorted(offensive_type_advantages['off_type'])
-categories = offensive_type_advantages.columns[1:].tolist()
-bar_colors = [constants.TYPE_COLORS[off_type] for off_type in off_types]
+# =============================================================================
+# PART 1: Naive Analysis
+# * Assumes equal distribution of type frequencies in available Pokemon.
+# * Assumes equal stats and equivalent move access for each type.
+# * Assumes attacking moves are limited to the typing of the Pokemon.
+# =============================================================================
 
-num_cols = 4
-grid = []
-row = []
+def generate_offensive_interaction_plot():
+    """
+    Generate a plot showing each type's distribution of offensive interactions.
+    """
+    offensive_type_advantages = duckdb.query(
+        '''
+        SELECT off_type,
+            SUM(CASE g.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
+            SUM(CASE g.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
+            SUM(CASE g.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
+            SUM(CASE g.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x",
+            AVG(g.multiplier) as avg_multiplier
+        from g1typeinteractions g
+        group by off_type
+        order by AVG(g.multiplier) desc;
+        '''
+    ).df()
+    offensive_type_advantages.index = offensive_type_advantages['off_type']
+    # print(offensive_type_advantages)
 
-plots = []
-for off_type in off_types:
-    data = offensive_type_advantages[(offensive_type_advantages['off_type'] == off_type)]
+    title = Div(text="<h2>Offensive Interaction Distribution By Type</h2>")
 
-    source = ColumnDataSource(data=dict(
-        x=categories,
-        top = data.values[0].tolist()[1:],
-    ))
+    off_types = offensive_type_advantages['off_type'].tolist()
+    categories = offensive_type_advantages.columns[1:-1].tolist() # exclude off_type and avg_multiplier
 
-    p = figure(x_range=categories, height=200, width=400, y_range=Range1d(0, len(constants.TYPES)), title=off_type)
-    p.yaxis.ticker = FixedTicker(ticks=[x for x in list(range(0, len(constants.TYPES)+1)) if x % 5 == 0])
-    p.vbar(x='x', top = 'top', width=0.9,color=constants.TYPE_COLORS[off_type], source=source)
+    num_cols = 4
+    grid = []
+    row = []
+    for off_type in off_types:
+        data = offensive_type_advantages[(offensive_type_advantages['off_type'] == off_type)]
 
-    label = Label(x=-10, y=0, text=off_type, text_font_size='10pt')
-    p.add_layout(label)
-        
-    hover = HoverTool(tooltips=[
-        ("Count", "@top")
-    ])
-    p.add_tools(hover)
+        source = ColumnDataSource(data=dict(
+            x=categories,
+            top = data.values[0].tolist()[1:-1],
+        ))
+        ptitle = f"{off_type}:   {data['avg_multiplier'].values[0]:.3f}x Avg. Off. Mult."
+        p = figure(
+            x_range=categories,
+            y_range=Range1d(0, len(constants.TYPES)),
+            height=200, width=400,
+            title=ptitle)
+        p.yaxis.ticker = FixedTicker(ticks=[x for x in range(0, len(constants.TYPES)+1, 5)])
+        p.vbar(x='x', top='top', width=0.9, color=constants.TYPE_COLORS[off_type], source=source)
 
-    row.append(p)
-    if len(row) == num_cols:
+        hover = HoverTool(tooltips=[
+            ("Count", "@top")
+        ])
+        p.add_tools(hover)
+
+        row.append(p)
+        if len(row) == num_cols:
+            grid.append(row)
+            row = []
+
+    if row:
+        row.append(Div(
+            text="<h3>0.0x: Immune, 0.5x: Resistant, 1.0x: Neutral, 2.0x: Weak</h3> \
+                <p>Assumes no double-types, equal type distribution, equal Pokemon stats and equivalent movepools per type</p>"
+        ))
         grid.append(row)
-        row = []
 
-if row:
-    grid.append(row)
+    grid.insert(0, [title])
+    # show(gridplot(grid))
+    save_plot_as_html_js_snippets('offensive_interaction_plot', gridplot(grid))
 
-show(gridplot(grid))
 
-defensive_type_advantages = duckdb.query(
-    '''
-    SELECT def_type,
-        SUM(CASE g.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
-        SUM(CASE g.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
-        SUM(CASE g.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
-        SUM(CASE g.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x"
-    from g1typeinteractions g
-    group by def_type;
-    '''
-).df()
-print(defensive_type_advantages)
-# TODO: dataviz stuff
+def generate_defensive_interaction_plot():
+    """
+    Generate a plot showing each type's distribution of defensive interactions.
+    """
+    defensive_type_advantages = duckdb.query(
+        '''
+        SELECT def_type,
+            SUM(CASE g.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
+            SUM(CASE g.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
+            SUM(CASE g.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
+            SUM(CASE g.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x"
+        from g1typeinteractions g
+        group by def_type;
+        '''
+    ).df()
+    print(defensive_type_advantages)
+    # TODO: dataviz stuff
 
 # Something about value OF strengths (how rare they are) - the higher the better
 # mean( 1/str_freq ) for each str - average value of strengths
@@ -152,48 +159,68 @@ print(defensive_type_advantages)
 
 
 # Single-Type and Double-Type Advantages
-expanded_off_type_advantages = duckdb.query(
-    '''
-    SELECT off_type,
-        SUM(CASE ge.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
-        SUM(CASE ge.multiplier WHEN 0.25 THEN 1 ELSE 0 END)::int as "0.25x",
-        SUM(CASE ge.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
-        SUM(CASE ge.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
-        SUM(CASE ge.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x",
-        SUM(CASE ge.multiplier WHEN 4.0 THEN 1 ELSE 0 END)::int as "4.0x"
-    from g1typeinteractions_expanded ge
-    group by off_type;
-    '''
-).df()
-print(expanded_off_type_advantages)
-# TODO: dataviz stuff
-
-expanded_def_type_advantages = duckdb.query(
-    '''
-    SELECT def_type1, def_type2,
-        SUM(CASE ge.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
-        SUM(CASE ge.multiplier WHEN 0.25 THEN 1 ELSE 0 END)::int as "0.25x",
-        SUM(CASE ge.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
-        SUM(CASE ge.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
-        SUM(CASE ge.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x",
-        SUM(CASE ge.multiplier WHEN 4.0 THEN 1 ELSE 0 END)::int as "4.0x"
-    from g1typeinteractions_expanded ge
-    group by def_type1, def_type2;
-    '''
-).df()
-print(expanded_def_type_advantages)
-# TODO: dataviz stuff
-
-"""
-PART 2: Partially-Naive Analysis
-* Recognizes actual distribution of types in Kanto Pokedex
-* Recognizes actual base stats of available Pokemon
-* Assumes equivalent movepools between types
-* Assumes attacking moves are limited to the typing of the Pokemon.
-"""
+def generate_expanded_offensive_interaction_plot():
+    """
+    Generate a plot showing each type's distribution of offensive interactions
+    against both single- and double-typed defenders.
+    """
+    expanded_off_type_advantages = duckdb.query(
+        '''
+        SELECT off_type,
+            SUM(CASE ge.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
+            SUM(CASE ge.multiplier WHEN 0.25 THEN 1 ELSE 0 END)::int as "0.25x",
+            SUM(CASE ge.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
+            SUM(CASE ge.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
+            SUM(CASE ge.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x",
+            SUM(CASE ge.multiplier WHEN 4.0 THEN 1 ELSE 0 END)::int as "4.0x"
+        from g1typeinteractions_expanded ge
+        group by off_type;
+        '''
+    ).df()
+    print(expanded_off_type_advantages)
+    # TODO: dataviz stuff
 
 
-"""
-PART 3: Fully-Informed Analysis
-* Recognizes actual types, stats, and movepools of in-game Pokemon
-"""
+def generate_expanded_defensive_interaction_plot():
+    """
+    Generate a plot showing each unique single- and double-type combination's
+    distribution of defensive interactions against single-type attacks.
+    """
+    expanded_def_type_advantages = duckdb.query(
+        '''
+        SELECT def_type1, def_type2,
+            SUM(CASE ge.multiplier WHEN 0.0 THEN 1 ELSE 0 END)::int as "0.0x",
+            SUM(CASE ge.multiplier WHEN 0.25 THEN 1 ELSE 0 END)::int as "0.25x",
+            SUM(CASE ge.multiplier WHEN 0.5 THEN 1 ELSE 0 END)::int as "0.5x",
+            SUM(CASE ge.multiplier WHEN 1.0 THEN 1 ELSE 0 END)::int as "1.0x",
+            SUM(CASE ge.multiplier WHEN 2.0 THEN 1 ELSE 0 END)::int as "2.0x",
+            SUM(CASE ge.multiplier WHEN 4.0 THEN 1 ELSE 0 END)::int as "4.0x"
+        from g1typeinteractions_expanded ge
+        group by def_type1, def_type2;
+        '''
+    ).df()
+    print(expanded_def_type_advantages)
+    # TODO: dataviz stuff
+
+# =============================================================================
+# PART 2: Partially-Naive Analysis
+# * Recognizes actual distribution of types in Kanto Pokedex
+# * Recognizes actual base stats of available Pokemon
+# * Assumes equivalent movepools between types
+# * Assumes attacking moves are limited to the typing of the Pokemon.
+# =============================================================================
+
+
+# =============================================================================
+# PART 3: Fully-Informed Analysis
+# * Recognizes actual types, stats, and movepools of in-game Pokemon
+# =============================================================================
+
+
+
+
+if __name__ == '__main__':
+    generate_offensive_interaction_plot()
+    generate_defensive_interaction_plot()
+    generate_expanded_offensive_interaction_plot()
+    generate_expanded_defensive_interaction_plot()
