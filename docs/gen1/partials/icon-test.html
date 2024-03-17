@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Testing Gen1 Icons</title>
+    <style>
+        ul {
+            display: flex;
+            list-style: none;
+        }
+
+        li {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body style="background-color: rgb(245, 245, 245);">
+    <ul style="display: flex; list-style: none;">
+        <li id="pm-akai"></li>
+        <li id="pm-midori"></li>
+        <li id="pm-ao"></li>
+        <li id="pm-pikachu"></li>
+        <li id="pm-stadium"></li>
+        <li id="pm-stadium2"></li>
+        <li id="pkmn-red"></li>
+        <li id="pkmn-blue"></li>
+        <li id="pkmn-yellow"></li>
+        <li id="pkmn-stadium"></li>
+    </ul>
+</body>
+<script>
+    const iframeSources = [
+        'pm-akai.html',
+        'pm-midori.html',
+        'pm-ao.html',
+        'pm-pikachu.html',
+        'pm-stadium.html',
+        'pm-stadium2.html',
+        'pkmn-red.html',
+        'pkmn-blue.html',
+        'pkmn-yellow.html',
+        'pkmn-stadium.html'
+    ];
+
+    iframeSources.forEach(source => {
+        fetch(source)
+            .then(response => response.text())
+            .then(data => {
+                const liElement = document.querySelector(`#${source.replace('.html', '')}`);
+                liElement.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+</html>
