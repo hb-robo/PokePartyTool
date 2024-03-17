@@ -1,0 +1,1 @@
+This directory will generate the actual navigable webpages from the project, in the form of modular HTML/JS snippets and static pages that import them.
