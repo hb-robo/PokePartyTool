@@ -3,7 +3,7 @@ One-time script to turn "type charts" into simple tables for SQL analysis.
 """
 
 import pandas as pd
-from gen1_constants import TYPES
+from src.gen1.gen1_constants import TYPES
 
 gen1types = pd.read_csv('data/gen1/csv/gen1_type_chart.csv')
 gen1types = gen1types.set_index('off_type')
@@ -25,15 +25,15 @@ df = pd.DataFrame(type_interactions)
 
 # expand defensive typings
 expanded_type_interactions = []
-for type in TYPES:
+for ptype in TYPES:
     for deftype1 in TYPES:
         def1val = df.loc[
-            (df['off_type'] == type)
+            (df['off_type'] == ptype)
             & (df['def_type'] == deftype1)
         ]
         def1mult = float(def1val['multiplier'])
         expanded_type_interactions.append({
-            'off_type': type,
+            'off_type': ptype,
             'def_type1': deftype1,
             'def_type2': None,
             'multiplier': def1mult
@@ -43,12 +43,12 @@ for type in TYPES:
             if deftype1 == deftype2:
                 continue
             def2val = df.loc[
-                (df['off_type'] == type)
+                (df['off_type'] == ptype)
                 & (df['def_type'] == deftype2)
             ]
             def2mult = float(def2val['multiplier'])
             expanded_type_interactions.append({
-                'off_type': type,
+                'off_type': ptype,
                 'def_type1': deftype1,
                 'def_type2': deftype2,
                 'multiplier': def1mult * def2mult
