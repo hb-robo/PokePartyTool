@@ -1,5 +1,10 @@
 """
 One-stop shop for data analysis centered around Pokemon types.
+Applies to:
+* Pocket Monsters R/G/B/Y
+* Pokemon R/B/Y
+* Pocket Monsters Stadium 1/2
+* Pokemon Stadium
 
 Rough analysis outline:
 * Type advantages on paper
@@ -29,17 +34,17 @@ Rough analysis outline:
 
 import pandas as pd
 import duckdb
-from bokeh.plotting import figure, show
+from bokeh.plotting import figure
 from bokeh.embed import components
-from bokeh.models import HoverTool, ColumnDataSource, Label, Range1d, FixedTicker, Div
-from bokeh.layouts import column, gridplot
-import src.gen1.gen1_constants as constants
+from bokeh.models import HoverTool, ColumnDataSource, Range1d, FixedTicker, Div
+from bokeh.layouts import gridplot
+from src.gen1 import gen1_constants as constants
 
 g1typeinteractions = pd.read_csv(
-    '../../data/gen1/csv/gen1_type_interactions.csv'
+    '/data/gen1/csv/gen1_type_interactions.csv'
 )
 g1typeinteractions_expanded = pd.read_csv(
-    '../../data/gen1/csv/gen1_expanded_type_interactions.csv'
+    'data/gen1/csv/gen1_expanded_type_interactions.csv'
 )
 
 def save_plot_as_html_js_snippets(path_and_filename, plot_figure):
@@ -128,7 +133,7 @@ def generate_offensive_interaction_plot():
 
     grid.insert(0, [title])
     # show(gridplot(grid))
-    save_plot_as_html_js_snippets('offensive_interaction_plot', gridplot(grid))
+    save_plot_as_html_js_snippets('docs/gen1/charts/gen1_offensive_interaction_plot', gridplot(grid))
 
 
 def generate_defensive_interaction_plot():
@@ -215,7 +220,6 @@ def generate_expanded_defensive_interaction_plot():
 # PART 3: Fully-Informed Analysis
 # * Recognizes actual types, stats, and movepools of in-game Pokemon
 # =============================================================================
-
 
 
 
