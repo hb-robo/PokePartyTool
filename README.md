@@ -1,14 +1,36 @@
-# PokePartyTool
-Welcome! This is a tool for creating optimal 6-man parties in the mainline Pokemon series, based on offensive and defensive coverage, your "must-have" Pokemon (such as a starter or personal favorite), stats and overall power level of each 'mon, and the predicted opponent pool. It is a work in progress, but here is a rough outline of the goals for the project:
+# poke.lootmath.com
+Welcome! This is an in-development one-stop shop for the Pokemon data science you didn't know you wanted, with a concerted focus on specific combat matchups and optimizing parties.
 
-# 1. Data Migration and Processing
-This project necessitates a TON of data. Not only do we a comprehensive collection of each Pokemon in each game, but their statistics and hypothetical movepools at each level, the interactions of their typings and their moves, and so on. This part of the project is very tedious and is a majority of the development bottleneck.
+### Current Scope
+As of March 2024, the current scope of the project is all of Pokemon Generation 1, including:
+* Pocket Monsters Red & Green
+* Pocket Monsters Blue
+* Pocket Monsters Stadium
+* Pokemon Red & Blue Versions
+* Pocket Monsters Stadium 2
+* Pocket Monsters Pikachu
+* Pokemon Yellow Version
+* Pokemon Stadium
 
-# 2. Battle Simulation and Analysis
-Once we have enough data about the variety of Pokemon in a given game, we then have to simulate thousands of 1v1 matchups to evaluate their overall strength level and which matchups they excel at or falter in. This is done by a simple matchup system that mirrors the internal logic of the specific game's battle mechanics, including status effects and other combat systems. This tournament comprises of not only each Pokemon, but each possible 4-move variant of each Pokemon, so the optimal moveset is also applied to the calculations (note: when we get to Gens 5 and onward, this will also include EVs, which are basically allocated stat points). By the end of this step, we have a rough estimation of the most successful and powerful Pokemon in the game, and what matchups they excel against.
+### General Roadmap
+1. **Data Migration and Processing**
+    * Collect all relevant data from Serebii, Bulbapedia, pkmn.help, The Cutting Room Floor, the JP Pokemon Wiki, and more.
+    * Transform the data into SQL-friendly CSV tables and battle-sim-friendly JSON objects.
+2. **Data Analysis Suite**
+    * Leverage the transformed CSVs to build charts via Bokeh.
+    * Expand upon findings in pseudo-academic data analysis articles.
+    * Host this analysis on site, and organize 
+3. **Battle Simulator**
+    * Construct JSON objects of potential Pokemon parties and loadouts.
+    * Build respectful battle simulator implemented for a specific game or game cluster.
+    * Conduct extensive simulation to create more data about optimal combat matchups.
+    * Implement specific trainer data to discover optimal strategies.
+    * Add findings and more charts to Data Analysis Suite, and link pages to the corresponding games.
+4. **Party Optimizer**
+    * Leveraging matchup data, create tool to generate ideal parties based on opponent.
+    * Implement modes such as "required mons" (such as a favorite or starter) to personalize the tool to the user.
+5. **Attempt to disrupt the competitive metagame**
+    * Use all available tools and data to simulate a developing Smogon competitive metagame, including Mon relegation and promotion over epochs.
+    * Potentially discover something cool and/or useful for the competitive scene.
+5. **Repeat steps for the next game**
 
-# 3. Optimizing the Party
-Now that we know which Pokemon are good, we can now assemble the most optimal, most badass sextet you can assemble in the game. I am aiming for this part of the project to be highly customizable because of certain playstyles that are otherwise immutable to some players - as an example, most people prefer to incorporate their starter, and some avoid the use of legendaries altogether. I also hope to add functionality to optimize the party for the content present in the game itself, as the default party assembler will be going off of data that implies one battle exactly with every variant of every Pokemon, something that just simply isn't the case in the actual games themselves. The proposed modes for this are default (full pool), all trainers, gym trainers, gym leaders, and competitive meta.
-
-# 4. Hosting the Web Tool
-The final product will be an interactive webtool hosted on my personal site, www.haydenbrown.dev, for all to freely use and tinker with. As each game is completely calculated and the tools are properly working, they will be added to the tool, one by one. As such, the tool will not launch until the Generation 1 games (Red, Blue, and Yellow) are fully functional and operational.
