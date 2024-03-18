@@ -47,6 +47,7 @@ g1typeinteractions_expanded = pd.read_csv(
     'data/gen1/csv/gen1_expanded_type_interactions.csv'
 )
 
+
 def save_plot_as_html_js_snippets(path_and_filename, plot_figure):
     """
     Save a Bokeh plot as in HTML/JS snippet format for easy webpage import.
@@ -93,26 +94,35 @@ def generate_offensive_interaction_plot():
     title = Div(text="<h2>Offensive Interaction Distribution By Type</h2>")
 
     off_types = offensive_type_advantages['off_type'].tolist()
-    categories = offensive_type_advantages.columns[1:-1].tolist() # exclude off_type and avg_multiplier
+    categories = offensive_type_advantages.columns[1:-1].tolist()
+    # ^ [1:-1] is to exclude off_type and avg_multiplier
 
     num_cols = 4
     grid = []
     row = []
     for off_type in off_types:
-        data = offensive_type_advantages[(offensive_type_advantages['off_type'] == off_type)]
+        data = offensive_type_advantages[
+            (offensive_type_advantages['off_type'] == off_type)
+        ]
 
         source = ColumnDataSource(data=dict(
             x=categories,
-            top = data.values[0].tolist()[1:-1],
+            top=data.values[0].tolist()[1:-1],
         ))
-        ptitle = f"{off_type}:   {data['avg_multiplier'].values[0]:.3f}x Avg. Off. Mult."
+        avg_mult_trunc = f"{data['avg_multiplier'].values[0]:.3f}"
+        ptitle = f"{off_type}:   {avg_mult_trunc}x Avg. Off. Mult."
         p = figure(
             x_range=categories,
             y_range=Range1d(0, len(constants.TYPES)),
             height=200, width=400,
             title=ptitle)
-        p.yaxis.ticker = FixedTicker(ticks=[x for x in range(0, len(constants.TYPES)+1, 5)])
-        p.vbar(x='x', top='top', width=0.9, color=constants.TYPE_COLORS[off_type], source=source)
+        p.yaxis.ticker = FixedTicker(
+            ticks=[x for x in range(0, len(constants.TYPES)+1, 5)]
+        )
+        p.vbar(
+            x='x', top='top', source=source, width=0.9,
+            color=constants.TYPE_COLORS[off_type]
+        )
 
         hover = HoverTool(tooltips=[
             ("Count", "@top")
@@ -126,14 +136,19 @@ def generate_offensive_interaction_plot():
 
     if row:
         row.append(Div(
-            text="<h3>0.0x: Immune, 0.5x: Resistant, 1.0x: Neutral, 2.0x: Weak</h3> \
-                <p>Assumes no double-types, equal type distribution, equal Pokemon stats and equivalent movepools per type</p>"
+            text="<h3>0.0x: Immune, 0.5x: Resistant</h3> \
+                  <h3>1.0x: Neutral, 2.0x: Weak</h3> \
+                  <p>Assumes no double-types, equal type distribution, \
+                     equal Pokemon stats and equivalent movepools per type</p>"
         ))
         grid.append(row)
 
     grid.insert(0, [title])
     # show(gridplot(grid))
-    save_plot_as_html_js_snippets('docs/gen1/charts/gen1_offensive_interaction_plot', gridplot(grid))
+    save_plot_as_html_js_snippets(
+        'docs/gen1/charts/gen1_offensive_interaction_plot',
+        gridplot(grid)
+    )
 
 
 def generate_defensive_interaction_plot():
@@ -154,7 +169,7 @@ def generate_defensive_interaction_plot():
     print(defensive_type_advantages)
     # TODO: dataviz stuff
 
-# Something about value OF strengths (how rare they are) - the higher the better
+# Something about value OF strengths (how rare they are): the higher the better
 # mean( 1/str_freq ) for each str - average value of strengths
 # sum( 1/str_freq ) for each str - total value of strengths
 
@@ -220,7 +235,6 @@ def generate_expanded_defensive_interaction_plot():
 # PART 3: Fully-Informed Analysis
 # * Recognizes actual types, stats, and movepools of in-game Pokemon
 # =============================================================================
-
 
 
 if __name__ == '__main__':
