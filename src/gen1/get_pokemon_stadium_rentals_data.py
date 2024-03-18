@@ -2,12 +2,14 @@ from bs4 import BeautifulSoup
 import requests
 import time
 import csv
+import os
 
 """
-Western Pokemon resources tend to only have CSS-styled data for Pokemon Stadium rentals.
-This script scrapes the data from Serebii, transforms it, and then stores it in a more 
-readily workable CSV format. Japanese resources have their versions more thoroughly
-catalogued, so this method is unnecessary for those games.
+Western Pokemon resources tend to only have CSS-styled, for-humans-only data
+for Pokemon Stadium rentals. This script scrapes the data from Serebii,
+transforms it, and then stores it in a more readily workable CSV format.
+Japanese resources have their versions more thoroughly catalogued, so this
+method is unnecessary for those games.
 """
 
 # Pokemon Stadium Rentals
@@ -23,7 +25,7 @@ for cup, uri in STADIUM_URIS.items():
     response = requests.get(uri)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find all the tables with the class 'poketab' which contain the rental Pokemon data
+    # Find all 'table.poketab' elements, which contain the rental Pokemon data
     elements = soup.find_all('table', class_='poketab')
 
     rental_data_list = []
@@ -49,12 +51,22 @@ for cup, uri in STADIUM_URIS.items():
         pokemon_data['Move3'] = '' if len(attrs_list) < 11 else attrs_list[10]
         pokemon_data['Move4'] = '' if len(attrs_list) < 12 else attrs_list[11]
 
-        # print(pokemon_data)
+        print(pokemon_data)
         rental_data_list.append(pokemon_data)
 
     # Write the cup's rental data to CSV file
-    with open(f'../../data/gen1/csv/pokemon_stadium/{cup}_rentals.csv', 'w+', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=['Index','Name','Level','HP','Attack','Defense','Special','Speed','Move1','Move2','Move3','Move4'])
+    script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(
+        script_dir, f'../../data/gen1/csv/pokemon_stadium/{cup}_rentals.csv'
+    )
+    print(file_path)
+
+    with open(file_path, 'w+', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=[
+            'Index', 'Name', 'Level',
+            'HP', 'Attack', 'Defense', 'Special', 'Speed',
+            'Move1', 'Move2', 'Move3', 'Move4'
+        ])
         writer.writeheader()
         for pokemon_data in rental_data_list:
             writer.writerow(pokemon_data)
