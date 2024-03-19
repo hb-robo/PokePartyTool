@@ -18,7 +18,7 @@ PM_STADIUM2_URI = 'https://wiki.xn--rckteqa2e.com/wiki/%E3%83%AC%E3%83%B3%E3%82%
 response = requests.get(PM_STADIUM2_URI)
 soup = BeautifulSoup(response.content, 'html.parser')
 
-# Find both 'table.bluetable's, which contain the two rental pools
+# Find both 'table.bluetable's, which contain the rental pools
 bluetables = soup.find_all('table', class_='bluetable')
 rental_tables = {
     'yellow_cup': bluetables[0],
