@@ -64,7 +64,7 @@ for cup, table in rental_tables.items():
     script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(
         script_dir,
-        f'../../data/gen1/csv/pocket_monsters_stadium2/{cup}_rentals.csv'
+        f'../../data/csv/gen1/pocket_monsters_stadium2/{cup}_rentals.csv'
     )
     # print(file_path)
 

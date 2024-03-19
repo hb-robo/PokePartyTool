@@ -51,15 +51,15 @@ for cup, uri in STADIUM_URIS.items():
         pokemon_data['Move3'] = '' if len(attrs_list) < 11 else attrs_list[10]
         pokemon_data['Move4'] = '' if len(attrs_list) < 12 else attrs_list[11]
 
-        print(pokemon_data)
+        # print(pokemon_data)
         rental_data_list.append(pokemon_data)
 
     # Write the cup's rental data to CSV file
     script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(
-        script_dir, f'../../data/gen1/csv/pokemon_stadium/{cup}_rentals.csv'
+        script_dir, f'../../data/csv/gen1/pokemon_stadium/{cup}_rentals.csv'
     )
-    print(file_path)
+    # print(file_path)
 
     with open(file_path, 'w+', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=[

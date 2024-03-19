@@ -52,7 +52,7 @@ for uri_type, uri in uri_list.items():
 # print(gen1_move_list)
 
 script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(script_dir, '../../data/gen1/csv/gen1_move_list.csv')
+file_path = os.path.join(script_dir, '../../data/csv/gen1/gen1_move_list.csv')
 print(file_path)
 
 with open(file_path, 'w+', newline='', encoding='utf-8') as f:

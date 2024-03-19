@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import time
 import csv
+import os
 
 """
 Western Pokemon resources tend to only have CSS-styled data for Pokemon Stadium 2 rentals.
@@ -45,8 +46,15 @@ for cup, uri in STADIUM2_URIS.items():
         # print(pokemon_data)
         rental_data_list.append(pokemon_data)
 
+    script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(
+        script_dir,
+        f'../../data/csv/gen2/pokemon_stadium2/{cup}_rentals.csv'
+    )
+    # print(file_path)
+
     fieldnames = list(rental_data_list[0].keys()) if rental_data_list else []
-    with open(f'../../data/gen2/csv/pokemon_stadium2/{cup}_rentals.csv', 'w+', newline='', encoding='utf-8') as f:
+    with open(file_path, 'w+', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for pokemon_data in rental_data_list:
