@@ -25,10 +25,10 @@ try:
     tables = soup.find_all('table', class_='roundy')
     move_translation_tables = {
         'move': tables[0],
-        'z_move': tables[1],
+        'gen7/z_move': tables[1],
         # tables[2] is list of Mystery Dungeon exclusive moves
-        'shadow_move': tables[3],
-        'gmax_move': tables[4]
+        'gen3/shadow_move': tables[3],
+        'gen8/gmax_move': tables[4]
     }
 
     for movepool, table in move_translation_tables.items():
