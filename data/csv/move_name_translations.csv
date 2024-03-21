@@ -1,0 +1,862 @@
+move_id,name_eng,name_jp_kana
+1,Pound,はたく
+2,Karate Chop,からてチョップ
+3,Double Slap,おうふくビンタ
+4,Comet Punch,れんぞくパンチ
+5,Mega Punch,メガトンパンチ
+6,Pay Day,ネコにこばん
+7,Fire Punch,ほのおのパンチ
+8,Ice Punch,れいとうパンチ
+9,Thunder Punch,かみなりパンチ
+10,Scratch,ひっかく
+11,Vise Grip,はさむ
+12,Guillotine,ハサミギロチン
+13,Razor Wind,かまいたち
+14,Swords Dance,つるぎのまい
+15,Cut,いあいぎり
+16,Gust,かぜおこし
+17,Wing Attack,つばさでうつ
+18,Whirlwind,ふきとばし
+19,Fly,そらをとぶ
+20,Bind,しめつける
+21,Slam,たたきつける
+22,Vine Whip,つるのムチ
+23,Stomp,ふみつけ
+24,Double Kick,にどげり
+25,Mega Kick,メガトンキック
+26,Jump Kick,とびげり
+27,Rolling Kick,まわしげり
+28,Sand Attack,すなかけ
+29,Headbutt,ずつき
+30,Horn Attack,つのでつく
+31,Fury Attack,みだれづき
+32,Horn Drill,つのドリル
+33,Tackle,たいあたり
+34,Body Slam,のしかかり
+35,Wrap,まきつく
+36,Take Down,とっしん
+37,Thrash,あばれる
+38,Double-Edge,すてみタックル
+39,Tail Whip,しっぽをふる
+40,Poison Sting,どくばり
+41,Twineedle,ダブルニードル
+42,Pin Missile,ミサイルばり
+43,Leer,にらみつける
+44,Bite,かみつく
+45,Growl,なきごえ
+46,Roar,ほえる
+47,Sing,うたう
+48,Supersonic,ちょうおんぱ
+49,Sonic Boom,ソニックブーム
+50,Disable,かなしばり
+51,Acid,ようかいえき
+52,Ember,ひのこ
+53,Flamethrower,かえんほうしゃ
+54,Mist,しろいきり
+55,Water Gun,みずでっぽう
+56,Hydro Pump,ハイドロポンプ
+57,Surf,なみのり
+58,Ice Beam,れいとうビーム
+59,Blizzard,ふぶき
+60,Psybeam,サイケこうせん
+61,Bubble Beam,バブルこうせん
+62,Aurora Beam,オーロラビーム
+63,Hyper Beam,はかいこうせん
+64,Peck,つつく
+65,Drill Peck,ドリルくちばし
+66,Submission,じごくぐるま
+67,Low Kick,けたぐり
+68,Counter,カウンター
+69,Seismic Toss,ちきゅうなげ
+70,Strength,かいりき
+71,Absorb,すいとる
+72,Mega Drain,メガドレイン
+73,Leech Seed,やどりぎのタネ
+74,Growth,せいちょう
+75,Razor Leaf,はっぱカッター
+76,Solar Beam,ソーラービーム
+77,Poison Powder,どくのこな
+78,Stun Spore,しびれごな
+79,Sleep Powder,ねむりごな
+80,Petal Dance,はなびらのまい
+81,String Shot,いとをはく
+82,Dragon Rage,りゅうのいかり
+83,Fire Spin,ほのおのうず
+84,Thunder Shock,でんきショック
+85,Thunderbolt,１０まんボルト
+86,Thunder Wave,でんじは
+87,Thunder,かみなり
+88,Rock Throw,いわおとし
+89,Earthquake,じしん
+90,Fissure,じわれ
+91,Dig,あなをほる
+92,Toxic,どくどく
+93,Confusion,ねんりき
+94,Psychic,サイコキネシス
+95,Hypnosis,さいみんじゅつ
+96,Meditate,ヨガのポーズ
+97,Agility,こうそくいどう
+98,Quick Attack,でんこうせっか
+99,Rage,いかり
+100,Teleport,テレポート
+101,Night Shade,ナイトヘッド
+102,Mimic,ものまね
+103,Screech,いやなおと
+104,Double Team,かげぶんしん
+105,Recover,じこさいせい
+106,Harden,かたくなる
+107,Minimize,ちいさくなる
+108,Smokescreen,えんまく
+109,Confuse Ray,あやしいひかり
+110,Withdraw,からにこもる
+111,Defense Curl,まるくなる
+112,Barrier,バリアー
+113,Light Screen,ひかりのかべ
+114,Haze,くろいきり
+115,Reflect,リフレクター
+116,Focus Energy,きあいだめ
+117,Bide,がまん
+118,Metronome,ゆびをふる
+119,Mirror Move,オウムがえし
+120,Self-Destruct,じばく
+121,Egg Bomb,タマゴばくだん
+122,Lick,したでなめる
+123,Smog,スモッグ
+124,Sludge,ヘドロこうげき
+125,Bone Club,ホネこんぼう
+126,Fire Blast,だいもんじ
+127,Waterfall,たきのぼり
+128,Clamp,からではさむ
+129,Swift,スピードスター
+130,Skull Bash,ロケットずつき
+131,Spike Cannon,とげキャノン
+132,Constrict,からみつく
+133,Amnesia,ドわすれ
+134,Kinesis,スプーンまげ
+135,Soft-Boiled,タマゴうみ
+136,High Jump Kick,とびひざげり
+137,Glare,へびにらみ
+138,Dream Eater,ゆめくい
+139,Poison Gas,どくガス
+140,Barrage,たまなげ
+141,Leech Life,きゅうけつ
+142,Lovely Kiss,あくまのキッス
+143,Sky Attack,ゴッドバード
+144,Transform,へんしん
+145,Bubble,あわ
+146,Dizzy Punch,ピヨピヨパンチ
+147,Spore,キノコのほうし
+148,Flash,フラッシュ
+149,Psywave,サイコウェーブ
+150,Splash,はねる
+151,Acid Armor,とける
+152,Crabhammer,クラブハンマー
+153,Explosion,だいばくはつ
+154,Fury Swipes,みだれひっかき
+155,Bonemerang,ホネブーメラン
+156,Rest,ねむる
+157,Rock Slide,いわなだれ
+158,Hyper Fang,ひっさつまえば
+159,Sharpen,かくばる
+160,Conversion,テクスチャー
+161,Tri Attack,トライアタック
+162,Super Fang,いかりのまえば
+163,Slash,きりさく
+164,Substitute,みがわり
+165,Struggle,わるあがき
+166,Sketch,スケッチ
+167,Triple Kick,トリプルキック
+168,Thief,どろぼう
+169,Spider Web,クモのす
+170,Mind Reader,こころのめ
+171,Nightmare,あくむ
+172,Flame Wheel,かえんぐるま
+173,Snore,いびき
+174,Curse,のろい
+175,Flail,じたばた
+176,Conversion 2,テクスチャー２
+177,Aeroblast,エアロブラスト
+178,Cotton Spore,わたほうし
+179,Reversal,きしかいせい
+180,Spite,うらみ
+181,Powder Snow,こなゆき
+182,Protect,まもる
+183,Mach Punch,マッハパンチ
+184,Scary Face,こわいかお
+185,Feint Attack,だましうち
+186,Sweet Kiss,てんしのキッス
+187,Belly Drum,はらだいこ
+188,Sludge Bomb,ヘドロばくだん
+189,Mud-Slap,どろかけ
+190,Octazooka,オクタンほう
+191,Spikes,まきびし
+192,Zap Cannon,でんじほう
+193,Foresight,みやぶる
+194,Destiny Bond,みちづれ
+195,Perish Song,ほろびのうた
+196,Icy Wind,こごえるかぜ
+197,Detect,みきり
+198,Bone Rush,ボーンラッシュ
+199,Lock-On,ロックオン
+200,Outrage,げきりん
+201,Sandstorm,すなあらし
+202,Giga Drain,ギガドレイン
+203,Endure,こらえる
+204,Charm,あまえる
+205,Rollout,ころがる
+206,False Swipe,みねうち
+207,Swagger,いばる
+208,Milk Drink,ミルクのみ
+209,Spark,スパーク
+210,Fury Cutter,れんぞくぎり
+211,Steel Wing,はがねのつばさ
+212,Mean Look,くろいまなざし
+213,Attract,メロメロ
+214,Sleep Talk,ねごと
+215,Heal Bell,いやしのすず
+216,Return,おんがえし
+217,Present,プレゼント
+218,Frustration,やつあたり
+219,Safeguard,しんぴのまもり
+220,Pain Split,いたみわけ
+221,Sacred Fire,せいなるほのお
+222,Magnitude,マグニチュード
+223,Dynamic Punch,ばくれつパンチ
+224,Megahorn,メガホーン
+225,Dragon Breath,りゅうのいぶき
+226,Baton Pass,バトンタッチ
+227,Encore,アンコール
+228,Pursuit,おいうち
+229,Rapid Spin,こうそくスピン
+230,Sweet Scent,あまいかおり
+231,Iron Tail,アイアンテール
+232,Metal Claw,メタルクロー
+233,Vital Throw,あてみなげ
+234,Morning Sun,あさのひざし
+235,Synthesis,こうごうせい
+236,Moonlight,つきのひかり
+237,Hidden Power,めざめるパワー
+238,Cross Chop,クロスチョップ
+239,Twister,たつまき
+240,Rain Dance,あまごい
+241,Sunny Day,にほんばれ
+242,Crunch,かみくだく
+243,Mirror Coat,ミラーコート
+244,Psych Up,じこあんじ
+245,Extreme Speed,しんそく
+246,Ancient Power,げんしのちから
+247,Shadow Ball,シャドーボール
+248,Future Sight,みらいよち
+249,Rock Smash,いわくだき
+250,Whirlpool,うずしお
+251,Beat Up,ふくろだたき
+252,Fake Out,ねこだまし
+253,Uproar,さわぐ
+254,Stockpile,たくわえる
+255,Spit Up,はきだす
+256,Swallow,のみこむ
+257,Heat Wave,ねっぷう
+258,Hail,あられ
+259,Torment,いちゃもん
+260,Flatter,おだてる
+261,Will-O-Wisp,おにび
+262,Memento,おきみやげ
+263,Facade,からげんき
+264,Focus Punch,きあいパンチ
+265,Smelling Salts,きつけ
+266,Follow Me,このゆびとまれ
+267,Nature Power,しぜんのちから
+268,Charge,じゅうでん
+269,Taunt,ちょうはつ
+270,Helping Hand,てだすけ
+271,Trick,トリック
+272,Role Play,なりきり
+273,Wish,ねがいごと
+274,Assist,ねこのて
+275,Ingrain,ねをはる
+276,Superpower,ばかぢから
+277,Magic Coat,マジックコート
+278,Recycle,リサイクル
+279,Revenge,リベンジ
+280,Brick Break,かわらわり
+281,Yawn,あくび
+282,Knock Off,はたきおとす
+283,Endeavor,がむしゃら
+284,Eruption,ふんか
+285,Skill Swap,スキルスワップ
+286,Imprison,ふういん
+287,Refresh,リフレッシュ
+288,Grudge,おんねん
+289,Snatch,よこどり
+290,Secret Power,ひみつのちから
+291,Dive,ダイビング
+292,Arm Thrust,つっぱり
+293,Camouflage,ほごしょく
+294,Tail Glow,ほたるび
+295,Luster Purge,ラスターパージ
+296,Mist Ball,ミストボール
+297,Feather Dance,フェザーダンス
+298,Teeter Dance,フラフラダンス
+299,Blaze Kick,ブレイズキック
+300,Mud Sport,どろあそび
+301,Ice Ball,アイスボール
+302,Needle Arm,ニードルアーム
+303,Slack Off,なまける
+304,Hyper Voice,ハイパーボイス
+305,Poison Fang,どくどくのキバ
+306,Crush Claw,ブレイククロー
+307,Blast Burn,ブラストバーン
+308,Hydro Cannon,ハイドロカノン
+309,Meteor Mash,コメットパンチ
+310,Astonish,おどろかす
+311,Weather Ball,ウェザーボール
+312,Aromatherapy,アロマセラピー
+313,Fake Tears,うそなき
+314,Air Cutter,エアカッター
+315,Overheat,オーバーヒート
+316,Odor Sleuth,かぎわける
+317,Rock Tomb,がんせきふうじ
+318,Silver Wind,ぎんいろのかぜ
+319,Metal Sound,きんぞくおん
+320,Grass Whistle,くさぶえ
+321,Tickle,くすぐる
+322,Cosmic Power,コスモパワー
+323,Water Spout,しおふき
+324,Signal Beam,シグナルビーム
+325,Shadow Punch,シャドーパンチ
+326,Extrasensory,じんつうりき
+327,Sky Uppercut,スカイアッパー
+328,Sand Tomb,すなじごく
+329,Sheer Cold,ぜったいれいど
+330,Muddy Water,だくりゅう
+331,Bullet Seed,タネマシンガン
+332,Aerial Ace,つばめがえし
+333,Icicle Spear,つららばり
+334,Iron Defense,てっぺき
+335,Block,とおせんぼう
+336,Howl,とおぼえ
+337,Dragon Claw,ドラゴンクロー
+338,Frenzy Plant,ハードプラント
+339,Bulk Up,ビルドアップ
+340,Bounce,とびはねる
+341,Mud Shot,マッドショット
+342,Poison Tail,ポイズンテール
+343,Covet,ほしがる
+344,Volt Tackle,ボルテッカー
+345,Magical Leaf,マジカルリーフ
+346,Water Sport,みずあそび
+347,Calm Mind,めいそう
+348,Leaf Blade,リーフブレード
+349,Dragon Dance,りゅうのまい
+350,Rock Blast,ロックブラスト
+351,Shock Wave,でんげきは
+352,Water Pulse,みずのはどう
+353,Doom Desire,はめつのねがい
+354,Psycho Boost,サイコブースト
+355,Roost,はねやすめ
+356,Gravity,じゅうりょく
+357,Miracle Eye,ミラクルアイ
+358,Wake-Up Slap,めざましビンタ
+359,Hammer Arm,アームハンマー
+360,Gyro Ball,ジャイロボール
+361,Healing Wish,いやしのねがい
+362,Brine,しおみず
+363,Natural Gift,しぜんのめぐみ
+364,Feint,フェイント
+365,Pluck,ついばむ
+366,Tailwind,おいかぜ
+367,Acupressure,つぼをつく
+368,Metal Burst,メタルバースト
+369,U-turn,とんぼがえり
+370,Close Combat,インファイト
+371,Payback,しっぺがえし
+372,Assurance,ダメおし
+373,Embargo,さしおさえ
+374,Fling,なげつける
+375,Psycho Shift,サイコシフト
+376,Trump Card,きりふだ
+377,Heal Block,かいふくふうじ
+378,Wring Out,しぼりとる
+379,Power Trick,パワートリック
+380,Gastro Acid,いえき
+381,Lucky Chant,おまじない
+382,Me First,さきどり
+383,Copycat,まねっこ
+384,Power Swap,パワースワップ
+385,Guard Swap,ガードスワップ
+386,Punishment,おしおき
+387,Last Resort,とっておき
+388,Worry Seed,なやみのタネ
+389,Sucker Punch,ふいうち
+390,Toxic Spikes,どくびし
+391,Heart Swap,ハートスワップ
+392,Aqua Ring,アクアリング
+393,Magnet Rise,でんじふゆう
+394,Flare Blitz,フレアドライブ
+395,Force Palm,はっけい
+396,Aura Sphere,はどうだん
+397,Rock Polish,ロックカット
+398,Poison Jab,どくづき
+399,Dark Pulse,あくのはどう
+400,Night Slash,つじぎり
+401,Aqua Tail,アクアテール
+402,Seed Bomb,タネばくだん
+403,Air Slash,エアスラッシュ
+404,X-Scissor,シザークロス
+405,Bug Buzz,むしのさざめき
+406,Dragon Pulse,りゅうのはどう
+407,Dragon Rush,ドラゴンダイブ
+408,Power Gem,パワージェム
+409,Drain Punch,ドレインパンチ
+410,Vacuum Wave,しんくうは
+411,Focus Blast,きあいだま
+412,Energy Ball,エナジーボール
+413,Brave Bird,ブレイブバード
+414,Earth Power,だいちのちから
+415,Switcheroo,すりかえ
+416,Giga Impact,ギガインパクト
+417,Nasty Plot,わるだくみ
+418,Bullet Punch,バレットパンチ
+419,Avalanche,ゆきなだれ
+420,Ice Shard,こおりのつぶて
+421,Shadow Claw,シャドークロー
+422,Thunder Fang,かみなりのキバ
+423,Ice Fang,こおりのキバ
+424,Fire Fang,ほのおのキバ
+425,Shadow Sneak,かげうち
+426,Mud Bomb,どろばくだん
+427,Psycho Cut,サイコカッター
+428,Zen Headbutt,しねんのずつき
+429,Mirror Shot,ミラーショット
+430,Flash Cannon,ラスターカノン
+431,Rock Climb,ロッククライム
+432,Defog,きりばらい
+433,Trick Room,トリックルーム
+434,Draco Meteor,りゅうせいぐん
+435,Discharge,ほうでん
+436,Lava Plume,ふんえん
+437,Leaf Storm,リーフストーム
+438,Power Whip,パワーウィップ
+439,Rock Wrecker,がんせきほう
+440,Cross Poison,クロスポイズン
+441,Gunk Shot,ダストシュート
+442,Iron Head,アイアンヘッド
+443,Magnet Bomb,マグネットボム
+444,Stone Edge,ストーンエッジ
+445,Captivate,ゆうわく
+446,Stealth Rock,ステルスロック
+447,Grass Knot,くさむすび
+448,Chatter,おしゃべり
+449,Judgment,さばきのつぶて
+450,Bug Bite,むしくい
+451,Charge Beam,チャージビーム
+452,Wood Hammer,ウッドハンマー
+453,Aqua Jet,アクアジェット
+454,Attack Order,こうげきしれい
+455,Defend Order,ぼうぎょしれい
+456,Heal Order,かいふくしれい
+457,Head Smash,もろはのずつき
+458,Double Hit,ダブルアタック
+459,Roar of Time,ときのほうこう
+460,Spacial Rend,あくうせつだん
+461,Lunar Dance,みかづきのまい
+462,Crush Grip,にぎりつぶす
+463,Magma Storm,マグマストーム
+464,Dark Void,ダークホール
+465,Seed Flare,シードフレア
+466,Ominous Wind,あやしいかぜ
+467,Shadow Force,シャドーダイブ
+468,Hone Claws,つめとぎ
+469,Wide Guard,ワイドガード
+470,Guard Split,ガードシェア
+471,Power Split,パワーシェア
+472,Wonder Room,ワンダールーム
+473,Psyshock,サイコショック
+474,Venoshock,ベノムショック
+475,Autotomize,ボディパージ
+476,Rage Powder,いかりのこな
+477,Telekinesis,テレキネシス
+478,Magic Room,マジックルーム
+479,Smack Down,うちおとす
+480,Storm Throw,やまあらし
+481,Flame Burst,はじけるほのお
+482,Sludge Wave,ヘドロウェーブ
+483,Quiver Dance,ちょうのまい
+484,Heavy Slam,ヘビーボンバー
+485,Synchronoise,シンクロノイズ
+486,Electro Ball,エレキボール
+487,Soak,みずびたし
+488,Flame Charge,ニトロチャージ
+489,Coil,とぐろをまく
+490,Low Sweep,ローキック
+491,Acid Spray,アシッドボム
+492,Foul Play,イカサマ
+493,Simple Beam,シンプルビーム
+494,Entrainment,なかまづくり
+495,After You,おさきにどうぞ
+496,Round,りんしょう
+497,Echoed Voice,エコーボイス
+498,Chip Away,なしくずし
+499,Clear Smog,クリアスモッグ
+500,Stored Power,アシストパワー
+501,Quick Guard,ファストガード
+502,Ally Switch,サイドチェンジ
+503,Scald,ねっとう
+504,Shell Smash,からをやぶる
+505,Heal Pulse,いやしのはどう
+506,Hex,たたりめ
+507,Sky Drop,フリーフォール
+508,Shift Gear,ギアチェンジ
+509,Circle Throw,ともえなげ
+510,Incinerate,やきつくす
+511,Quash,さきおくり
+512,Acrobatics,アクロバット
+513,Reflect Type,ミラータイプ
+514,Retaliate,かたきうち
+515,Final Gambit,いのちがけ
+516,Bestow,ギフトパス
+517,Inferno,れんごく
+518,Water Pledge,みずのちかい
+519,Fire Pledge,ほのおのちかい
+520,Grass Pledge,くさのちかい
+521,Volt Switch,ボルトチェンジ
+522,Struggle Bug,むしのていこう
+523,Bulldoze,じならし
+524,Frost Breath,こおりのいぶき
+525,Dragon Tail,ドラゴンテール
+526,Work Up,ふるいたてる
+527,Electroweb,エレキネット
+528,Wild Charge,ワイルドボルト
+529,Drill Run,ドリルライナー
+530,Dual Chop,ダブルチョップ
+531,Heart Stamp,ハートスタンプ
+532,Horn Leech,ウッドホーン
+533,Sacred Sword,せいなるつるぎ
+534,Razor Shell,シェルブレード
+535,Heat Crash,ヒートスタンプ
+536,Leaf Tornado,グラスミキサー
+537,Steamroller,ハードローラー
+538,Cotton Guard,コットンガード
+539,Night Daze,ナイトバースト
+540,Psystrike,サイコブレイク
+541,Tail Slap,スイープビンタ
+542,Hurricane,ぼうふう
+543,Head Charge,アフロブレイク
+544,Gear Grind,ギアソーサー
+545,Searing Shot,かえんだん
+546,Techno Blast,テクノバスター
+547,Relic Song,いにしえのうた
+548,Secret Sword,しんぴのつるぎ
+549,Glaciate,こごえるせかい
+550,Bolt Strike,らいげき
+551,Blue Flare,あおいほのお
+552,Fiery Dance,ほのおのまい
+553,Freeze Shock,フリーズボルト
+554,Ice Burn,コールドフレア
+555,Snarl,バークアウト
+556,Icicle Crash,つららおとし
+557,V-create,Ｖジェネレート
+558,Fusion Flare,クロスフレイム
+559,Fusion Bolt,クロスサンダー
+560,Flying Press,フライングプレス
+561,Mat Block,たたみがえし
+562,Belch,ゲップ
+563,Rototiller,たがやす
+564,Sticky Web,ねばねばネット
+565,Fell Stinger,とどめばり
+566,Phantom Force,ゴーストダイブ
+567,Trick-or-Treat,ハロウィン
+568,Noble Roar,おたけび
+569,Ion Deluge,プラズマシャワー
+570,Parabolic Charge,パラボラチャージ
+571,Forest's Curse,もりののろい
+572,Petal Blizzard,はなふぶき
+573,Freeze-Dry,フリーズドライ
+574,Disarming Voice,チャームボイス
+575,Parting Shot,すてゼリフ
+576,Topsy-Turvy,ひっくりかえす
+577,Draining Kiss,ドレインキッス
+578,Crafty Shield,トリックガード
+579,Flower Shield,フラワーガード
+580,Grassy Terrain,グラスフィールド
+581,Misty Terrain,ミストフィールド
+582,Electrify,そうでん
+583,Play Rough,じゃれつく
+584,Fairy Wind,ようせいのかぜ
+585,Moonblast,ムーンフォース
+586,Boomburst,ばくおんぱ
+587,Fairy Lock,フェアリーロック
+588,King's Shield,キングシールド
+589,Play Nice,なかよくする
+590,Confide,ないしょばなし
+591,Diamond Storm,ダイヤストーム
+592,Steam Eruption,スチームバースト
+593,Hyperspace Hole,いじげんホール
+594,Water Shuriken,みずしゅりけん
+595,Mystical Fire,マジカルフレイム
+596,Spiky Shield,ニードルガード
+597,Aromatic Mist,アロマミスト
+598,Eerie Impulse,かいでんぱ
+599,Venom Drench,ベノムトラップ
+600,Powder,ふんじん
+601,Geomancy,ジオコントロール
+602,Magnetic Flux,じばそうさ
+603,Happy Hour,ハッピータイム
+604,Electric Terrain,エレキフィールド
+605,Dazzling Gleam,マジカルシャイン
+606,Celebrate,おいわい
+607,Hold Hands,てをつなぐ
+608,Baby-Doll Eyes,つぶらなひとみ
+609,Nuzzle,ほっぺすりすり
+610,Hold Back,てかげん
+611,Infestation,まとわりつく
+612,Power-Up Punch,グロウパンチ
+613,Oblivion Wing,デスウイング
+614,Thousand Arrows,サウザンアロー
+615,Thousand Waves,サウザンウェーブ
+616,Land's Wrath,グランドフォース
+617,Light of Ruin,はめつのひかり
+618,Origin Pulse,こんげんのはどう
+619,Precipice Blades,だんがいのつるぎ
+620,Dragon Ascent,ガリョウテンセイ
+621,Hyperspace Fury,いじげんラッシュ
+659,Shore Up,すなあつめ
+660,First Impression,であいがしら
+661,Baneful Bunker,トーチカ
+662,Spirit Shackle,かげぬい
+663,Darkest Lariat,ＤＤラリアット
+664,Sparkling Aria,うたかたのアリア
+665,Ice Hammer,アイスハンマー
+666,Floral Healing,フラワーヒール
+667,High Horsepower,１０まんばりき
+668,Strength Sap,ちからをすいとる
+669,Solar Blade,ソーラーブレード
+670,Leafage,このは
+671,Spotlight,スポットライト
+672,Toxic Thread,どくのいと
+673,Laser Focus,とぎすます
+674,Gear Up,アシストギア
+675,Throat Chop,じごくづき
+676,Pollen Puff,かふんだんご
+677,Anchor Shot,アンカーショット
+678,Psychic Terrain,サイコフィールド
+679,Lunge,とびかかる
+680,Fire Lash,ほのおのムチ
+681,Power Trip,つけあがる
+682,Burn Up,もえつきる
+683,Speed Swap,スピードスワップ
+684,Smart Strike,スマートホーン
+685,Purify,じょうか
+686,Revelation Dance,めざめるダンス
+687,Core Enforcer,コアパニッシャー
+688,Trop Kick,トロピカルキック
+689,Instruct,さいはい
+690,Beak Blast,くちばしキャノン
+691,Clanging Scales,スケイルノイズ
+692,Dragon Hammer,ドラゴンハンマー
+693,Brutal Swing,ぶんまわす
+694,Aurora Veil,オーロラベール
+704,Shell Trap,トラップシェル
+705,Fleur Cannon,フルールカノン
+706,Psychic Fangs,サイコファング
+707,Stomping Tantrum,じだんだ
+708,Shadow Bone,シャドーボーン
+709,Accelerock,アクセルロック
+710,Liquidation,アクアブレイク
+711,Prismatic Laser,プリズムレーザー
+712,Spectral Thief,シャドースチール
+713,Sunsteel Strike,メテオドライブ
+714,Moongeist Beam,シャドーレイ
+715,Tearful Look,なみだめ
+716,Zing Zap,びりびりちくちく
+717,Nature's Madness,しぜんのいかり
+718,Multi-Attack,マルチアタック
+720,Mind Blown,ビックリヘッド
+721,Plasma Fists,プラズマフィスト
+722,Photon Geyser,フォトンゲイザー
+729,Zippy Zap,ばちばちアクセル
+730,Splishy Splash,ざぶざぶサーフ
+731,Floaty Fall,ふわふわフォール
+732,Pika Papow,ピカピカサンダー
+733,Bouncy Bubble,いきいきバブル
+734,Buzzy Buzz,びりびりエレキ
+735,Sizzly Slide,めらめらバーン
+736,Glitzy Glow,どばどばオーラ
+737,Baddy Bad,わるわるゾーン
+738,Sappy Seed,すくすくボンバー
+739,Freezy Frost,こちこちフロスト
+740,Sparkly Swirl,きらきらストーム
+741,Veevee Volley,ブイブイブレイク
+742,Double Iron Bash,ダブルパンツァー
+743,Max Guard,ダイウォール
+744,Dynamax Cannon,ダイマックスほう
+745,Snipe Shot,ねらいうち
+746,Jaw Lock,くらいつく
+747,Stuff Cheeks,ほおばる
+748,No Retreat,はいすいのじん
+749,Tar Shot,タールショット
+750,Magic Powder,まほうのこな
+751,Dragon Darts,ドラゴンアロー
+752,Teatime,おちゃかい
+753,Octolock,たこがため
+754,Bolt Beak,でんげきくちばし
+755,Fishious Rend,エラがみ
+756,Court Change,コートチェンジ
+757,Max Flare,ダイバーン
+758,Max Flutterby,ダイワーム
+759,Max Lightning,ダイサンダー
+760,Max Strike,ダイアタック
+761,Max Knuckle,ダイナックル
+762,Max Phantasm,ダイホロウ
+763,Max Hailstorm,ダイアイス
+764,Max Ooze,ダイアシッド
+765,Max Geyser,ダイストリーム
+766,Max Airstream,ダイジェット
+767,Max Starfall,ダイフェアリー
+768,Max Wyrmwind,ダイドラグーン
+769,Max Mindstorm,ダイサイコ
+770,Max Rockfall,ダイロック
+771,Max Quake,ダイアース
+772,Max Darkness,ダイアーク
+773,Max Overgrowth,ダイソウゲン
+774,Max Steelspike,ダイスチル
+775,Clangorous Soul,ソウルビート
+776,Body Press,ボディプレス
+777,Decorate,デコレーション
+778,Drum Beating,ドラムアタック
+779,Snap Trap,トラバサミ
+780,Pyro Ball,かえんボール
+781,Behemoth Blade,きょじゅうざん
+782,Behemoth Bash,きょじゅうだん
+782,Aura Wheel,オーラぐるま
+784,Breaking Swipe,ワイドブレイカー
+785,Branch Poke,えだづき
+786,Overdrive,オーバードライブ
+787,Apple Acid,りんごさん
+788,Grav Apple,Ｇのちから
+789,Spirit Break,ソウルクラッシュ
+790,Strange Steam,ワンダースチーム
+791,Life Dew,いのちのしずく
+792,Obstruct,ブロッキング
+793,False Surrender,どげざつき
+794,Meteor Assault,スターアサルト
+795,Eternabeam,ムゲンダイビーム
+796,Steel Beam,てっていこうせん
+797,Expanding Force,ワイドフォース
+798,Steel Roller,アイアンローラー
+799,Scale Shot,スケイルショット
+800,Meteor Beam,メテオビーム
+801,Shell Side Arm,シェルアームズ
+802,Misty Explosion,ミストバースト
+803,Grassy Glide,グラススライダー
+804,Rising Voltage,ライジングボルト
+805,Terrain Pulse,だいちのはどう
+806,Skitter Smack,はいよるいちげき
+807,Burning Jealousy,しっとのほのお
+808,Lash Out,うっぷんばらし
+809,Poltergeist,ポルターガイスト
+810,Corrosive Gas,ふしょくガス
+811,Coaching,コーチング
+812,Flip Turn,クイックターン
+813,Triple Axel,トリプルアクセル
+814,Dual Wingbeat,ダブルウイング
+815,Scorching Sands,ねっさのだいち
+816,Jungle Healing,ジャングルヒール
+817,Wicked Blow,あんこくきょうだ
+818,Surging Strikes,すいりゅうれんだ
+819,Thunder Cage,サンダープリズン
+820,Dragon Energy,ドラゴンエナジー
+821,Freezing Glare,いてつくしせん
+822,Fiery Wrath,もえあがるいかり
+823,Thunderous Kick,らいめいげり
+824,Glacial Lance,ブリザードランス
+825,Astral Barrage,アストラルビット
+826,Eerie Spell,ぶきみなじゅもん
+827,Dire Claw,フェイタルクロー
+828,Psyshield Bash,バリアーラッシュ
+829,Power Shift,パワーシフト
+830,Stone Axe,がんせきアックス
+831,Springtide Storm,はるのあらし
+832,Mystical Power,しんぴのちから
+833,Raging Fury,だいふんげき
+834,Wave Crash,ウェーブタックル
+835,Chloroblast,クロロブラスト
+836,Mountain Gale,ひょうざんおろし
+837,Victory Dance,しょうりのまい
+838,Headlong Rush,ぶちかまし
+839,Barb Barrage,どくばりセンボン
+840,Esper Wing,オーラウイング
+841,Bitter Malice,うらみつらみ
+842,Shelter,たてこもる
+843,Triple Arrows,３ぼんのや
+844,Infernal Parade,ひゃっきやこう
+845,Ceaseless Edge,ひけん・ちえなみ
+846,Bleakwind Storm,こがらしあらし
+847,Wildbolt Storm,かみなりあらし
+848,Sandsear Storm,ねっさのあらし
+849,Lunar Blessing,みかづきのいのり
+850,Take Heart,ブレイブチャージ
+851,Tera Blast,テラバースト
+852,Silk Trap,スレッドトラップ
+853,Axe Kick,かかとおとし
+854,Last Respects,おはかまいり
+855,Lumina Crash,ルミナコリジョン
+856,Order Up,いっちょうあがり
+857,Jet Punch,ジェットパンチ
+858,Spicy Extract,ハバネロエキス
+859,Spin Out,ホイールスピン
+860,Population Bomb,ネズミざん
+861,Ice Spinner,アイススピナー
+862,Glaive Rush,きょけんとつげき
+863,Revival Blessing,さいきのいのり
+864,Salt Cure,しおづけ
+865,Triple Dive,トリプルダイブ
+866,Mortal Spin,キラースピン
+867,Doodle,うつしえ
+868,Fillet Away,みをけずる
+869,Kowtow Cleave,ドゲザン
+870,Flower Trick,トリックフラワー
+871,Torch Song,フレアソング
+872,Aqua Step,アクアステップ
+873,Raging Bull,レイジングブル
+874,Make It Rain,ゴールドラッシュ
+875,Psyblade,サイコブレイド
+876,Hydro Steam,ハイドロスチーム
+877,Ruination,カタストロフィ
+878,Collision Course,アクセルブレイク
+879,Electro Drift,イナズマドライブ
+880,Shed Tail,しっぽきり
+881,Chilly Reception,さむいギャグ
+882,Tidy Up,おかたづけ
+883,Snowscape,ゆきげしき
+884,Pounce,とびつく
+885,Trailblaze,くさわけ
+886,Chilling Water,ひやみず
+887,Hyper Drill,ハイパードリル
+888,Twin Beam,ツインビーム
+889,Rage Fist,ふんどのこぶし
+890,Armor Cannon,アーマーキャノン
+891,Bitter Blade,むねんのつるぎ
+892,Double Shock,でんこうそうげき
+893,Gigaton Hammer,デカハンマー
+894,Comeuppance,ほうふく
+895,Aqua Cutter,アクアカッター
+901,Blood Moon,ブラッドムーン
+902,Matcha Gotcha,シャカシャカほう
+903,Syrup Bomb,みずあめボム
+904,Ivy Cudgel,ツタこんぼう
+905,Electro Shot,エレクトロビーム
+906,Tera Starstorm,テラクラスター
+907,Fickle Beam,きまぐレーザー
+908,Burning Bulwark,かえんのまもり
+909,Thunderclap,じんらい
+910,Mighty Cleave,パワフルエッジ
+911,Tachyon Cutter,タキオンカッター
+912,Hard Press,ハードプレス
+913,Dragon Cheer,ドラゴンエール
+914,Alluring Voice,みわくのボイス
+915,Temper Flare,やけっぱち
+916,Supercell Slam,サンダーダイブ
+917,Psychic Noise,サイコノイズ
+918,Upper Hand,はやてがえし
+919,Malignant Chain,じゃどくのくさり
