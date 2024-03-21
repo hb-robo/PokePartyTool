@@ -46,12 +46,13 @@ try:
                     'name_jp_kana': rowcols[2].text.strip(),
                 }
             )
-
-
         # print(move_translation_data)
 
         script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(script_dir, f'../data/csv/{movepool}_name_translations.csv')
+        file_path = os.path.join(
+            script_dir,
+            f'../data/csv/{movepool}_name_translations.csv'
+        )
         # print(file_path)
 
         with open(file_path, 'w+', newline='', encoding='utf-8') as f:

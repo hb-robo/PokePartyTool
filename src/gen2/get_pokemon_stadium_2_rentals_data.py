@@ -5,10 +5,11 @@ import csv
 import os
 
 """
-Western Pokemon resources tend to only have CSS-styled data for Pokemon Stadium 2 rentals.
-This script scrapes the data from Serebii, transforms it, and then stores it in a more 
-readily workable CSV format. Japanese resources have their versions more thoroughly
-catalogued, so this method is unnecessary for those games.
+Western Pokemon resources tend to only have CSS-styled data for Pokemon
+Stadium 2 rentals. This script scrapes the data from Serebii, transforms it,
+and then stores it in a more readily workable CSV format. Japanese resources
+have their versions more thoroughly catalogued, so this method is unnecessary
+for those games.
 """
 
 # Pokemon Stadium 2 Rentals
@@ -22,7 +23,7 @@ for cup, uri in STADIUM2_URIS.items():
     response = requests.get(uri)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find all the tables with the class 'poketab' which contain the rental Pokemon data
+    # Find all the 'table.poketab' which contain the rental Pokemon data
     elements = soup.find_all('table', class_='poketab')
 
     rental_data_list = []
@@ -31,8 +32,10 @@ for cup, uri in STADIUM2_URIS.items():
 
         # grab isolated data in div.poketab
         pokemon_data['Index'] = element.find('font').text.strip().split(' ')[0]
-        pokemon_data['Name']  = element.find_all('tr')[1].find_all('td')[0].find(class_='label').text.strip()
-        pokemon_data['Level'] = element.find_all('tr')[1].find_all('td')[0].table.find_all('tr')[2].td.text.strip().split(' ')[1]
+        pokemon_data['Name'] = element.find_all('tr')[1].find_all('td')[0]\
+            .find(class_='label').text.strip()
+        pokemon_data['Level'] = element.find_all('tr')[1].find_all('td')[0]\
+            .table.find_all('tr')[2].td.text.strip().split(' ')[1]
 
         # collect and clean pokemon stats
         for e in element.find_all(class_='detailhead'):
