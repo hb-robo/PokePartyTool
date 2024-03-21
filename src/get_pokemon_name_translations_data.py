@@ -15,7 +15,8 @@ import requests
 from bs4 import BeautifulSoup
 
 POKEMON_NAME_TRANSLATIONS_URI = \
-    'https://bulbapedia.bulbagarden.net/wiki/List_of_Japanese_Pok%C3%A9mon_names'
+    'https://bulbapedia.bulbagarden.net/wiki/\
+        List_of_Japanese_Pok%C3%A9mon_names'
 response = requests.get(POKEMON_NAME_TRANSLATIONS_URI, timeout=5)
 try:
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -37,12 +38,13 @@ try:
                     'name_jp_kana': rowcols[3].text.strip(),
                 }
             )
-
-
     # print(pokemon_translation_data)
 
     script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(script_dir, '../data/csv/pokemon_name_translations.csv')
+    file_path = os.path.join(
+        script_dir,
+        '../data/csv/pokemon_name_translations.csv'
+    )
     # print(file_path)
 
     with open(file_path, 'w+', newline='', encoding='utf-8') as f:
