@@ -1,5 +1,7 @@
 """
-This script grabs a table of 
+This script grabs a table of Pokemon names in English and their official
+names in Japanese Kana. Will be used to translate tables sourced from the
+JP Pokemon Wiki.
 
 Data sourced from Bulbapedia. In theory this should renew itself every time
 a new generation is released, but it's possible that the page will be updated
