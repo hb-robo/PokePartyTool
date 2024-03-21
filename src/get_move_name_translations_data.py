@@ -48,7 +48,7 @@ try:
             )
 
 
-        print(move_translation_data)
+        # print(move_translation_data)
 
         script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(script_dir, f'../data/csv/{movepool}_name_translations.csv')

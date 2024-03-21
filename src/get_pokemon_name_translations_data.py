@@ -39,7 +39,7 @@ try:
             )
 
 
-    print(pokemon_translation_data)
+    # print(pokemon_translation_data)
 
     script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, '../data/csv/pokemon_name_translations.csv')
