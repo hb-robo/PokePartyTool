@@ -3,15 +3,13 @@ Classes to represent Pokemon from Generation 1 games.
 Contains physical attributes, default stats, type data, and movepool,
 as well as "live" HP, stats, status, etc.
 """
-
-from src.parent_classes import Pokemon
 import json
-from src.gen1.gen1_constants import PMRG_MON_CONSTANTS
-
+from src.gen1.gen1_constants import PM_RG_CONSTANTS
+from src.parent_classes import Pokemon
 
 class PMRG_Pokemon(Pokemon):
-    POKEDEX_PATH = '../../data/gen1/json/pm_red_green_pokedex.json'
-    GEN1_MON_CONSTANTS = PMRG_MON_CONSTANTS
+    POKEDEX_PATH = '../../data/json/gen1/pm_red_green_pokedex.json'
+    GEN1_MON_CONSTANTS = PM_RG_CONSTANTS
 
     def __init__(self, name, level=50):
         super().__init__(
