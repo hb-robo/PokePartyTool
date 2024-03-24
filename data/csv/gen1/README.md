@@ -22,11 +22,14 @@ Pocket Monsters Stadium 2
 * Included three original cups and three in-game tourneys based on the rulesets of the IRL 1997-1999 Pokemon championships.
 * Rental system returns and is expanded.
 
-Pocket Monsters / Pokemon Yellow
-* First game in series where JP and Intl. versions had identical gameplay mechanics.
+Pocket Monsters Yellow 
 * Unique Pokemon availability compared to other Gen1 versions.
 * Updated movepools for most Pokemon, both for "natural" learnsets and TM/HM access.
 * Revamped opponents with stronger teams, new trainer encounters themed around the TV show.
+* Introduced PvP variant modes in "Colosseum2" Link Battle with alternative restrictions
+
+Pokemon Yellow
+* Almost identical to PM Yellow, aside from shared International change of the Blizzard freeze chance.
 
 Pokemon Stadium
 * Western release of PMS2, with totally revamped rental teams and opponents.
