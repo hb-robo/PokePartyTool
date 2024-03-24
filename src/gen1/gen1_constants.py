@@ -62,3 +62,35 @@ evasionStages = {
     -5: 3.50,
     -6: 4.00
 }
+
+# Status Conditions
+NON_VOLATILE_STATUS_CONDITIONS = ["Burn", "Freeze", "Paralysis", "Poison", "Toxic", "Sleep", "Clear"]
+VOLATILE_STATUS_CONDITIONS = ["Substitute", "Transform", "Bound", "Curse", "Disable", "Confusion",
+                              "Focused", "Rampage", "Bide", "Recharge", "Fly", "Dig", "Flinch"]
+
+MULTI_HIT_DISTRIBUTION = {
+    1: 0.000,
+    2: 0.375,
+    3: 0.375,
+    4: 0.125,
+    5: 0.125
+}
+
+BOUND_DURATION_DISTRIBUTION = MULTI_HIT_DISTRIBUTION
+BIDE_DURATION_DISTRIBUTION = {
+    2: 0.500,
+    3: 0.500
+}
+THRASH_PETAL_DANCE_DURATION_DISTRIBUTION = {
+    3: 0.500,
+    4: 0.500
+}
+
+PM_RG_CONSTANTS = {}
+PM_B_CONSTANTS = {}
+PM_P_CONSTANTS = {}
+PM_S_CONSTANTS = {}
+PM_S2_CONSTANTS = {}
+PKMN_RB_CONSTANTS = {}
+PKMN_Y_CONSTANTS = {}
+PKMN_S_CONSTANTS = {}
