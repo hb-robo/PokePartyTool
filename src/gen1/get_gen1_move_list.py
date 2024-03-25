@@ -1,10 +1,3 @@
-from bs4 import BeautifulSoup
-import requests
-import time
-import csv
-import os
-from gen1_constants import TYPES
-
 """
 This script assembles a list of all moves in Generation 1 of Pokemon,
 with some very minor additional information that you might find in a
@@ -15,18 +8,24 @@ details of how the moves function will be left to the simulator classes
 for the Pokemon and Battle System of each unique game.
 """
 
+import time
+import csv
+import os
+import requests
+from bs4 import BeautifulSoup
+from src.gen1.gen1_constants import TYPES
 
 # Assemble list of Serebii's type-specific move pages.
 # They don't have a page with all of them combined.
 uri_list = {}
-for type in TYPES:
-    uri_type = type.lower()
+for ptype in TYPES:
+    uri_type = ptype.lower()
     uri_list[uri_type] = \
         f'https://www.serebii.net/attackdex-rby/type/{uri_type}.shtml'
 
 gen1_move_list = []
 for uri_type, uri in uri_list.items():
-    response = requests.get(uri)
+    response = requests.get(uri, timeout=5)
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Find all 'dextable' tables, which contain the move list data
