@@ -8,12 +8,14 @@ import json
 
 
 class Pokemon():
+    POKEDEX_PATH = None
+    CONSTANTS = None
+
     def __init__(
         self, name, level=50,
         item=None, ability=None,
         nature=None, iv_spread=None, ev_spread=None,
         custom_movepool=None, custom_stats=None,
-        pokedex_path=None, constants=None
     ):
         # Set mandatory values
         self._name = name
@@ -27,7 +29,7 @@ class Pokemon():
             self._item = item
 
         # Grab static values from corresponding Pokedex
-        self.getDexEntry(pokedex_path)
+        self.getDexEntry(self.POKEDEX_PATH)
 
         # Override values for pokedex return
         if nature is not None:
@@ -47,12 +49,12 @@ class Pokemon():
                 TypeError("Argument for 'custom_stats' must be a dictionary.")
 
         # Instantiate other battle-related constants
-        self.instantiateConstants(constants)
+        self.instantiateConstants(self.CONSTANTS)
 
-    def getDexEntry(self, pokedex_path):
-        if pokedex_path is None:
+    def getDexEntry(self):
+        if self.POKEDEX_PATH is None:
             raise FileNotFoundError("Pokedex file not defined.")
-        with open(pokedex_path, 'r') as pokedex_json:
+        with open(self.POKEDEX_PATH, 'r', encoding='utf-8') as pokedex_json:
             pokedex = json.load(pokedex_json)
             if self.name not in list(pokedex.keys()):
                 raise ValueError(
