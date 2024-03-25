@@ -1,0 +1,151 @@
+"""
+This script assembles a JSON Object containing all Pokemon from Generation 1 and each of the moves
+they are able to learn, along with one of three methods: default (meaning that Pokemon would have
+that move if caught at Lv1), level-up, and TM/HM.
+
+As an example, Metapod has Harden as a default move, but also learns it at Lv7. Caterpie evolves 
+into Metapod at Lv7, at which point the Pokemon will immediately attempt to learn "Harden". If the
+player encounters a Lv6 Metapod in the wild, it will still know Harden as it is a default move. If
+the Caterpie refuses to evolve at Lv7, it misses its chance at learning Harden, as it does not
+inherit Metapod's default moves in any way.
+"""
+
+import time
+import json
+import os
+import requests
+from bs4 import BeautifulSoup
+
+# Assemble list of Serebii's type-specific move pages.
+# They don't have a page with all of them combined.
+uri_list = {}
+for i in range(1, 152):
+    pid = f"{i:03d}"
+    uri_list[i] = \
+        f'https://www.serebii.net/pokedex/{pid}.shtml'
+
+pm_rgb_pkmn_rb_movepools = {}
+pm_p_pkmn_y_movepools = {}
+for pid, uri in uri_list.items():
+    response = requests.get(uri, timeout=5)
+    # response = requests.get(f'https://www.serebii.net/pokedex/{150}.shtml', timeout=5)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    pm_rgb_pkmn_rb_movepools[int(pid)] = {}
+    pm_p_pkmn_y_movepools[int(pid)] = {}
+
+    # Find all 'dextable' tables, which contain the move list data
+    attacks_section = soup.find('a', attrs={'name':'attacks'})
+    level_up_table = attacks_section.find_next('table', class_='dextable')
+
+    if level_up_table.find_next('td').text.strip() == 'Generation I Level Up':
+        # Natural learnset is the same across RGB/RB and P/Y
+        level_up_rows = level_up_table.find_all('tr')
+        for row in level_up_rows[2:]:
+            rowcols = row.find_all('td')
+            if len(rowcols) == 1:
+                continue
+            move_name = rowcols[1].text.strip()
+            level_learned = rowcols[0].text.strip()
+            if level_learned == '—':
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['default'] = True
+                pm_p_pkmn_y_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['default'] = True
+            else:
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['level_learned'] = level_learned
+                pm_p_pkmn_y_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['level_learned'] = level_learned
+    else:
+        # Difference between RGB/RB and P/Y learnsets
+        level_up_rows = level_up_table.find_all('tr')
+        for row in level_up_rows[2:]:
+            rowcols = row.find_all('td')
+            if len(rowcols) == 1:
+                continue
+
+            move_name = rowcols[1].text.strip()
+            level_learned = rowcols[0].text.strip()
+            if level_learned == '—':
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['default'] = True
+            else:
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['level_learned'] = level_learned
+
+        pm_p_pkmn_y_level_up_table = level_up_table.find_next('table', class_='dextable')
+        pm_p_pkmn_y_level_up_rows = pm_p_pkmn_y_level_up_table.find_all('tr')
+        for row in pm_p_pkmn_y_level_up_rows[2:]:
+            rowcols = row.find_all('td')
+            if len(rowcols) == 1:
+                continue
+
+            move_name = rowcols[1].text.strip()
+            level_learned = rowcols[0].text.strip()
+            if level_learned == '—':
+                pm_p_pkmn_y_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['default'] = True
+            else:
+                pm_p_pkmn_y_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['level_learned'] = level_learned
+
+    tm_hm_movepool = soup.find('td', text='TM & HM Attacks')
+    if tm_hm_movepool:
+        tm_hm_access_table = tm_hm_movepool.find_previous('table', class_='dextable')
+        tm_hm_access_rows = tm_hm_access_table.find_all('tr')
+        for row in tm_hm_access_rows[2:]:
+            rowcols = row.find_all('td')
+            if len(rowcols) == 1:
+                continue
+
+            move_name = rowcols[1].text.strip()
+            tm_hm_id = rowcols[0].text.strip()
+
+            if 'Yellow Only' in tm_hm_id:
+                tm_hm_id = tm_hm_id.rstrip('Yellow Only')
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['tm_or_hm'] = tm_hm_id
+            elif 'RGB Only' in tm_hm_id:
+                tm_hm_id = tm_hm_id.rstrip('RGB Only')
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['tm_or_hm'] = tm_hm_id
+            else:
+                pm_rgb_pkmn_rb_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['tm_or_hm'] = tm_hm_id
+                pm_p_pkmn_y_movepools[int(pid)].setdefault(
+                    move_name, {}
+                )['tm_or_hm'] = tm_hm_id
+
+    # print(f"{pid}: {pm_rgb_pkmn_rb_movepools[int(pid)]}")
+    # print(f"{pid}: {pm_p_pkmn_y_movepools[int(pid)]}")
+
+    # print(f"Finished moveset for ID#{pid}")
+    time.sleep(10)
+
+script_dir = script_dir = os.path.dirname(os.path.abspath(__file__))
+pm_rgb_pkmn_rb_file_path = os.path.join(
+    script_dir, '../../data/json/gen1/pm_rgb_pkmn_rb_move_list.json'
+)
+pm_p_pkmn_y_file_path = os.path.join(
+    script_dir, '../../data/json/gen1/pm_p_pkmn_y_move_list.json'
+)
+
+with open(pm_rgb_pkmn_rb_file_path, 'w+', newline='', encoding='utf-8') as f:
+    json.dump(pm_rgb_pkmn_rb_movepools, f)
+# print("Finished writing pm_rgb_pkmn_rb_move_list.json")
+
+with open(pm_p_pkmn_y_file_path, 'w+', newline='', encoding='utf-8') as f:
+    json.dump(pm_p_pkmn_y_movepools, f)
+# print("Finished writing pm_p_pkmn_y_move_list.json")
