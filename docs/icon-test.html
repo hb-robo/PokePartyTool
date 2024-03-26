@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Testing Gen1 Icons</title>
+    <style>
+        ul > li {
+            display: inline-block;
+            list-style: none;
+        }
+
+        li {
+            margin: 0 5px;
+        }
+        .spacer {
+            width: 50px;
+        }
+    </style>
+</head>
+<body style="background-color: rgb(245, 245, 245);">
+    <h3>Generation 1</h3>
+    <div>
+        <ul style="list-style: none;">
+            <li id="pm-akai"></li>
+            <li id="pm-midori"></li>
+            <li id="pm-ao"></li>
+            <li id="pm-pikachu"></li>
+            <li id="pm-stadium"></li>
+            <li id="pm-stadium2"></li>
+        </ul>
+        <ul style="list-style: none;">
+            <li id="pkmn-red"></li>
+            <li id="pkmn-blue"></li>
+            <li class="spacer"></li>
+            <li id="pkmn-yellow"></li>
+            <li class="spacer"></li>
+            <li id="pkmn-stadium"></li>
+        </ul>
+    </div>
+    <h3>Generation 2</h3>
+    <div>
+        <ul style="list-style: none;">
+            <li id="pm-kin"></li>
+            <li id="pm-gin"></li>
+            <li id="pm-akira"></li>
+            <li id="pm-stadium-gs"></li>
+        </ul>
+        <ul style="list-style: none;">
+            <li id="pkmn-gold"></li>
+            <li id="pkmn-silver"></li>
+            <li id="pkmn-crystal"></li>
+            <li id="pkmn-stadium2"></li>
+        </ul>
+    </div>
+    <h3>Generation 3</h3>
+    <div>
+        <ul style="display: inline-block; list-style: none;">
+            <li id="pm-ruby"></li>
+            <li id="pm-sapphire"></li>
+            <li id="pm-emerald"></li>
+            <li id="pm-hi"></li>
+            <li id="pm-ha"></li>
+            <li id="pm-colosseum"></li>
+            <li id="pm-xd"></li>
+        </ul>
+        <ul style="display: inline-block; list-style: none;">
+            <li id="pkmn-ruby"></li>
+            <li id="pkmn-sapphire"></li>
+            <li id="pkmn-emerald"></li>
+            <li id="pkmn-firered"></li>
+            <li id="pkmn-leafgreen"></li>
+            <li id="pkmn-colosseum"></li>
+            <li id="pkmn-xd"></li>
+        </ul>
+    </div>
+    <h3>Generation 4</h3>
+    <div style="display:flex;">
+        <ul style="list-style: none;">
+            <li id="pm-diamond"></li>
+            <li id="pm-pearl"></li>
+            <li id="pm-emerald"></li>
+            <li id="pm-hi"></li>
+            <li id="pm-ha"></li>
+            <li id="pm-colosseum"></li>
+            <li id="pm-xd"></li>
+        </ul>
+        <ul style="list-style: none;">
+            <li id="pkmn-ruby"></li>
+            <li id="pkmn-sapphire"></li>
+            <li id="pkmn-emerald"></li>
+            <li id="pkmn-firered"></li>
+            <li id="pkmn-leafgreen"></li>
+            <li id="pkmn-colosseum"></li>
+            <li id="pkmn-xd"></li>
+        </ul>
+    </div>
+
+</body>
+<script>
+    const iframeSources = [
+        [
+            'pm-akai.html',
+            'pm-midori.html',
+            'pm-ao.html',
+            'pm-pikachu.html',
+            'pm-stadium.html',
+            'pm-stadium2.html',
+            'pkmn-red.html',
+            'pkmn-blue.html',
+            'pkmn-yellow.html',
+            'pkmn-stadium.html'
+        ],
+        [
+            'pm-kin.html',
+            'pm-gin.html',
+            'pm-akira.html',
+            'pm-stadium-gs.html',
+            'pkmn-gold.html',
+            'pkmn-silver.html',
+            'pkmn-crystal.html',
+            'pkmn-stadium2.html'
+        ],
+        [            
+            'pm-ruby.html',
+            'pm-sapphire.html',
+            'pm-emerald.html',
+            'pm-hi.html',
+            'pm-ha.html',
+            'pm-colosseum.html',
+            'pm-xd.html',
+            'pkmn-ruby.html',
+            'pkmn-sapphire.html',
+            'pkmn-emerald.html',
+            'pkmn-firered.html',
+            'pkmn-leafgreen.html',
+            'pkmn-colosseum.html',
+            'pkmn-xd.html',            
+        ]
+    ];
+
+    for(i=0; i<(iframeSources.length + 1); i++){
+        var generation = i+1;
+        var gen_icon_list = iframeSources[i];
+        for(j=0; j<gen_icon_list.length; j++){
+            const filename = gen_icon_list[j];
+            const path = `/docs/gen${generation}/partials/${filename}`
+            fetch(path)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                const liElement = document.querySelector(`#${filename.replace('.html', '')}`);
+                liElement.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+    };
+</script>
+</html>
