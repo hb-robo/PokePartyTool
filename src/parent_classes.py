@@ -8,12 +8,16 @@ import json
 
 
 class Pokemon():
+    """
+    Default class for all implementations of Pokemon across all series games containing
+    a traditional turn-based battle system. This class is not meant to be instantiated.
+    """
     POKEDEX_PATH = None
     CONSTANTS = None
 
     def __init__(
-        self, name, level=50,
-        item=None, ability=None,
+        self, name=None, level=50,
+        item=None, ability=None, tera_type=None,
         nature=None, iv_spread=None, ev_spread=None,
         custom_movepool=None, custom_stats=None,
     ):
@@ -22,36 +26,33 @@ class Pokemon():
         self._level = level
 
         # Set optional values
-        # Ability only "optional" because they don't exist in Gens 1/2
-        if ability is not None:
-            self._ability = ability
-        if item is not None:
-            self._item = item
+        self._ability = ability
+        self._item = item
+        self._tera_type = tera_type
 
         # Grab static values from corresponding Pokedex
-        self.getDexEntry(self.POKEDEX_PATH)
+        self.get_dex_entry()
 
         # Override values for pokedex return
         if nature is not None:
             self._nature = nature
         if custom_movepool is not None:
-            if (isinstance(custom_movepool, list)):
-                if all(isinstance(elem, str) for elem in custom_movepool):
-                    self._movepool = custom_movepool
-                TypeError("Custom movepool list contains non-string elements")
-            else:
-                TypeError("Custom movepool must be a list.")
+            self._custom_movepool = custom_movepool
+
         if custom_stats is not None:
             if isinstance(custom_stats, dict):
                 for stat, value in custom_stats.items():
                     setattr(self, stat, value)
             else:
-                TypeError("Argument for 'custom_stats' must be a dictionary.")
+                raise TypeError("Argument for 'custom_stats' must be a dictionary.")
 
         # Instantiate other battle-related constants
-        self.instantiateConstants(self.CONSTANTS)
+        self.instantiate_constants()
 
-    def getDexEntry(self):
+    def get_dex_entry(self):
+        """
+        Retrieves the Pokedex entry for the Pokemon to be instantiated.
+        """
         if self.POKEDEX_PATH is None:
             raise FileNotFoundError("Pokedex file not defined.")
         with open(self.POKEDEX_PATH, 'r', encoding='utf-8') as pokedex_json:
@@ -63,19 +64,19 @@ class Pokemon():
             for key, value in pokedex[self.name].items():
                 setattr(self, key, value)
 
-    def instantiateConstants(self, constants):
-        if constants is None:
+    def instantiate_constants(self):
+        if self.CONSTANTS is None:
             raise ValueError("Constants not defined.")
-        for key, value in constants.items():
+        for key, value in self.CONSTANTS.items():
             setattr(self, key, value)
 
-    """
-    Each property has overridden setters to provide type validation and SOME
-    value validation. To prevent class bloat, Pokemon instances will not carry
-    with them dictionaries of legal values corresponding to their generation,
-    for instance the array of legal types. Instead, the class will validate the
-    type, and the corresponding Battle classes will check for legal values.
-    """
+    ############################################
+    # Each property has overridden setters to provide type validation and SOME
+    # value validation. To prevent class bloat, Pokemon instances will not carry
+    # with them dictionaries of legal values corresponding to their generation,
+    # for instance the array of legal types. Instead, the class will validate the
+    # type, and the corresponding Battle classes will check for legal values.
+    ############################################
 
     @property
     def name(self):
@@ -120,6 +121,34 @@ class Pokemon():
             raise ValueError("Pokemon Type2 must be None or a string")
         self._type2 = value
 
+    ############################################
+    # Optional Property Overridden Setters
+    ############################################
+
+    @property
+    def item(self):
+        return self._item
+
+    @item.setter
+    def item(self, value):
+        # None is a valid value for item, it is not used in Gen 1, and is optional.
+        if value is not None:
+            if not isinstance(value, str) or value == '':
+                raise ValueError("Pokemon item must be a non-empty string.")
+        self._item = value
+
+    @property
+    def ability(self):
+        return self._ability
+
+    @ability.setter
+    def ability(self, value):
+        # None is a valid value for ability, because it is not used in Gens 1/2.
+        if value is not None:
+            if not isinstance(value, str) or value == '':
+                raise ValueError("Pokemon ability must be a non-empty string.")
+        self._ability = value
+
     @property
     def tera_type(self):
         return self._tera_type
@@ -131,13 +160,13 @@ class Pokemon():
             raise ValueError("Pokemon Type2 must be None or a string")
         self._tera_type = value
 
-    """
-    Pokemon Statistics Overridden Setters
-    """
+    ############################################
+    # Pokemon Statistics Overridden Setters
+    ############################################
 
     @property
     def hp(self):
-        return self._HP
+        return self._hp
 
     @hp.setter
     def hp(self, value):
@@ -207,9 +236,9 @@ class Pokemon():
             raise ValueError("Pokemon's Sp. Defense must be an int >0.")
         self._sp_defense = value
 
-    """
-    Overridden setters for other physical attributes
-    """
+    ############################################
+    # Overridden setters for other physical attributes
+    ############################################
 
     @property
     def height(self):
@@ -231,9 +260,21 @@ class Pokemon():
             raise ValueError("Pokemon's weight must a float greater than 0.")
         self._weight = value
 
-    """
-    TODO:
-        Implement custom IV/EV spreads for stats distributions
-        Implement nature as effect on stats distribution
-        Overridden setters for movepool
-    """
+    # TODO:
+    # Implement custom IV/EV spreads for stats distributions
+    # Implement nature as effect on stats distribution
+    # Overridden setters for movepool
+
+    @property
+    def custom_movepool(self):
+        return self._custom_movepool
+
+    @custom_movepool.setter
+    def custom_movepool(self, value):
+        if isinstance(value, list):
+            if all(isinstance(elem, str) for elem in value):
+                self._movepool = value
+            else:
+                raise TypeError("Custom movepool list contains non-string elements")
+        else:
+            raise TypeError("Custom movepool must be a list.")
