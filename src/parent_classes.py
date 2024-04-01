@@ -17,7 +17,7 @@ class Pokemon():
 
     def __init__(
         self, name=None, level=50,
-        item=None, ability=None, tera_type=None,
+        item=None, ability=None, gender=None, tera_type=None,
         nature=None, iv_spread=None, ev_spread=None,
         custom_movepool=None, custom_stats=None,
     ):
@@ -31,20 +31,25 @@ class Pokemon():
         self._tera_type = tera_type
 
         # Grab static values from corresponding Pokedex
+        # Includes:
+        # * Type(s)
+        # * Height and Weight
+        # * Learnset
+        # * Base Stat Totals
+        # * Experience Curve
         self.get_dex_entry()
+
+        self.build_movepool(custom_movepool)
 
         # Override values for pokedex return
         if nature is not None:
             self._nature = nature
         if custom_movepool is not None:
-            self._custom_movepool = custom_movepool
-
+            self._movepool = custom_movepool
         if custom_stats is not None:
-            if isinstance(custom_stats, dict):
-                for stat, value in custom_stats.items():
-                    setattr(self, stat, value)
-            else:
-                raise TypeError("Argument for 'custom_stats' must be a dictionary.")
+            self._movepool = custom_movepool
+
+
 
         # Instantiate other battle-related constants
         self.instantiate_constants()
@@ -65,8 +70,38 @@ class Pokemon():
                 setattr(self, key, value)
 
     def instantiate_constants(self):
+        """
+        Initiates generation- or game-specific constants.
+        """
         if self.CONSTANTS is None:
             raise ValueError("Constants not defined.")
+        for key, value in self.CONSTANTS.items():
+            setattr(self, key, value)
+
+    def build_movepool(self, custom_movepool):
+        """
+        Builds movepool of four based on defined custom_movepool, else entire movepool
+        from Pokemon learnset (derived from Pokedex entry) will be appended for analysis mode.
+        """
+        movepool = []
+        if custom_movepool is None:
+            # This triggers 'analysis mode' where Pokemon has access to entire movepool.
+            for move in self.learnset:
+                if move.default \
+                    or move.tm_or_hm \
+                    or int(move.level_learned) <= self.level:
+                    movepool.append(move)
+        else:
+            if not isinstance(custom_movepool, list):
+                raise TypeError("Custom movepool must be a list of dictionaries.")
+            if len(custom_movepool) < 1:
+                raise ValueError("Custom movepool must have at least one entry.")
+            if len(custom_movepool) > 4:
+                raise ValueError("Custom movepool must have at most four entries.")
+            for move in custom_movepool:
+                if not isinstance(move, Move):
+                    raise TypeError(f"All elements of custom movepool must be Move instance.\nProblematic move: {move}")
+
         for key, value in self.CONSTANTS.items():
             setattr(self, key, value)
 
@@ -100,27 +135,6 @@ class Pokemon():
             )
         self._level = value
 
-    @property
-    def type1(self):
-        return self._type1
-
-    @type1.setter
-    def type1(self, value):
-        if not isinstance(value, str) or value == '':
-            raise ValueError("Pokemon Type1 must be a non-empty string")
-        self._type1 = value
-
-    @property
-    def type2(self):
-        return self._type2
-
-    @type2.setter
-    def type2(self, value):
-        # Not all Pokemon have two types, so empty string and None are valid.
-        if not isinstance(value, str) and value is not None:
-            raise ValueError("Pokemon Type2 must be None or a string")
-        self._type2 = value
-
     ############################################
     # Optional Property Overridden Setters
     ############################################
@@ -149,6 +163,8 @@ class Pokemon():
                 raise ValueError("Pokemon ability must be a non-empty string.")
         self._ability = value
 
+    # TODO: gender
+
     @property
     def tera_type(self):
         return self._tera_type
@@ -159,6 +175,57 @@ class Pokemon():
         if not isinstance(value, str) and value is not None:
             raise ValueError("Pokemon Type2 must be None or a string")
         self._tera_type = value
+
+
+    ############################################
+    # Overridden setters for Pokedex-defined properties
+    ############################################
+
+
+    @property
+    def type1(self):
+        return self._type1
+
+    @type1.setter
+    def type1(self, value):
+        if not isinstance(value, str) or value == '':
+            raise ValueError("Pokemon Type1 must be a non-empty string")
+        self._type1 = value
+
+    @property
+    def type2(self):
+        return self._type2
+
+    @type2.setter
+    def type2(self, value):
+        # Not all Pokemon have two types, so empty string and None are valid.
+        if not isinstance(value, str) and value is not None:
+            raise ValueError("Pokemon Type2 must be None or a string")
+        self._type2 = value
+
+    @property
+    def height(self):
+        return self._height
+
+    @height.setter
+    def height(self, value):
+        if not isinstance(value, float) or value <= 0.0:
+            raise ValueError("Pokemon's height must a float greater than 0.")
+        self._height = value
+
+    @property
+    def weight(self):
+        return self._weight
+
+    @weight.setter
+    def weight(self, value):
+        if not isinstance(value, float) or value <= 0.0:
+            raise ValueError("Pokemon's weight must a float greater than 0.")
+        self._weight = value
+
+    # TODO: egg group, catch rate, hatch time,
+    #       experience curve, EXP yield, EV yield,
+    #       shape, footprint, Pokedex color, base friendship
 
     ############################################
     # Pokemon Statistics Overridden Setters
@@ -236,30 +303,6 @@ class Pokemon():
             raise ValueError("Pokemon's Sp. Defense must be an int >0.")
         self._sp_defense = value
 
-    ############################################
-    # Overridden setters for other physical attributes
-    ############################################
-
-    @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, value):
-        if not isinstance(value, float) or value <= 0.0:
-            raise ValueError("Pokemon's height must a float greater than 0.")
-        self._height = value
-
-    @property
-    def weight(self):
-        return self._weight
-
-    @weight.setter
-    def weight(self, value):
-        if not isinstance(value, float) or value <= 0.0:
-            raise ValueError("Pokemon's weight must a float greater than 0.")
-        self._weight = value
-
     # TODO:
     # Implement custom IV/EV spreads for stats distributions
     # Implement nature as effect on stats distribution
@@ -273,8 +316,23 @@ class Pokemon():
     def custom_movepool(self, value):
         if isinstance(value, list):
             if all(isinstance(elem, str) for elem in value):
-                self._movepool = value
+                for elem in value:
+                    if value not in self._movepool:
+                        self._movepool.append(value)
             else:
                 raise TypeError("Custom movepool list contains non-string elements")
         else:
             raise TypeError("Custom movepool must be a list.")
+
+    @property
+    def custom_stats(self):
+        return self._custom_stats
+
+    @custom_stats.setter
+    def custom_stats(self, value):
+        if value is not None:
+            if isinstance(custom_stats, dict):
+                for stat, value in custom_stats.items():
+                    setattr(self, stat, value)
+            else:
+                raise TypeError("Argument for 'custom_stats' must be a dictionary.")
